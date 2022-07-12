@@ -12,13 +12,11 @@ class Cube {
         this.initCube();
     }
     initCube() {
-        console.log('ME INICIALIZO');
         this.drawCube();
     }
     drawCube() {
         var _a;
         this.ctx.fillStyle = 'black';
         (_a = this.ctx) === null || _a === void 0 ? void 0 : _a.fillRect(this.posX, this.posY, 50, 50);
-        console.log('ME DIBUJO');
     }
 }
