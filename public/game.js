@@ -5,6 +5,7 @@ const squbeDarkness = {
     ctx: null,
     frameIndex: 0,
     cube: undefined,
+    floorBlocks: [],
     keyPressed: [],
     intervalId: undefined,
     init() {
@@ -12,6 +13,7 @@ const squbeDarkness = {
         this.createCube();
         this.setEventHandlers();
         this.movement();
+        this.createFloorBlocks();
         this.drawAll();
     },
     // --- SET UP
@@ -21,6 +23,9 @@ const squbeDarkness = {
     createCube() {
         this.cube = new Cube(this.ctx, 40, 60);
     },
+    createFloorBlocks() {
+        this.floorBlocks.push(new Floor(this.ctx, 0, 450, 300, 50), new Floor(this.ctx, 300, 400, 300, 100));
+    },
     // --- INTERVAL
     drawAll() {
         this.intervalId = setInterval(() => {
@@ -29,6 +34,8 @@ const squbeDarkness = {
             this.frameIndex++;
             (_a = this.cube) === null || _a === void 0 ? void 0 : _a.drawCube();
             this.movement();
+            this.floorBlocks.forEach(elm => elm.drawFloor());
+            console.log(this.floorBlocks);
         }, 1000 / 60);
     },
     // --- CLEAR SCREEN

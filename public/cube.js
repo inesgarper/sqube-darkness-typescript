@@ -8,7 +8,7 @@ class Cube {
         this.cubePos = { x: posX, y: posY };
         // this.cubeSize = { w: 60, h: 60 }
         this.cubeVel = { x: 0, y: 0 };
-        this.cubePhysics = { gravity: 0.3 };
+        this.cubePhysics = { gravity: 0.5 };
         this.initCube();
     }
     initCube() {
