@@ -7,6 +7,7 @@ interface gameTemplate {
     frameIndex: number,
 
     cube: undefined | Cube,
+    floorBlocks: Array<FloorBlock>,
 
     keyPressed: Array<string>,
     intervalId: number | undefined
@@ -14,6 +15,7 @@ interface gameTemplate {
     init(): void
     setContext(): void
     createCube(): void
+    createFloorBlocks(): void
     setEventHandlers(): void
     movement(): void
     drawAll(): void
@@ -30,6 +32,7 @@ const squbeDarkness: gameTemplate = {
     frameIndex: 0,
 
     cube: undefined,
+    floorBlocks: [],
 
     keyPressed: [],
     intervalId: undefined,
@@ -39,6 +42,7 @@ const squbeDarkness: gameTemplate = {
         this.createCube()
         this.setEventHandlers()
         this.movement()
+        this.createFloorBlocks()
         this.drawAll()
     },
 
@@ -51,6 +55,13 @@ const squbeDarkness: gameTemplate = {
         this.cube = new Cube(this.ctx, 40, 60)
     },
 
+    createFloorBlocks() {
+        this.floorBlocks.push(
+            new FloorBlock(this.ctx, 0, 450, 300, 50),
+            new FloorBlock(this.ctx, 300, 400, 300, 100)
+        )
+    },
+
     // --- INTERVAL
     drawAll() {
         this.intervalId = setInterval(() => {
@@ -58,6 +69,8 @@ const squbeDarkness: gameTemplate = {
             this.frameIndex++
             this.cube?.drawCube()
             this.movement()
+            this.floorBlocks.forEach(elm => elm.drawFloor())
+            console.log(this.floorBlocks)
         }, 1000 / 60)
     },
 
