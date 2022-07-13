@@ -34,7 +34,10 @@ class Cube {
 
     moveRight(): void {
         this.cubePos.x += 8
-        console.log(this.cubePos.x)
+    }
+
+    moveLeft(): void {
+        this.cubePos.x -= 8
     }
 
     gravity(): void {

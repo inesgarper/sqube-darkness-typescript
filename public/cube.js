@@ -22,7 +22,9 @@ class Cube {
     }
     moveRight() {
         this.cubePos.x += 8;
-        console.log(this.cubePos.x);
+    }
+    moveLeft() {
+        this.cubePos.x -= 8;
     }
     gravity() {
         this.cubeVel.y += this.cubePhysics.gravity;
