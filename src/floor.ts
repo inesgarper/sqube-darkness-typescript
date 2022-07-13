@@ -1,7 +1,7 @@
 class FloorBlock {
 
-    private floorPos
-    private floorSize
+    public floorPos
+    public floorSize
 
     constructor(
         private ctx: CanvasRenderingContext2D | null,
@@ -22,7 +22,6 @@ class FloorBlock {
     }
 
     drawFloor(): void {
-        console.log('dibujando')
         this.ctx!.fillStyle = 'black'
         this.ctx?.fillRect(this.floorPos.x, this.floorPos.y, this.floorSize.w, this.floorSize.h)
     }

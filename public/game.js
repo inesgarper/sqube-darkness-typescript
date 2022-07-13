@@ -15,6 +15,7 @@ const squbeDarkness = {
         this.movement();
         this.createFloorBlocks();
         this.drawAll();
+        this.checkFloorCollision();
     },
     // --- SET UP
     setContext() {
@@ -24,7 +25,7 @@ const squbeDarkness = {
         this.cube = new Cube(this.ctx, 40, 60);
     },
     createFloorBlocks() {
-        this.floorBlocks.push(new Floor(this.ctx, 0, 450, 300, 50), new Floor(this.ctx, 300, 400, 300, 100));
+        this.floorBlocks.push(new FloorBlock(this.ctx, 0, 450, 300, 50), new FloorBlock(this.ctx, 300, 400, 300, 100), new FloorBlock(this.ctx, 600, 200, 100, 50));
     },
     // --- INTERVAL
     drawAll() {
@@ -35,13 +36,42 @@ const squbeDarkness = {
             (_a = this.cube) === null || _a === void 0 ? void 0 : _a.drawCube();
             this.movement();
             this.floorBlocks.forEach(elm => elm.drawFloor());
-            console.log(this.floorBlocks);
+            if (this.checkFloorCollision()) {
+                this.cube.cubeVel.y = 0;
+                this.cube.cubePhysics.gravity = 0;
+            }
+            else {
+                this.cube.cubePhysics.gravity = 0.5;
+            }
         }, 1000 / 60);
     },
     // --- CLEAR SCREEN
     clearAll() {
         var _a;
         (_a = this.ctx) === null || _a === void 0 ? void 0 : _a.clearRect(0, 0, 1200, 500);
+    },
+    // --- COLLISIONS
+    checkFloorCollision() {
+        return this.floorBlocks.some((elm) => {
+            return this.cube.cubePos.x < elm.floorPos.x + elm.floorSize.w &&
+                this.cube.cubePos.x + this.cube.cubeSize.w > elm.floorPos.x &&
+                this.cube.cubePos.y < elm.floorPos.y + elm.floorSize.h &&
+                this.cube.cubeSize.h + this.cube.cubePos.y > elm.floorPos.y;
+        });
+        // this.floorBlocks.forEach(elm => {
+        //     if (this.cube!.cubePos.x < elm.floorPos.x + elm.floorSize.w &&
+        //         this.cube!.cubePos.x + this.cube!.cubeSize.w > elm.floorPos.x &&
+        //         this.cube!.cubePos.y < elm.floorPos.y + elm.floorSize.h &&
+        //         this.cube!.cubeSize.h + this.cube!.cubePos.y > elm.floorPos.y
+        //     ) {
+        //         this.cube!.cubeIsOnSurface = true
+        //         this.cube!.cubeVel.y = 0
+        //         this.cube!.cubePhysics.gravity = 0
+        //     } else {
+        //         this.cube!.cubeIsOnSurface = false
+        //         this.cube!.cubePhysics.gravity = 0.5
+        //     }
+        // })
     },
     // --- CONTROLS
     movement() {

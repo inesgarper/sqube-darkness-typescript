@@ -1,9 +1,11 @@
 class Cube {
 
-    private cubePos
-    // private cubeSize
-    private cubeVel
-    private cubePhysics
+    public cubePos
+    public cubeSize
+    public cubeVel
+    public cubePhysics
+    public isOnSurface: boolean
+    public isHidding: boolean
 
     constructor(
         private ctx: CanvasRenderingContext2D | null,
@@ -13,10 +15,13 @@ class Cube {
 
         this.ctx = ctx
         this.cubePos = { x: posX, y: posY }
-        // this.cubeSize = { w: 60, h: 60 }
+        this.cubeSize = { w: 50, h: 50 }
 
         this.cubeVel = { x: 0, y: 0 }
         this.cubePhysics = { gravity: 0.5 }
+
+        this.isOnSurface = false
+        this.isHidding = false
 
         this.initCube()
     }
@@ -27,7 +32,7 @@ class Cube {
 
     drawCube(): void {
         this.ctx!.fillStyle = 'black'
-        this.ctx?.fillRect(this.cubePos.x, this.cubePos.y, 50, 50)
+        this.ctx?.fillRect(this.cubePos.x, this.cubePos.y, this.cubeSize.w, this.cubeSize.h)
 
         this.gravity()
     }

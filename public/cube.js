@@ -6,9 +6,11 @@ class Cube {
         this.posY = posY;
         this.ctx = ctx;
         this.cubePos = { x: posX, y: posY };
-        // this.cubeSize = { w: 60, h: 60 }
+        this.cubeSize = { w: 50, h: 50 };
         this.cubeVel = { x: 0, y: 0 };
         this.cubePhysics = { gravity: 0.5 };
+        this.isOnSurface = false;
+        this.isHidding = false;
         this.initCube();
     }
     initCube() {
@@ -17,7 +19,7 @@ class Cube {
     drawCube() {
         var _a;
         this.ctx.fillStyle = 'black';
-        (_a = this.ctx) === null || _a === void 0 ? void 0 : _a.fillRect(this.cubePos.x, this.cubePos.y, 50, 50);
+        (_a = this.ctx) === null || _a === void 0 ? void 0 : _a.fillRect(this.cubePos.x, this.cubePos.y, this.cubeSize.w, this.cubeSize.h);
         this.gravity();
     }
     moveRight() {
