@@ -11,6 +11,9 @@ class Cube {
         this.cubePhysics = { gravity: 0.1 };
         this.initCube();
     }
+    // get pos(): object {
+    //     return this.cubePos
+    // }
     initCube() {
         this.drawCube();
     }
