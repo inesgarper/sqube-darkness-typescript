@@ -4,13 +4,18 @@ interface gameTemplate {
     canvas: HTMLCanvasElement
     ctx: null | CanvasRenderingContext2D,
 
-    frameIndex: undefined | number,
+    frameIndex: number,
 
     cube: undefined | Cube,
+
+    keyPressed: Array<string>
 
     init(): void
     setContext(): void
     createCube(): void
+    setEventHandlers(): void
+    drawAll(): void
+    clearAll(): void
 
 }
 
@@ -20,13 +25,17 @@ const squbeDarkness: gameTemplate = {
     canvas: document.querySelector('#myCanvas') as HTMLCanvasElement,
     ctx: null,
 
-    frameIndex: undefined,
+    frameIndex: 0,
 
     cube: undefined,
+
+    keyPressed: [],
 
     init() {
         this.setContext()
         this.createCube()
+        this.setEventHandlers()
+        this.drawAll()
     },
 
     setContext() {
@@ -37,5 +46,26 @@ const squbeDarkness: gameTemplate = {
     createCube() {
         this.cube = new Cube(this.ctx, 40, 60)
     },
+
+    drawAll() {
+        let intervalId = setInterval(() => {
+            this.frameIndex++,
+                this.clearAll(),
+                this.cube?.drawCube()
+        }, 1000 / 60)
+    },
+
+    setEventHandlers() {
+        document.addEventListener('keydown', event => {
+            const { key } = event
+
+            if (key === 'ArrowRight') this.cube?.moveRight()
+        })
+    },
+
+    clearAll() {
+        console.log('ME LIMPIO')
+        this.ctx?.clearRect(0, 0, 1200, 500)
+    }
 }
 
