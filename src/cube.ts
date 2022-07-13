@@ -32,9 +32,11 @@ class Cube {
     }
 
     moveRight(): void {
-        console.log('ME MUEVO A LA DERECHA')
         this.cubePos.x += 8
-        console.log(this.cubePos.x)
+    }
+
+    moveLeft(): void {
+        this.cubePos.x -= 8
     }
 
 }

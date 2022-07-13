@@ -15,6 +15,7 @@ interface gameTemplate {
     setContext(): void
     createCube(): void
     setEventHandlers(): void
+    movement(): void
     drawAll(): void
     clearAll(): void
 
@@ -37,9 +38,11 @@ const squbeDarkness: gameTemplate = {
         this.setContext()
         this.createCube()
         this.setEventHandlers()
+        this.movement()
         this.drawAll()
     },
 
+    // --- SET UP
     setContext() {
         this.ctx = this.canvas.getContext('2d')
         console.log(this.ctx)
@@ -49,24 +52,45 @@ const squbeDarkness: gameTemplate = {
         this.cube = new Cube(this.ctx, 40, 60)
     },
 
+    // --- INTERVAL
     drawAll() {
         this.intervalId = setInterval(() => {
             this.clearAll()
             this.frameIndex++
             this.cube?.drawCube()
+            this.movement()
         }, 1000 / 60)
+    },
+
+    // --- CLEAR SCREEN
+    clearAll() {
+        this.ctx?.clearRect(0, 0, 1200, 500)
+    },
+
+    // --- CONTROLS
+    movement() {
+        this.keyPressed.forEach(elm => {
+            if (elm.includes('ArrowRight')) this.cube?.moveRight()
+            if (elm.includes('ArrowLeft')) this.cube?.moveLeft()
+        })
     },
 
     setEventHandlers() {
         document.addEventListener('keydown', event => {
             const { key } = event
 
-            if (key === 'ArrowRight') this.cube?.moveRight()
+            if (key === 'ArrowRight' && !(this.keyPressed.includes('ArrowRight'))) this.keyPressed.push('ArrowRight')
+            else if (key === 'ArrowLeft' && !(this.keyPressed.includes('ArrowLeft'))) this.keyPressed.push('ArrowLeft')
+        })
+
+        document.addEventListener('keyup', event => {
+            const { key } = event
+
+            if (key === 'ArrowRight') this.keyPressed = []
+            else if (key === 'ArrowLeft') this.keyPressed = []
+            else return null
         })
     },
 
-    clearAll() {
-        this.ctx?.clearRect(0, 0, 1200, 500)
-    }
 }
 
