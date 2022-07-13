@@ -37,7 +37,6 @@ const squbeDarkness = {
     },
     clearAll() {
         var _a;
-        console.log('ME LIMPIO');
         (_a = this.ctx) === null || _a === void 0 ? void 0 : _a.clearRect(0, 0, 1200, 500);
     }
 };

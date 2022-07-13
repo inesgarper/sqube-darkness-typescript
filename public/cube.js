@@ -16,12 +16,12 @@ class Cube {
     }
     drawCube() {
         var _a;
-        console.log('ME DIBUJO');
         this.ctx.fillStyle = 'black';
-        (_a = this.ctx) === null || _a === void 0 ? void 0 : _a.fillRect(this.posX, this.posY, 50, 50);
+        (_a = this.ctx) === null || _a === void 0 ? void 0 : _a.fillRect(this.cubePos.x, this.cubePos.y, 50, 50);
     }
     moveRight() {
         console.log('ME MUEVO A LA DERECHA');
         this.cubePos.x += 8;
+        console.log(this.cubePos.x);
     }
 }

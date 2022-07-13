@@ -64,7 +64,6 @@ const squbeDarkness: gameTemplate = {
     },
 
     clearAll() {
-        console.log('ME LIMPIO')
         this.ctx?.clearRect(0, 0, 1200, 500)
     }
 }
