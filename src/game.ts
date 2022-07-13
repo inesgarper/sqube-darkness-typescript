@@ -42,7 +42,6 @@ const squbeDarkness: gameTemplate = {
 
     setContext() {
         this.ctx = this.canvas.getContext('2d')
-        console.log(this.ctx)
     },
 
     createCube() {
@@ -62,6 +61,7 @@ const squbeDarkness: gameTemplate = {
             const { key } = event
 
             if (key === 'ArrowRight') this.cube?.moveRight()
+            if (key === 'ArrowUp') this.cube?.jump()
         })
     },
 

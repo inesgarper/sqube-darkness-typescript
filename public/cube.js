@@ -7,13 +7,10 @@ class Cube {
         this.ctx = ctx;
         this.cubePos = { x: posX, y: posY };
         // this.cubeSize = { w: 60, h: 60 }
-        this.cubeVel = { x: 1, y: 0.5 };
-        this.cubePhysics = { gravity: 0.1 };
+        this.cubeVel = { x: 0, y: 0 };
+        this.cubePhysics = { gravity: 0.3 };
         this.initCube();
     }
-    // get pos(): object {
-    //     return this.cubePos
-    // }
     initCube() {
         this.drawCube();
     }
@@ -21,10 +18,17 @@ class Cube {
         var _a;
         this.ctx.fillStyle = 'black';
         (_a = this.ctx) === null || _a === void 0 ? void 0 : _a.fillRect(this.cubePos.x, this.cubePos.y, 50, 50);
+        this.gravity();
     }
     moveRight() {
-        console.log('ME MUEVO A LA DERECHA');
         this.cubePos.x += 8;
         console.log(this.cubePos.x);
+    }
+    gravity() {
+        this.cubeVel.y += this.cubePhysics.gravity;
+        this.cubePos.y += this.cubeVel.y;
+    }
+    jump() {
+        this.cubeVel.y = -13;
     }
 }

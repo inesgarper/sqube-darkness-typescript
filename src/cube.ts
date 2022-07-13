@@ -15,9 +15,8 @@ class Cube {
         this.cubePos = { x: posX, y: posY }
         // this.cubeSize = { w: 60, h: 60 }
 
-        this.cubeVel = { x: 1, y: 0.5 }
-        this.cubePhysics = { gravity: 0.1 }
-
+        this.cubeVel = { x: 0, y: 0 }
+        this.cubePhysics = { gravity: 0.3 }
 
         this.initCube()
     }
@@ -29,12 +28,21 @@ class Cube {
     drawCube(): void {
         this.ctx!.fillStyle = 'black'
         this.ctx?.fillRect(this.cubePos.x, this.cubePos.y, 50, 50)
+
+        this.gravity()
     }
 
     moveRight(): void {
-        console.log('ME MUEVO A LA DERECHA')
         this.cubePos.x += 8
         console.log(this.cubePos.x)
     }
 
+    gravity(): void {
+        this.cubeVel.y += this.cubePhysics.gravity
+        this.cubePos.y += this.cubeVel.y
+    }
+
+    jump(): void {
+        this.cubeVel.y = -13
+    }
 }

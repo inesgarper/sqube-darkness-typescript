@@ -15,7 +15,6 @@ const squbeDarkness = {
     },
     setContext() {
         this.ctx = this.canvas.getContext('2d');
-        console.log(this.ctx);
     },
     createCube() {
         this.cube = new Cube(this.ctx, 40, 60);
@@ -30,10 +29,12 @@ const squbeDarkness = {
     },
     setEventHandlers() {
         document.addEventListener('keydown', event => {
-            var _a;
+            var _a, _b;
             const { key } = event;
             if (key === 'ArrowRight')
                 (_a = this.cube) === null || _a === void 0 ? void 0 : _a.moveRight();
+            if (key === 'ArrowUp')
+                (_b = this.cube) === null || _b === void 0 ? void 0 : _b.jump();
         });
     },
     clearAll() {
