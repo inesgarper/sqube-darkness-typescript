@@ -6,6 +6,7 @@ const squbeDarkness = {
     frameIndex: 0,
     cube: undefined,
     keyPressed: [],
+    intervalId: undefined,
     init() {
         this.setContext();
         this.createCube();
@@ -20,11 +21,11 @@ const squbeDarkness = {
         this.cube = new Cube(this.ctx, 40, 60);
     },
     drawAll() {
-        let intervalId = setInterval(() => {
+        this.intervalId = setInterval(() => {
             var _a;
-            this.frameIndex++,
-                this.clearAll(),
-                (_a = this.cube) === null || _a === void 0 ? void 0 : _a.drawCube();
+            this.clearAll();
+            this.frameIndex++;
+            (_a = this.cube) === null || _a === void 0 ? void 0 : _a.drawCube();
         }, 1000 / 60);
     },
     setEventHandlers() {
@@ -37,7 +38,7 @@ const squbeDarkness = {
     },
     clearAll() {
         var _a;
-        console.log('ME LIMPIO');
+        // console.log('ME LIMPIO')
         (_a = this.ctx) === null || _a === void 0 ? void 0 : _a.clearRect(0, 0, 1200, 500);
     }
 };

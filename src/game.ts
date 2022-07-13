@@ -8,7 +8,8 @@ interface gameTemplate {
 
     cube: undefined | Cube,
 
-    keyPressed: Array<string>
+    keyPressed: Array<string>,
+    intervalId: number | undefined
 
     init(): void
     setContext(): void
@@ -30,6 +31,7 @@ const squbeDarkness: gameTemplate = {
     cube: undefined,
 
     keyPressed: [],
+    intervalId: undefined,
 
     init() {
         this.setContext()
@@ -48,10 +50,10 @@ const squbeDarkness: gameTemplate = {
     },
 
     drawAll() {
-        let intervalId = setInterval(() => {
-            this.frameIndex++,
-                this.clearAll(),
-                this.cube?.drawCube()
+        this.intervalId = setInterval(() => {
+            this.clearAll()
+            this.frameIndex++
+            this.cube?.drawCube()
         }, 1000 / 60)
     },
 
@@ -64,7 +66,7 @@ const squbeDarkness: gameTemplate = {
     },
 
     clearAll() {
-        console.log('ME LIMPIO')
+        // console.log('ME LIMPIO')
         this.ctx?.clearRect(0, 0, 1200, 500)
     }
 }

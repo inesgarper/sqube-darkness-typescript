@@ -27,9 +27,9 @@ class Cube {
     }
 
     drawCube(): void {
-        console.log('ME DIBUJO')
+        // console.log('ME DIBUJO')
         this.ctx!.fillStyle = 'black'
-        this.ctx?.fillRect(this.posX, this.posY, 50, 50)
+        this.ctx?.fillRect(this.cubePos.x, this.cubePos.y, 50, 50)
     }
 
     moveRight(): void {
