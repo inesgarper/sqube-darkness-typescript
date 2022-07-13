@@ -1,3 +1,4 @@
+"use strict";
 class Prueba {
     constructor(ballSize) {
         this.ballSize = ballSize;
