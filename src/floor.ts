@@ -18,10 +18,10 @@ class FloorBlock {
     }
 
     initFloor(): void {
-        this.drawFloor()
+        this.drawBlock()
     }
 
-    drawFloor(): void {
+    drawBlock(): void {
         this.ctx!.fillStyle = 'black'
         this.ctx?.fillRect(this.floorPos.x, this.floorPos.y, this.floorSize.w, this.floorSize.h)
     }

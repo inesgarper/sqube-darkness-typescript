@@ -12,7 +12,7 @@ const squbeDarkness = {
         this.createCube();
         this.setEventHandlers();
         this.createFloorBlocks();
-        this.drawAll();
+        this.gameLoop();
     },
     // --- SET UP
     setContext() {
@@ -22,10 +22,10 @@ const squbeDarkness = {
         this.cube = new Cube(this.ctx, 40, 60, this.floorBlocks);
     },
     createFloorBlocks() {
-        this.floorBlocks.push(new FloorBlock(this.ctx, 0, 450, 300, 50), new FloorBlock(this.ctx, 300, 400, 300, 100), new FloorBlock(this.ctx, 600, 450, 200, 50), new FloorBlock(this.ctx, 800, 250, 100, 300));
+        this.floorBlocks.push(new FloorBlock(this.ctx, 0, 450, 300, 50), new FloorBlock(this.ctx, 300, 400, 300, 100), new FloorBlock(this.ctx, 600, 450, 200, 50), new FloorBlock(this.ctx, 800, 250, 100, 300), new FloorBlock(this.ctx, 900, 400, 250, 100));
     },
     // --- INTERVAL
-    drawAll() {
+    gameLoop() {
         this.intervalId = setInterval(() => {
             var _a, _b;
             this.clearAll();
@@ -33,7 +33,7 @@ const squbeDarkness = {
             this.setEventHandlers();
             (_a = this.cube) === null || _a === void 0 ? void 0 : _a.draw();
             (_b = this.cube) === null || _b === void 0 ? void 0 : _b.movement();
-            this.floorBlocks.forEach(elm => elm.drawFloor());
+            this.floorBlocks.forEach(elm => elm.drawBlock());
         }, 1000 / 60);
     },
     // --- CLEAR SCREEN
@@ -44,6 +44,7 @@ const squbeDarkness = {
     // --- CONTROLS
     setEventHandlers() {
         document.addEventListener('keydown', event => {
+            var _a;
             const { key } = event;
             if (key === 'ArrowUp')
                 this.cube.upKey = true;
@@ -51,6 +52,8 @@ const squbeDarkness = {
                 this.cube.leftKey = true;
             if (key === 'ArrowRight')
                 this.cube.rightKey = true;
+            if (key === 'ArrowDown')
+                console.log((_a = this.cube) === null || _a === void 0 ? void 0 : _a.cubePos);
         });
         document.addEventListener('keyup', event => {
             const { key } = event;
@@ -62,38 +65,4 @@ const squbeDarkness = {
                 this.cube.rightKey = false;
         });
     }
-    // setEventHandlers() {
-    //     document.addEventListener("keydown", event => {
-    //         const { key } = event
-    //         if (key === "ArrowUp") {
-    //             squbeDarkness.cube!.upKey = true
-    //         } else if (key === "ArrowLeft") {
-    //             squbeDarkness.cube!.leftKey = true
-    //         } else if (key === "ArrowDown") {
-    //             squbeDarkness.cube!.downKey = true
-    //         } else if (key === "ArrowRight") {
-    //             squbeDarkness.cube!.rightKey = true
-    //             console.log('HE PULSADO LA TECLA')
-    //             console.log(`${squbeDarkness.rightKey}`)
-    //         }
-    //     })
-    //     document.addEventListener("keyup", function (event) {
-    //         const { key } = event
-    //         if (key === "ArrowUp") {
-    //             this.cube!.upKey = false
-    //         } else if (key === "ArrowLeft") {
-    //             squbeDarkness.leftKey = false
-    //         } else if (key === "ArrowDown") {
-    //             squbeDarkness.downKey = false
-    //         } else if (key === "ArrowRight") {
-    //             squbeDarkness.rightKey = false
-    //         }
-    //     })
-    // }
-    // setControls() {
-    //     this.keyPressed.forEach(elm => {
-    //         if (elm.includes('ArrowRight')) this.cube?.moveRight()
-    //         if (elm.includes('ArrowLeft')) this.cube?.moveLeft()
-    //     })
-    // },
 };

@@ -58,11 +58,14 @@ class Cube {
 
             // Horizontal movement
             if (!this.leftKey && !this.rightKey || this.leftKey && this.rightKey) {
-                this.cubeVel.x *= this.cubePhysics.friction
-            } else if (this.rightKey) {
+                this.slowDown()
+            } else if (this.rightKey && this.cubePos.x < 400) {
                 this.moveRight()
-            } else if (this.leftKey) {
+            } else if (this.leftKey && this.cubePos.x > 100) {
                 this.moveLeft()
+            } else {
+                this.stop()
+                this.scrollPlatforms()
             }
 
             // Jump
@@ -117,6 +120,22 @@ class Cube {
     moveLeft(): void {
         // this.cubePos.x -= 8
         this.cubeVel.x--
+    }
+
+    stop(): void {
+        this.cubeVel.x = 0
+    }
+
+    slowDown(): void {
+        this.cubeVel.x *= this.cubePhysics.friction
+    }
+
+    scrollPlatforms(): void {
+        if (this.rightKey) {
+            this.floorBlocks.forEach(block => block.floorPos.x -= 5)
+        } else if (this.leftKey) {
+            this.floorBlocks.forEach(block => block.floorPos.x += 5)
+        }
     }
 
     gravity(): void {

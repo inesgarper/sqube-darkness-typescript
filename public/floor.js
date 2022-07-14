@@ -12,9 +12,9 @@ class FloorBlock {
         this.initFloor();
     }
     initFloor() {
-        this.drawFloor();
+        this.drawBlock();
     }
-    drawFloor() {
+    drawBlock() {
         var _a;
         this.ctx.fillStyle = 'black';
         (_a = this.ctx) === null || _a === void 0 ? void 0 : _a.fillRect(this.floorPos.x, this.floorPos.y, this.floorSize.w, this.floorSize.h);
