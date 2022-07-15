@@ -22,7 +22,7 @@ const squbeDarkness = {
         this.cube = new Cube(this.ctx, 40, 60, this.floorBlocks);
     },
     createFloorBlocks() {
-        this.floorBlocks.push(new FloorBlock(this.ctx, 0, 450, 300, 50), new FloorBlock(this.ctx, 300, 400, 300, 100), new FloorBlock(this.ctx, 600, 450, 200, 50), new FloorBlock(this.ctx, 800, 250, 100, 300), new FloorBlock(this.ctx, 900, 400, 250, 100));
+        this.floorBlocks.push(new FloorBlock(this.ctx, 0, 450, 300, 50), new FloorBlock(this.ctx, 300, 400, 300, 100), new FloorBlock(this.ctx, 600, 450, 200, 50), new FloorBlock(this.ctx, 800, 350, 100, 300), new FloorBlock(this.ctx, 900, 400, 250, 100));
     },
     // --- INTERVAL
     gameLoop() {
@@ -47,7 +47,7 @@ const squbeDarkness = {
             var _a;
             const { key } = event;
             if (key === 'ArrowUp')
-                this.cube.upKey = true;
+                this.cube.jump();
             if (key === 'ArrowLeft')
                 this.cube.leftKey = true;
             if (key === 'ArrowRight')
@@ -57,8 +57,6 @@ const squbeDarkness = {
         });
         document.addEventListener('keyup', event => {
             const { key } = event;
-            if (key === 'ArrowUp')
-                this.cube.upKey = false;
             if (key === 'ArrowLeft')
                 this.cube.leftKey = false;
             if (key === 'ArrowRight')

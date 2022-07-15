@@ -7,6 +7,8 @@ class Cube {
     public isOnSurface: boolean
     public isHidding: boolean
     public isActive: boolean
+    private isJumping: boolean
+    public jumpArr: Array<string>
 
     // Controls
     public upKey: boolean | undefined
@@ -27,14 +29,16 @@ class Cube {
         this.cubePos = { x: posX, y: posY }
         this.cubeSize = { w: 50, h: 50 }
 
-        this.cubeVel = { x: 0, y: 0, maxVel: 10 }
-        this.cubePhysics = { gravity: 5, friction: 0.6 }
+        this.cubeVel = { x: 0, y: 0, maxVelX: 5, maxVelY: 15 }
+        this.cubePhysics = { gravity: 0.5, friction: 0.6 }
+
+        this.jumpArr = []
 
         this.isOnSurface = false
         this.isHidding = false
+        this.isJumping = false
         this.isActive = true
 
-        this.upKey = undefined
         this.downKey = undefined
         this.leftKey = undefined
         this.rightKey = undefined
@@ -64,12 +68,9 @@ class Cube {
             } else if (this.leftKey && this.cubePos.x > 100) {
                 this.moveLeft()
             } else {
-                this.stop()
                 this.scrollPlatforms()
+                this.stop()
             }
-
-            // Jump
-            if (this.upKey) this.jump()
 
             // Apply gravity
             this.gravity()
@@ -86,16 +87,16 @@ class Cube {
     }
 
     regulateSpeed(): void {
-        if (this.cubeVel.x > this.cubeVel.maxVel) {
-            this.cubeVel.x = this.cubeVel.maxVel
-        } else if (this.cubeVel.x < -this.cubeVel.maxVel) {
-            this.cubeVel.x = -this.cubeVel.maxVel
+        if (this.cubeVel.x > this.cubeVel.maxVelX) {
+            this.cubeVel.x = this.cubeVel.maxVelX
+        } else if (this.cubeVel.x < -this.cubeVel.maxVelX) {
+            this.cubeVel.x = -this.cubeVel.maxVelX
         }
 
-        if (this.cubeVel.y > this.cubeVel.maxVel) {
-            this.cubeVel.y = this.cubeVel.maxVel
-        } else if (this.cubeVel.y < -this.cubeVel.maxVel) {
-            this.cubeVel.y = -this.cubeVel.maxVel
+        if (this.cubeVel.y > this.cubeVel.maxVelY) {
+            this.cubeVel.y = this.cubeVel.maxVelY
+        } else if (this.cubeVel.y < -this.cubeVel.maxVelY) {
+            this.cubeVel.y = -this.cubeVel.maxVelY
         }
 
         if (this.cubeVel.x > 0) {
@@ -112,13 +113,10 @@ class Cube {
     }
 
     moveRight(): void {
-        // this.cubePos.x += 8
         this.cubeVel.x++
-        console.log('ME MUEVO A LA DCHA')
     }
 
     moveLeft(): void {
-        // this.cubePos.x -= 8
         this.cubeVel.x--
     }
 
@@ -144,8 +142,11 @@ class Cube {
     }
 
     jump(): void {
-        this.cubeVel.y -= 15
-        // this.cubePhysics.gravity = 0.5
+
+        if (this.isJumping === false) {
+            this.isJumping = true
+            this.cubeVel.y -= 15
+        }
     }
 
     checkFloorAndWallCollision(): void {
@@ -189,6 +190,8 @@ class Cube {
                     verticalRect.y -= Math.sign(this.cubeVel.y)
                 }
                 this.cubePos.y = horizontalRect.y
+                this.jumpArr.splice(0, 1)
+                this.isJumping = false
                 this.cubeVel.y = 0
             }
 

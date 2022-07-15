@@ -56,7 +56,7 @@ const squbeDarkness: gameTemplate = {
             new FloorBlock(this.ctx, 0, 450, 300, 50),
             new FloorBlock(this.ctx, 300, 400, 300, 100),
             new FloorBlock(this.ctx, 600, 450, 200, 50),
-            new FloorBlock(this.ctx, 800, 250, 100, 300),
+            new FloorBlock(this.ctx, 800, 350, 100, 300),
             new FloorBlock(this.ctx, 900, 400, 250, 100)
         )
     },
@@ -84,7 +84,7 @@ const squbeDarkness: gameTemplate = {
         document.addEventListener('keydown', event => {
             const { key } = event
 
-            if (key === 'ArrowUp') this.cube!.upKey = true
+            if (key === 'ArrowUp') this.cube!.jump()
             if (key === 'ArrowLeft') this.cube!.leftKey = true
             if (key === 'ArrowRight') this.cube!.rightKey = true
             if (key === 'ArrowDown') console.log(this.cube?.cubePos)
@@ -93,7 +93,6 @@ const squbeDarkness: gameTemplate = {
         document.addEventListener('keyup', event => {
             const { key } = event
 
-            if (key === 'ArrowUp') this.cube!.upKey = false
             if (key === 'ArrowLeft') this.cube!.leftKey = false
             if (key === 'ArrowRight') this.cube!.rightKey = false
         })
