@@ -8,7 +8,6 @@ class Cube {
     public isHidding: boolean
     public isActive: boolean
     private isJumping: boolean
-    public jumpArr: Array<string>
 
     // Controls
     public upKey: boolean | undefined
@@ -31,8 +30,6 @@ class Cube {
 
         this.cubeVel = { x: 0, y: 0, maxVelX: 5, maxVelY: 15 }
         this.cubePhysics = { gravity: 0.5, friction: 0.6 }
-
-        this.jumpArr = []
 
         this.isOnSurface = false
         this.isHidding = false
@@ -63,7 +60,7 @@ class Cube {
             // Horizontal movement
             if (!this.leftKey && !this.rightKey || this.leftKey && this.rightKey) {
                 this.slowDown()
-            } else if (this.rightKey && this.cubePos.x < 400) {
+            } else if (this.rightKey && this.cubePos.x < 300) {
                 this.moveRight()
             } else if (this.leftKey && this.cubePos.x > 100) {
                 this.moveLeft()
@@ -71,6 +68,15 @@ class Cube {
                 this.scrollPlatforms()
                 this.stop()
             }
+            // } else if (this.rightKey && this.cubePos.x >= 300) {
+            //     this.cubePos.x = 300
+            //     this.scrollPlatforms()
+            //     // this.stop()
+            // } else if (this.leftKey && this.cubePos.x <= 100) {
+            //     this.cubePos.x = 100
+            //     this.scrollPlatforms()
+            //     // this.stop()
+            // }
 
             // Apply gravity
             this.gravity()
@@ -130,15 +136,15 @@ class Cube {
 
     scrollPlatforms(): void {
         if (this.rightKey) {
-            this.floorBlocks.forEach(block => block.floorPos.x -= 5)
-        } else if (this.leftKey) {
-            this.floorBlocks.forEach(block => block.floorPos.x += 5)
+            this.floorBlocks.forEach(block => block.floorPos.x -= 5);
+        }
+        else if (this.leftKey) {
+            this.floorBlocks.forEach(block => block.floorPos.x += 5);
         }
     }
 
     gravity(): void {
         this.cubeVel.y += this.cubePhysics.gravity
-        // this.cubePos.y += this.cubeVel.y
     }
 
     jump(): void {
@@ -172,27 +178,31 @@ class Cube {
             let blockRect = {
                 x: block.floorPos.x,
                 y: block.floorPos.y,
-                width: block.floorSize.w,
-                height: block.floorSize.h,
+                width: block.width,
+                height: block.height,
             }
 
-            // Check collisions
-            if (this.checkRectCollision(horizontalRect, blockRect)) {
-                while (this.checkRectCollision(horizontalRect, blockRect)) {
-                    horizontalRect.x -= Math.sign(this.cubeVel.x)
+            if (block instanceof FloorBlock) {
+                // Check collisions
+                if (this.checkRectCollision(horizontalRect, blockRect)) {
+                    console.log('lo del while antes--->', this.cubePos.x + this.cubeSize.w)
+                    console.log('hr--->', horizontalRect.x)
+                    while (this.checkRectCollision(horizontalRect, blockRect)) {
+                        horizontalRect.x -= Math.sign(this.cubeVel.x)
+                    }
+                    this.cubePos.x = horizontalRect.x
+                    console.log('lo del while despues--->', this.cubePos.x + this.cubeSize.w)
+                    this.cubeVel.x = 0
                 }
-                this.cubePos.x = horizontalRect.x
-                this.cubeVel.x = 0
-            }
 
-            if (this.checkRectCollision(verticalRect, blockRect)) {
-                while (this.checkRectCollision(verticalRect, blockRect)) {
-                    verticalRect.y -= Math.sign(this.cubeVel.y)
+                if (this.checkRectCollision(verticalRect, blockRect)) {
+                    while (this.checkRectCollision(verticalRect, blockRect)) {
+                        verticalRect.y -= Math.sign(this.cubeVel.y)
+                    }
+                    this.cubePos.y = horizontalRect.y
+                    this.isJumping = false
+                    this.cubeVel.y = 0
                 }
-                this.cubePos.y = horizontalRect.y
-                this.jumpArr.splice(0, 1)
-                this.isJumping = false
-                this.cubeVel.y = 0
             }
 
         })
