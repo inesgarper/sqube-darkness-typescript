@@ -44,7 +44,6 @@ const squbeDarkness = {
     // --- CONTROLS
     setEventHandlers() {
         document.addEventListener('keydown', event => {
-            var _a;
             const { key } = event;
             if (key === 'ArrowUp')
                 this.cube.jump();
@@ -52,8 +51,10 @@ const squbeDarkness = {
                 this.cube.leftKey = true;
             if (key === 'ArrowRight')
                 this.cube.rightKey = true;
-            if (key === 'ArrowDown')
-                console.log((_a = this.cube) === null || _a === void 0 ? void 0 : _a.cubePos);
+            if (key === 'ArrowDown') {
+                console.log(`ESTA COLISIONANDO A LA DERECHA? -- ${this.cube.isHiddingRight}`);
+                console.log(`ESTA COLISIONANDO A LA IZQUIERDA? -- ${this.cube.isHiddingLeft}`);
+            }
         });
         document.addEventListener('keyup', event => {
             const { key } = event;

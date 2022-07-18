@@ -87,7 +87,10 @@ const squbeDarkness: gameTemplate = {
             if (key === 'ArrowUp') this.cube!.jump()
             if (key === 'ArrowLeft') this.cube!.leftKey = true
             if (key === 'ArrowRight') this.cube!.rightKey = true
-            if (key === 'ArrowDown') console.log(this.cube?.cubePos)
+            if (key === 'ArrowDown') {
+                console.log(`ESTA COLISIONANDO A LA DERECHA? -- ${this.cube!.isHiddingRight}`)
+                console.log(`ESTA COLISIONANDO A LA IZQUIERDA? -- ${this.cube!.isHiddingLeft}`)
+            }
         })
 
         document.addEventListener('keyup', event => {
