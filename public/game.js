@@ -6,6 +6,7 @@ const squbeDarkness = {
     frameIndex: 0,
     cube: undefined,
     floorBlocks: [],
+    level: level1,
     intervalId: undefined,
     init() {
         this.setContext();
@@ -19,10 +20,31 @@ const squbeDarkness = {
         this.ctx = this.canvas.getContext('2d');
     },
     createCube() {
-        this.cube = new Cube(this.ctx, 40, 60, this.floorBlocks);
+        this.cube = new Cube(this.ctx, 70, 60, this.floorBlocks);
     },
     createFloorBlocks() {
-        this.floorBlocks.push(new FloorBlock(this.ctx, 0, 450, 300, 50), new FloorBlock(this.ctx, 300, 400, 300, 100), new FloorBlock(this.ctx, 600, 450, 200, 50), new FloorBlock(this.ctx, 800, 350, 100, 300), new FloorBlock(this.ctx, 900, 400, 250, 100));
+        this.level.forEach((row, i) => {
+            row.forEach((cell, j) => {
+                if (cell === 1) {
+                    this.floorBlocks.push(new FloorBlock(this.ctx, j * 50, i * 50));
+                }
+                else if (cell === 2) {
+                    this.floorBlocks.push(new BubbleHole(this.ctx, j * 50, i * 50));
+                }
+                else if (cell === 3) {
+                    this.floorBlocks.push(new Doggy(this.ctx, j * 50, i * 50));
+                }
+                else if (cell === 4) {
+                    this.floorBlocks.push(new TempSpike(this.ctx, j * 50, i * 50));
+                }
+                else if (cell === 5) {
+                    this.floorBlocks.push(new Spike(this.ctx, j * 50, i * 50));
+                }
+                else if (cell === 6) {
+                    this.floorBlocks.push(new BrokenPlatform(this.ctx, j * 50, i * 50));
+                }
+            });
+        });
     },
     // --- INTERVAL
     gameLoop() {
@@ -34,6 +56,8 @@ const squbeDarkness = {
             (_a = this.cube) === null || _a === void 0 ? void 0 : _a.draw();
             (_b = this.cube) === null || _b === void 0 ? void 0 : _b.movement();
             this.floorBlocks.forEach(elm => elm.drawBlock());
+            // console.log('JUGADOR---->', this.cube!.cubePos.x + this.cube!.cubeSize.w)
+            // console.log('PLATAFORMA--->', this.floorBlocks[3].floorPos.x)
         }, 1000 / 60);
     },
     // --- CLEAR SCREEN

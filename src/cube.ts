@@ -62,7 +62,7 @@ class Cube {
             // Horizontal movement
             if (!this.leftKey && !this.rightKey || this.leftKey && this.rightKey) {
                 this.slowDown()
-            } else if (this.rightKey && this.cubePos.x < 400) {
+            } else if (this.rightKey && this.cubePos.x < 300) {
                 this.moveRight()
             } else if (this.leftKey && this.cubePos.x > 100) {
                 this.moveLeft()
@@ -131,15 +131,15 @@ class Cube {
 
     scrollPlatforms(): void {
         if (this.rightKey) {
-            this.floorBlocks.forEach(block => block.floorPos.x -= 5)
-        } else if (this.leftKey) {
-            this.floorBlocks.forEach(block => block.floorPos.x += 5)
+            this.floorBlocks.forEach(block => block.floorPos.x -= 5);
+        }
+        else if (this.leftKey) {
+            this.floorBlocks.forEach(block => block.floorPos.x += 5);
         }
     }
 
     gravity(): void {
         this.cubeVel.y += this.cubePhysics.gravity
-        // this.cubePos.y += this.cubeVel.y
     }
 
     jump(): void {
@@ -173,35 +173,40 @@ class Cube {
             let blockRect = {
                 x: block.floorPos.x,
                 y: block.floorPos.y,
-                width: block.floorSize.w,
-                height: block.floorSize.h,
+                width: block.width,
+                height: block.height,
             }
 
             // Check collisions
-            if (this.checkRectCollision(horizontalRect, blockRect)) {
-                while (this.checkRectCollision(horizontalRect, blockRect)) {
-                    horizontalRect.x -= Math.sign(this.cubeVel.x)
-                    if (Math.sign(this.cubeVel.x) === -1) {
-                        console.log('COLISIONO HACIA LA IZQUIERDA')
-                        this.isHiddingLeft = true
-                    } else if (Math.sign(this.cubeVel.x) === 1) {
-                        console.log('COLISIONO HACIA LA DERECHA')
-                        this.isHiddingRight = true
-                    }
-                }
-                this.isHiddingRight = false
-                this.isHiddingLeft = false
-                this.cubePos.x = horizontalRect.x
-                this.cubeVel.x = 0
-            }
+            if (block instanceof FloorBlock) {
 
-            if (this.checkRectCollision(verticalRect, blockRect)) {
-                while (this.checkRectCollision(verticalRect, blockRect)) {
-                    verticalRect.y -= Math.sign(this.cubeVel.y)
+                if (this.checkRectCollision(horizontalRect, blockRect)) {
+                    while (this.checkRectCollision(horizontalRect, blockRect)) {
+                        horizontalRect.x -= Math.sign(this.cubeVel.x)
+                        if (Math.sign(this.cubeVel.x) === -1) {
+                            console.log('COLISIONO HACIA LA IZQUIERDA')
+                            this.isHiddingLeft = true
+                        } else if (Math.sign(this.cubeVel.x) === 1) {
+                            console.log('COLISIONO HACIA LA DERECHA')
+                            this.isHiddingRight = true
+                        }
+                    }
+                    this.isHiddingRight = false
+                    this.isHiddingLeft = false
+                    this.cubePos.x = horizontalRect.x
+                    this.cubeVel.x = 0
                 }
-                this.cubePos.y = horizontalRect.y
-                this.cubeVel.y = 0
-                this.isJumping = false
+
+                if (this.checkRectCollision(verticalRect, blockRect)) {
+                    while (this.checkRectCollision(verticalRect, blockRect)) {
+                        verticalRect.y -= Math.sign(this.cubeVel.y)
+                    }
+                    this.cubePos.y = horizontalRect.y
+                    this.isJumping = false
+                    this.cubeVel.y = 0
+                }
+
+
             }
 
         })
@@ -221,5 +226,6 @@ class Cube {
             return true
         }
     }
+
 }
 
