@@ -27,6 +27,7 @@ class FloorBlock extends Cell {
         this.posY = posY;
     }
 }
+// Obstacles 
 class BubbleHole extends Cell {
     constructor(ctx, posX, posY) {
         super(ctx, posX, posY);
@@ -64,6 +65,12 @@ class TempSpike extends Spike {
         var _a;
         this.ctx.fillStyle = '#8f9ed0';
         (_a = this.ctx) === null || _a === void 0 ? void 0 : _a.fillRect(this.floorPos.x, this.floorPos.y, this.width, this.height);
+    }
+    moveUp() {
+        this.floorPos.y++;
+    }
+    moveDown() {
+        this.floorPos.y--;
     }
 }
 class BrokenPlatform extends Cell {

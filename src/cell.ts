@@ -38,6 +38,9 @@ class FloorBlock extends Cell {
     }
 }
 
+
+// Obstacles 
+
 class BubbleHole extends Cell {
 
     constructor(
@@ -81,6 +84,14 @@ class TempSpike extends Spike {
     drawBlock(): void {
         this.ctx!.fillStyle = '#8f9ed0'
         this.ctx?.fillRect(this.floorPos.x, this.floorPos.y, this.width, this.height)
+    }
+
+    moveUp(): void {
+        this.floorPos.y++
+    }
+
+    moveDown(): void {
+        this.floorPos.y--
     }
 }
 

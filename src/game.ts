@@ -9,6 +9,8 @@ interface gameTemplate {
     cube: undefined | Cube
     floorBlocks: Array<FloorBlock>
     level: Array<Array<number>>
+    distance: number
+    maxPos: number
 
     intervalId: number | undefined
 
@@ -20,6 +22,8 @@ interface gameTemplate {
     setEventHandlers(): void
     gameLoop(): void
     clearAll(): void
+    updateDistance(): void
+    printDistance(): void
 
 }
 
@@ -34,6 +38,8 @@ const squbeDarkness: gameTemplate = {
     cube: undefined,
     floorBlocks: [],
     level: level1,
+    distance: 0,
+    maxPos: 0,
 
     intervalId: undefined,
 
@@ -79,14 +85,41 @@ const squbeDarkness: gameTemplate = {
     gameLoop() {
         this.intervalId = setInterval(() => {
             this.clearAll()
-            this.frameIndex++
+            this.frameIndex >= 600 ? this.frameIndex = 0 : this.frameIndex++
             this.setEventHandlers()
             this.cube?.draw()
             this.cube?.movement()
-            this.floorBlocks.forEach(elm => elm.drawBlock())
-            // console.log('JUGADOR---->', this.cube!.cubePos.x + this.cube!.cubeSize.w)
-            // console.log('PLATAFORMA--->', this.floorBlocks[3].floorPos.x)
+            this.floorBlocks.forEach(elm => {
+                if (elm instanceof TempSpike) {
+                    if (this.frameIndex >= 100 && this.frameIndex <= 300) {
+                        elm.moveUp()
+                    } else if (this.frameIndex >= 400 && this.frameIndex <= 600) {
+                        elm.moveDown()
+                    }
+                }
+                elm.drawBlock()
+            })
+            this.updateDistance()
+            this.printDistance()
+            console.log(this.distance)
         }, 1000 / 60)
+    },
+
+    // --- DISTANCE
+    updateDistance() {
+
+        let platformPosReference: number = this.floorBlocks[0].floorPos.x
+
+        if (platformPosReference < this.maxPos) {
+            this.distance++
+            this.maxPos = platformPosReference
+        }
+    },
+
+    printDistance() {
+        this.ctx!.font = '20px Sans-serif'
+        this.ctx!.fillStyle = 'white'
+        this.ctx!.fillText(`DISTANCE: ${(this.distance * 0.026458).toFixed(2)} meters`, 450, 100)
     },
 
     // --- CLEAR SCREEN
@@ -104,8 +137,7 @@ const squbeDarkness: gameTemplate = {
             if (key === 'ArrowLeft') this.cube!.leftKey = true
             if (key === 'ArrowRight') this.cube!.rightKey = true
             if (key === 'ArrowDown') {
-                console.log(`ESTA COLISIONANDO A LA DERECHA? -- ${this.cube!.isHiddingRight}`)
-                console.log(`ESTA COLISIONANDO A LA IZQUIERDA? -- ${this.cube!.isHiddingLeft}`)
+                console.log(this.cube!.cubePos.x)
             }
         })
 

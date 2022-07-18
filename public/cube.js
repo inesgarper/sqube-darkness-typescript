@@ -35,17 +35,14 @@ class Cube {
             if (!this.leftKey && !this.rightKey || this.leftKey && this.rightKey) {
                 this.slowDown();
             }
-            else if (this.rightKey && this.cubePos.x < 300) {
+            else if (this.rightKey) {
                 this.moveRight();
             }
-            else if (this.leftKey && this.cubePos.x > 100) {
+            else if (this.leftKey) {
                 this.moveLeft();
             }
             else {
-                if (!this.isHiddingLeft || !this.isHiddingRight) {
-                    this.scrollPlatforms();
-                    this.stop();
-                }
+                this.stop();
             }
             // Apply gravity
             this.gravity();
@@ -53,8 +50,13 @@ class Cube {
             this.regulateSpeed();
             // Define movement area
             this.checkFloorAndWallCollision();
-            this.cubePos.x += this.cubeVel.x;
-            this.cubePos.y += this.cubeVel.y;
+            if (this.cubePos.x < 450 /* && this.cubePos.x > 50 */) {
+                this.cubePos.x += this.cubeVel.x;
+                this.cubePos.y += this.cubeVel.y;
+            }
+            else {
+                this.scrollPlatforms();
+            }
         }
     }
     regulateSpeed() {
@@ -96,18 +98,14 @@ class Cube {
         this.cubeVel.x *= this.cubePhysics.friction;
     }
     scrollPlatforms() {
-        if (this.rightKey) {
-            this.floorBlocks.forEach(block => block.floorPos.x -= 5);
-        }
-        else if (this.leftKey) {
-            this.floorBlocks.forEach(block => block.floorPos.x += 5);
-        }
+        this.floorBlocks.forEach(block => block.floorPos.x += -this.cubeVel.x);
+        this.floorBlocks.forEach(block => block.floorPos.y += -this.cubeVel.y);
     }
     gravity() {
         this.cubeVel.y += this.cubePhysics.gravity;
     }
     jump() {
-        if (this.isJumping === false) {
+        if (!this.isJumping) {
             this.isJumping = true;
             this.cubeVel.y -= this.cubeVel.maxVelY;
         }
