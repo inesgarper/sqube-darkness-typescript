@@ -6,6 +6,7 @@ const squbeDarkness = {
     frameIndex: 0,
     cube: undefined,
     floorBlocks: [],
+    enemies: [],
     level: level1,
     distance: 0,
     maxPos: 0,
@@ -15,6 +16,7 @@ const squbeDarkness = {
         this.createCube();
         this.setEventHandlers();
         this.createFloorBlocks();
+        this.createEnemies();
         this.gameLoop();
     },
     // --- SET UP
@@ -22,7 +24,7 @@ const squbeDarkness = {
         this.ctx = this.canvas.getContext('2d');
     },
     createCube() {
-        this.cube = new Cube(this.ctx, 70, 60, this.floorBlocks);
+        this.cube = new Cube(this.ctx, 70, 60, this.floorBlocks, this.enemies);
     },
     createFloorBlocks() {
         this.level.forEach((row, i) => {
@@ -48,6 +50,9 @@ const squbeDarkness = {
             });
         });
     },
+    createEnemies() {
+        this.enemies.push(new Spotlight(this.ctx, 800, 50, 600, 1000, 'right'));
+    },
     // --- INTERVAL
     gameLoop() {
         this.intervalId = setInterval(() => {
@@ -68,16 +73,19 @@ const squbeDarkness = {
                 }
                 elm.drawBlock();
             });
+            this.enemies.forEach(enemy => {
+                enemy.draw();
+                enemy.move();
+            });
             this.updateDistance();
             this.printDistance();
-            console.log(this.distance);
         }, 1000 / 60);
     },
     // --- DISTANCE
     updateDistance() {
         let platformPosReference = this.floorBlocks[0].floorPos.x;
         if (platformPosReference < this.maxPos) {
-            this.distance++;
+            this.distance += 0.5;
             this.maxPos = platformPosReference;
         }
     },

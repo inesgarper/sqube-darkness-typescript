@@ -1,7 +1,6 @@
 class Cell {
 
     public floorPos
-    // public floorSize
     public width: number
     public height: number
 

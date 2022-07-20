@@ -8,6 +8,7 @@ interface gameTemplate {
 
     cube: undefined | Cube
     floorBlocks: Array<FloorBlock>
+    enemies: Array<Spotlight>
     level: Array<Array<number>>
     distance: number
     maxPos: number
@@ -19,6 +20,7 @@ interface gameTemplate {
     setContext(): void
     createCube(): void
     createFloorBlocks(): void
+    createEnemies(): void
     setEventHandlers(): void
     gameLoop(): void
     clearAll(): void
@@ -37,6 +39,7 @@ const squbeDarkness: gameTemplate = {
 
     cube: undefined,
     floorBlocks: [],
+    enemies: [],
     level: level1,
     distance: 0,
     maxPos: 0,
@@ -48,6 +51,7 @@ const squbeDarkness: gameTemplate = {
         this.createCube()
         this.setEventHandlers()
         this.createFloorBlocks()
+        this.createEnemies()
         this.gameLoop()
     },
 
@@ -57,7 +61,7 @@ const squbeDarkness: gameTemplate = {
     },
 
     createCube() {
-        this.cube = new Cube(this.ctx, 70, 60, this.floorBlocks)
+        this.cube = new Cube(this.ctx, 70, 60, this.floorBlocks, this.enemies)
     },
 
     createFloorBlocks() {
@@ -81,6 +85,10 @@ const squbeDarkness: gameTemplate = {
         })
     },
 
+    createEnemies() {
+        this.enemies.push(new Spotlight(this.ctx, 800, 50, 600, 1000, 'right'))
+    },
+
     // --- INTERVAL
     gameLoop() {
         this.intervalId = setInterval(() => {
@@ -99,9 +107,12 @@ const squbeDarkness: gameTemplate = {
                 }
                 elm.drawBlock()
             })
+            this.enemies.forEach(enemy => {
+                enemy.draw()
+                enemy.move()
+            })
             this.updateDistance()
             this.printDistance()
-            console.log(this.distance)
         }, 1000 / 60)
     },
 
@@ -111,7 +122,7 @@ const squbeDarkness: gameTemplate = {
         let platformPosReference: number = this.floorBlocks[0].floorPos.x
 
         if (platformPosReference < this.maxPos) {
-            this.distance++
+            this.distance += 0.5
             this.maxPos = platformPosReference
         }
     },
