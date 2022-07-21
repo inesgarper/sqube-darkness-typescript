@@ -7,7 +7,8 @@ interface gameTemplate {
     frameIndex: number
 
     cube: undefined | Cube
-    floorBlocks: Array<FloorBlock>
+    floorBlocks: Array<Cell>
+    filteredFloorBlocks: Array<BubbleHole | Spike | TempSpike | BrokenPlatform | Doggy>
     level: Array<Array<number>>
     distance: number
     maxPos: number
@@ -19,11 +20,13 @@ interface gameTemplate {
     setContext(): void
     createCube(): void
     createFloorBlocks(): void
+    filterFloorBlocks(): void
     setEventHandlers(): void
     gameLoop(): void
     clearAll(): void
     updateDistance(): void
     printDistance(): void
+    checkCollision(): void
 
 }
 
@@ -37,6 +40,7 @@ const squbeDarkness: gameTemplate = {
 
     cube: undefined,
     floorBlocks: [],
+    filteredFloorBlocks: [],
     level: level1,
     distance: 0,
     maxPos: 0,
@@ -48,6 +52,8 @@ const squbeDarkness: gameTemplate = {
         this.createCube()
         this.setEventHandlers()
         this.createFloorBlocks()
+        // optional
+        this.filterFloorBlocks()
         this.gameLoop()
     },
 
@@ -62,23 +68,86 @@ const squbeDarkness: gameTemplate = {
 
     createFloorBlocks() {
 
+        // ORIGINAL
+
+        // this.level.forEach((row, i) => {
+        //     row.forEach((cell, j) => {
+        //         if (cell === 1) {
+        //             this.floorBlocks.push(new FloorBlock(this.ctx, j * 50, i * 50))
+        //         } else if (cell === 2) {
+        //             this.floorBlocks.push(new BubbleHole(this.ctx, j * 50, i * 50))
+        //         } else if (cell === 3) {
+        //             this.floorBlocks.push(new Doggy(this.ctx, j * 50, i * 50))
+        //         } else if (cell === 4) {
+        //             this.floorBlocks.push(new TempSpike(this.ctx, j * 50, i * 50))
+        //         } else if (cell === 5) {
+        //             this.floorBlocks.push(new Spike(this.ctx, j * 50, i * 50))
+        //         } else if (cell === 6) {
+        //             this.floorBlocks.push(new BrokenPlatform(this.ctx, j * 50, i * 50))
+        //         }
+        //     })
+        // })
+
+
+        // INTENTO CON CONTADOR CUTRE
+
         this.level.forEach((row, i) => {
+            let contador: number = 0
             row.forEach((cell, j) => {
                 if (cell === 1) {
-                    this.floorBlocks.push(new FloorBlock(this.ctx, j * 50, i * 50))
+                    this.floorBlocks.push(new FloorBlock(this.ctx, (j + contador) * 50, i * 50))
                 } else if (cell === 2) {
-                    this.floorBlocks.push(new BubbleHole(this.ctx, j * 50, i * 50))
+                    this.floorBlocks.push(new BubbleHole(this.ctx, (j + contador) * 50, i * 50))
                 } else if (cell === 3) {
-                    this.floorBlocks.push(new Doggy(this.ctx, j * 50, i * 50))
+                    this.floorBlocks.push(new Doggy(this.ctx, (j + contador) * 50, i * 50))
                 } else if (cell === 4) {
-                    this.floorBlocks.push(new TempSpike(this.ctx, j * 50, i * 50))
+                    this.floorBlocks.push(new TempSpike(this.ctx, (j + contador) * 50, i * 50))
                 } else if (cell === 5) {
-                    this.floorBlocks.push(new Spike(this.ctx, j * 50, i * 50))
+                    this.floorBlocks.push(new Spike(this.ctx, (j + contador) * 50, i * 50))
                 } else if (cell === 6) {
-                    this.floorBlocks.push(new BrokenPlatform(this.ctx, j * 50, i * 50))
+                    this.floorBlocks.push(new BrokenPlatform(this.ctx, (j + contador) * 50, i * 50))
+                    contador += 1
+                } else if (cell === 7) {
+                    this.floorBlocks.push(new DoggyPlatform(this.ctx, (j + contador) * 50, i * 50))
                 }
             })
         })
+
+
+        // SE DESCUAJARINGA EL MAPA
+
+        // this.level.forEach((row, i) => {
+        //     let point: number = -50
+        //     let variable: number = 50
+        //     row.forEach((cell, j) => {
+        //         if (cell === 1) {
+        //             this.floorBlocks.push(new FloorBlock(this.ctx, point + variable, i * 50))
+        //             variable = 50
+        //         } else if (cell === 2) {
+        //             this.floorBlocks.push(new BubbleHole(this.ctx, point + variable, i * 50))
+        //             variable = 50
+        //         } else if (cell === 3) {
+        //             this.floorBlocks.push(new Doggy(this.ctx, point + variable, i * 50))
+        //             variable = 50
+        //         } else if (cell === 4) {
+        //             this.floorBlocks.push(new TempSpike(this.ctx, point + variable, i * 50))
+        //             variable = 50
+        //         } else if (cell === 5) {
+        //             this.floorBlocks.push(new Spike(this.ctx, point + variable, i * 50))
+        //             variable = 50
+        //         } else if (cell === 6) {
+        //             this.floorBlocks.push(new BrokenPlatform(this.ctx, point + variable, i * 50))
+        //             variable = 100
+        //         }
+        //         point += variable
+        //     })
+        // })
+
+
+    },
+
+    filterFloorBlocks() {
+        this.filteredFloorBlocks = this.floorBlocks.filter(elm => !(elm instanceof FloorBlock))
     },
 
     // --- INTERVAL
@@ -89,6 +158,7 @@ const squbeDarkness: gameTemplate = {
             this.setEventHandlers()
             this.cube?.draw()
             this.cube?.movement()
+            this.checkCollision()
             this.floorBlocks.forEach(elm => {
                 if (elm instanceof TempSpike) {
                     if (this.frameIndex >= 100 && this.frameIndex <= 300) {
@@ -97,12 +167,37 @@ const squbeDarkness: gameTemplate = {
                         elm.moveDown()
                     }
                 }
+                if (elm instanceof BrokenPlatform) {
+                    if (elm.isBroken) {
+                        elm.break()
+                    }
+                }
                 elm.drawBlock()
             })
             this.updateDistance()
             this.printDistance()
-            console.log(this.distance)
         }, 1000 / 60)
+    },
+
+    // --- COLLISIONS
+    checkCollision() {
+        this.filteredFloorBlocks.forEach(elm => {
+
+            if (this.cube!.cubePos.x < elm.floorPos.x + elm.width &&
+                this.cube!.cubePos.x + this.cube!.cubeSize.w > elm.floorPos.x &&
+                this.cube!.cubePos.y < elm.floorPos.y + elm.height &&
+                this.cube!.cubeSize.h + this.cube!.cubePos.y > elm.floorPos.y) {
+
+                if (elm instanceof BrokenPlatform) {
+                    console.log('hola')
+                } else {
+                    console.log('DEBERÍA MORIR')
+                }
+
+            }
+
+        })
+
     },
 
     // --- DISTANCE

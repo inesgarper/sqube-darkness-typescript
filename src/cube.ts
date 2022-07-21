@@ -21,7 +21,7 @@ class Cube {
         private ctx: CanvasRenderingContext2D | null,
         private posX: number,
         private posY: number,
-        private floorBlocks: Array<FloorBlock>
+        private floorBlocks: Array<Cell>
 
     ) {
 
@@ -164,7 +164,7 @@ class Cube {
             height: this.cubeSize.h
         }
 
-        this.floorBlocks.forEach(block => {
+        this.floorBlocks.forEach((block, i) => {
 
             // Collision Block Rect
             let blockRect = {
@@ -192,6 +192,7 @@ class Cube {
                     this.isHiddingLeft = false
                     this.cubePos.x = horizontalRect.x
                     this.cubeVel.x = 0
+
                 }
 
                 if (this.checkRectCollision(verticalRect, blockRect)) {
@@ -201,10 +202,23 @@ class Cube {
                     this.cubePos.y = horizontalRect.y
                     this.isJumping = false
                     this.cubeVel.y = 0
+
+                    if (block instanceof DoggyPlatform) block.isActive = true
+                    if (block instanceof BrokenPlatform) block.isBroken = true
                 }
 
-
             }
+
+            // if (block instanceof BrokenPlatform) {
+            //     if (this.checkRectCollision(verticalRect, blockRect)) {
+            //         while (this.checkRectCollision(verticalRect, blockRect)) {
+            //             verticalRect.y -= Math.sign(this.cubeVel.y)
+            //         }
+            //         this.cubePos.y = horizontalRect.y
+            //         this.cubeVel.y = 0
+            //         block.isBroken = true
+            //     }
+            // }
 
         })
 

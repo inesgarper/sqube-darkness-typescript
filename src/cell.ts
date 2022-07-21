@@ -73,12 +73,14 @@ class Spike extends Cell {
 }
 
 class TempSpike extends Spike {
+    public prueba: string
     constructor(
         public ctx: CanvasRenderingContext2D | null,
         public posX: number,
         public posY: number,
     ) {
         super(ctx, posX, posY)
+        this.prueba = 'hola'
     }
 
     drawBlock(): void {
@@ -95,17 +97,50 @@ class TempSpike extends Spike {
     }
 }
 
-class BrokenPlatform extends Cell {
+class BrokenPlatform extends FloorBlock {
+
+    public brokenPlatformVel
+    public brokenPlatformPhysics
+    public isBroken: boolean
+
     constructor(
         public ctx: CanvasRenderingContext2D | null,
         public posX: number,
         public posY: number,
     ) {
         super(ctx, posX, posY)
+        this.brokenPlatformVel = { x: 0, y: 0 }
+        this.brokenPlatformPhysics = { gravity: 0.5 }
+        this.isBroken = false
     }
+
 
     drawBlock(): void {
         this.ctx!.fillStyle = '#f3e600'
+        this.ctx?.fillRect(this.floorPos.x, this.floorPos.y, this.width + 50, this.height)
+    }
+
+    break(): void {
+        setTimeout(() => {
+            this.brokenPlatformVel.y += this.brokenPlatformPhysics.gravity
+            this.floorPos.y += this.brokenPlatformVel.y
+        }, 400)
+    }
+}
+
+class DoggyPlatform extends FloorBlock {
+    public isActive: boolean
+    constructor(
+        public ctx: CanvasRenderingContext2D | null,
+        public posX: number,
+        public posY: number,
+    ) {
+        super(ctx, posX, posY)
+        this.isActive = false
+    }
+
+    drawBlock(): void {
+        this.isActive ? this.ctx!.fillStyle = '#ffffff' : this.ctx!.fillStyle = '#ff330b'
         this.ctx?.fillRect(this.floorPos.x, this.floorPos.y, this.width, this.height)
     }
 }
