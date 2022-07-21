@@ -1,12 +1,13 @@
 class Cube {
 
-    public cubePos
-    public cubeSize
-    public cubeVel
-    public cubePhysics
+    public cubePos: { x: number, y: number }
+    public cubeSize: { w: number, h: number }
+    public cubeVel: { x: number, y: number, maxVelX: number, maxVelY: number }
+    public cubePhysics: { gravity: number, friction: number }
     public isHidding: boolean
-    public isActive: boolean
+    public isFound: boolean
     private isJumping: boolean
+    public isActive: boolean
 
     // Controls
     public leftKey: boolean | undefined
@@ -29,6 +30,7 @@ class Cube {
         this.cubePhysics = { gravity: 0.5, friction: 0.6 }
 
         this.isHidding = false
+        this.isFound = false
         this.isJumping = false
         this.isActive = true
 
@@ -144,6 +146,8 @@ class Cube {
         this.enemies.forEach(enemy => {
             enemy.spotlightPos.x += -this.cubeVel.x
             enemy.spotlightPos.y += -this.cubeVel.y
+            enemy.light!.lightPos.x += -this.cubeVel.x
+            enemy.light!.lightPos.y += -this.cubeVel.y
 
             // keep spotlight movement range
             enemy.maxPosX.l += -this.cubeVel.x
@@ -162,6 +166,14 @@ class Cube {
         }
 
         this.unblockIfHidding()
+    }
+
+    checkLightCollision(): void {
+
+        this.enemies.forEach(enemy => {
+
+        })
+
     }
 
     checkFloorAndWallCollision(): void {
@@ -197,17 +209,10 @@ class Cube {
                 if (this.checkRectCollision(horizontalRect, blockRect)) {
                     while (this.checkRectCollision(horizontalRect, blockRect)) {
                         horizontalRect.x -= Math.sign(this.cubeVel.x)
-                        this.isHidding = true
-
-                        // quizás sea útil más adelante para el sprite del ojo del cubo
-                        if (Math.sign(this.cubeVel.x) === -1) {
-                            console.log('COLISIONO HACIA LA IZQUIERDA')
-                        } else if (Math.sign(this.cubeVel.x) === 1) {
-                            console.log('COLISIONO HACIA LA DERECHA')
-                        }
                     }
                     this.cubePos.x = horizontalRect.x
                     this.cubeVel.x = 0
+                    this.isHidding = true
                 }
 
                 if (this.checkRectCollision(verticalRect, blockRect)) {
@@ -215,8 +220,8 @@ class Cube {
                         verticalRect.y -= Math.sign(this.cubeVel.y)
                     }
                     this.cubePos.y = horizontalRect.y
-                    this.isJumping = false
                     this.cubeVel.y = 0
+                    this.isJumping = false
                 }
 
 

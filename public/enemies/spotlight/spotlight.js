@@ -12,33 +12,20 @@ class Spotlight {
         this.spotlightSize = { w: 70, h: 70 };
         this.spotlightCenter = this.spotlightSize.w / 2;
         this.spotlightVel = { x: 0, y: 0 };
-        this.playerFound = false;
         this.isMovingLeft = undefined;
         this.isMovingRight = undefined;
+        this.light = undefined;
         this.initSpotlight();
     }
     initSpotlight() {
         this.draw();
         this.setDirection();
+        this.createLight();
     }
     draw() {
         var _a;
-        // Base
         this.ctx.fillStyle = 'white';
         (_a = this.ctx) === null || _a === void 0 ? void 0 : _a.fillRect(this.spotlightPos.x, this.spotlightPos.y, this.spotlightSize.w, this.spotlightSize.h);
-        // Light
-        // this.ctx!.beginPath();
-        // this.ctx!.moveTo(this.spotlightPos.x + this.spotlightCenter - 200, 350);
-        // this.ctx!.lineTo(this.spotlightPos.x + this.spotlightCenter + 200, 350);
-        // this.ctx!.lineTo(this.spotlightPos.x + this.spotlightCenter, this.spotlightPos.y + this.spotlightCenter);
-        // this.ctx!.closePath();
-        this.ctx.fillStyle = "#FFCC00";
-        this.ctx.fillRect(this.spotlightPos.x + 100, this.spotlightPos.y + 100, this.spotlightSize.w + 100, this.spotlightSize.h + 100);
-        // this.ctx!.fill();
-    }
-    drawBase() {
-    }
-    drawLight() {
     }
     setDirection() {
         if (this.initialDirection === 'left') {
@@ -53,7 +40,7 @@ class Spotlight {
     move() {
         if (this.isMovingRight) {
             if (this.spotlightPos.x < this.maxPosX.r) {
-                this.spotlightPos.x++;
+                this.spotlightPos.x += 2;
             }
             else {
                 this.isMovingRight = false;
@@ -62,7 +49,7 @@ class Spotlight {
         }
         else if (this.isMovingLeft) {
             if (this.spotlightPos.x > this.maxPosX.l) {
-                this.spotlightPos.x--;
+                this.spotlightPos.x -= 2;
             }
             else {
                 this.isMovingRight = true;
@@ -70,15 +57,7 @@ class Spotlight {
             }
         }
     }
+    createLight() {
+        this.light = new Light(this.ctx, this.spotlightPos, this.maxPosX, this.spotlightSize, this.spotlightCenter, this.spotlightVel, this.initialDirection);
+    }
 }
-// version cuadrado girado
-// const lightGradient = this.ctx!.createLinearGradient(
-//     this.spotlightPos.x + 100 + this.spotlightSize.w / 2,
-//     this.spotlightPos.y + 100,
-//     this.spotlightPos.x + 100 + this.spotlightSize.w / 2,
-//     this.spotlightSize.h + 200
-// );
-// lightGradient.addColorStop(0, "#EAE22A");
-// lightGradient.addColorStop(1, "#DFDFDF00");
-// this.ctx!.fillStyle = lightGradient
-// this.ctx?.fillRect(this.spotlightPos.x + 100, this.spotlightPos.y + 100, this.spotlightSize.w + 100, this.spotlightSize.h + 200)

@@ -26,6 +26,7 @@ interface gameTemplate {
     clearAll(): void
     updateDistance(): void
     printDistance(): void
+    drawTriangle(): void
 
 }
 
@@ -110,9 +111,13 @@ const squbeDarkness: gameTemplate = {
             this.enemies.forEach(enemy => {
                 enemy.draw()
                 enemy.move()
+                enemy.light?.draw()
+                enemy.light?.move()
             })
             this.updateDistance()
             this.printDistance()
+            // this.drawTriangle()
+            // console.log()
         }, 1000 / 60)
     },
 
@@ -122,7 +127,7 @@ const squbeDarkness: gameTemplate = {
         let platformPosReference: number = this.floorBlocks[0].floorPos.x
 
         if (platformPosReference < this.maxPos) {
-            this.distance += 0.5
+            this.distance += 1.5
             this.maxPos = platformPosReference
         }
     },
@@ -158,8 +163,21 @@ const squbeDarkness: gameTemplate = {
             if (key === 'ArrowLeft') this.cube!.leftKey = false
             if (key === 'ArrowRight') this.cube!.rightKey = false
         })
+    },
+
+    drawTriangle() {
+        // Light
+        // this.ctx!.beginPath();
+        // this.ctx!.moveTo(this.spotlightPos.x + this.spotlightCenter - 200, 350);
+        // this.ctx!.lineTo(this.spotlightPos.x + this.spotlightCenter + 200, 350);
+        // this.ctx!.lineTo(this.spotlightPos.x + this.spotlightCenter, this.spotlightPos.y + this.spotlightCenter);
+        // this.ctx!.closePath();
+
+        // this.ctx!.fillStyle = "#FFCC00";
+        // this.ctx!.fill();
     }
 
-
 }
+
+
 

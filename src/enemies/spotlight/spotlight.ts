@@ -1,14 +1,15 @@
 class Spotlight {
 
-    public spotlightPos
-    public maxPosX
-    public spotlightSize
+    public spotlightPos: { x: number, y: number }
+    public maxPosX: { l: number, r: number }
+    public spotlightSize: { w: number, h: number }
     public spotlightCenter: number
-    public spotlightVel
+    public spotlightVel: { x: number, y: number }
 
-    public playerFound: boolean
     public isMovingLeft: boolean | undefined
     public isMovingRight: boolean | undefined
+
+    public light: Light | undefined
 
     constructor(
 
@@ -27,10 +28,10 @@ class Spotlight {
         this.spotlightCenter = this.spotlightSize.w / 2
         this.spotlightVel = { x: 0, y: 0 }
 
-        this.playerFound = false
         this.isMovingLeft = undefined
         this.isMovingRight = undefined
 
+        this.light = undefined
 
         this.initSpotlight()
 
@@ -39,6 +40,7 @@ class Spotlight {
     initSpotlight(): void {
         this.draw()
         this.setDirection()
+        this.createLight()
     }
 
     draw(): void {
@@ -60,7 +62,7 @@ class Spotlight {
         if (this.isMovingRight) {
 
             if (this.spotlightPos.x < this.maxPosX.r) {
-                this.spotlightPos.x++
+                this.spotlightPos.x += 2
             } else {
                 this.isMovingRight = false
                 this.isMovingLeft = true
@@ -69,12 +71,16 @@ class Spotlight {
         } else if (this.isMovingLeft) {
 
             if (this.spotlightPos.x > this.maxPosX.l) {
-                this.spotlightPos.x--
+                this.spotlightPos.x -= 2
             } else {
                 this.isMovingRight = true
                 this.isMovingLeft = false
             }
         }
 
+    }
+
+    createLight(): void {
+        this.light = new Light(this.ctx, this.spotlightPos, this.maxPosX, this.spotlightSize, this.spotlightCenter, this.spotlightVel, this.initialDirection)
     }
 }

@@ -74,18 +74,23 @@ const squbeDarkness = {
                 elm.drawBlock();
             });
             this.enemies.forEach(enemy => {
+                var _a, _b;
                 enemy.draw();
                 enemy.move();
+                (_a = enemy.light) === null || _a === void 0 ? void 0 : _a.draw();
+                (_b = enemy.light) === null || _b === void 0 ? void 0 : _b.move();
             });
             this.updateDistance();
             this.printDistance();
+            // this.drawTriangle()
+            // console.log()
         }, 1000 / 60);
     },
     // --- DISTANCE
     updateDistance() {
         let platformPosReference = this.floorBlocks[0].floorPos.x;
         if (platformPosReference < this.maxPos) {
-            this.distance += 0.5;
+            this.distance += 1.5;
             this.maxPos = platformPosReference;
         }
     },
@@ -120,5 +125,15 @@ const squbeDarkness = {
             if (key === 'ArrowRight')
                 this.cube.rightKey = false;
         });
+    },
+    drawTriangle() {
+        // Light
+        // this.ctx!.beginPath();
+        // this.ctx!.moveTo(this.spotlightPos.x + this.spotlightCenter - 200, 350);
+        // this.ctx!.lineTo(this.spotlightPos.x + this.spotlightCenter + 200, 350);
+        // this.ctx!.lineTo(this.spotlightPos.x + this.spotlightCenter, this.spotlightPos.y + this.spotlightCenter);
+        // this.ctx!.closePath();
+        // this.ctx!.fillStyle = "#FFCC00";
+        // this.ctx!.fill();
     }
 };
