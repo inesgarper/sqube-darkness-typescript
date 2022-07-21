@@ -1,21 +1,19 @@
 "use strict";
 class Cube {
-    constructor(ctx, posX, posY, floorBlocks) {
+    constructor(ctx, posX, posY, floorBlocks, enemies) {
         this.ctx = ctx;
         this.posX = posX;
         this.posY = posY;
         this.floorBlocks = floorBlocks;
-        this.ctx = ctx;
-        this.cubePos = { x: posX, y: posY };
+        this.enemies = enemies;
+        this.cubePos = { x: this.posX, y: this.posY };
         this.cubeSize = { w: 50, h: 50 };
         this.cubeVel = { x: 0, y: 0, maxVelX: 5, maxVelY: 20 };
         this.cubePhysics = { gravity: 0.5, friction: 0.6 };
-        this.isOnSurface = false;
-        this.isHiddingLeft = false;
-        this.isHiddingRight = false;
+        this.isHidding = false;
+        this.isFound = false;
         this.isJumping = false;
         this.isActive = true;
-        this.downKey = undefined;
         this.leftKey = undefined;
         this.rightKey = undefined;
         this.initCube();
@@ -25,7 +23,12 @@ class Cube {
     }
     draw() {
         var _a;
-        this.ctx.fillStyle = 'green';
+        if (this.isHidding) {
+            this.ctx.fillStyle = 'black';
+        }
+        else {
+            this.ctx.fillStyle = 'green';
+        }
         (_a = this.ctx) === null || _a === void 0 ? void 0 : _a.fillRect(this.cubePos.x, this.cubePos.y, this.cubeSize.w, this.cubeSize.h);
         this.gravity();
     }
@@ -56,6 +59,7 @@ class Cube {
             }
             else {
                 this.scrollPlatforms();
+                this.scrollEnemies();
             }
         }
     }
@@ -87,9 +91,11 @@ class Cube {
     }
     moveRight() {
         this.cubeVel.x++;
+        this.unblockIfHidding();
     }
     moveLeft() {
         this.cubeVel.x--;
+        this.unblockIfHidding();
     }
     stop() {
         this.cubeVel.x = 0;
@@ -98,8 +104,21 @@ class Cube {
         this.cubeVel.x *= this.cubePhysics.friction;
     }
     scrollPlatforms() {
-        this.floorBlocks.forEach(block => block.floorPos.x += -this.cubeVel.x);
-        this.floorBlocks.forEach(block => block.floorPos.y += -this.cubeVel.y);
+        this.floorBlocks.forEach(block => {
+            block.floorPos.x += -this.cubeVel.x;
+            block.floorPos.y += -this.cubeVel.y;
+        });
+    }
+    scrollEnemies() {
+        this.enemies.forEach(enemy => {
+            enemy.spotlightPos.x += -this.cubeVel.x;
+            enemy.spotlightPos.y += -this.cubeVel.y;
+            enemy.light.lightPos.x += -this.cubeVel.x;
+            enemy.light.lightPos.y += -this.cubeVel.y;
+            // keep spotlight movement range
+            enemy.maxPosX.l += -this.cubeVel.x;
+            enemy.maxPosX.r += -this.cubeVel.x;
+        });
     }
     gravity() {
         this.cubeVel.y += this.cubePhysics.gravity;
@@ -109,6 +128,11 @@ class Cube {
             this.isJumping = true;
             this.cubeVel.y -= this.cubeVel.maxVelY;
         }
+        this.unblockIfHidding();
+    }
+    checkLightCollision() {
+        this.enemies.forEach(enemy => {
+        });
     }
     checkFloorAndWallCollision() {
         // Collision Cube Rects
@@ -137,27 +161,18 @@ class Cube {
                 if (this.checkRectCollision(horizontalRect, blockRect)) {
                     while (this.checkRectCollision(horizontalRect, blockRect)) {
                         horizontalRect.x -= Math.sign(this.cubeVel.x);
-                        if (Math.sign(this.cubeVel.x) === -1) {
-                            console.log('COLISIONO HACIA LA IZQUIERDA');
-                            this.isHiddingLeft = true;
-                        }
-                        else if (Math.sign(this.cubeVel.x) === 1) {
-                            console.log('COLISIONO HACIA LA DERECHA');
-                            this.isHiddingRight = true;
-                        }
                     }
-                    this.isHiddingRight = false;
-                    this.isHiddingLeft = false;
                     this.cubePos.x = horizontalRect.x;
                     this.cubeVel.x = 0;
+                    this.isHidding = true;
                 }
                 if (this.checkRectCollision(verticalRect, blockRect)) {
                     while (this.checkRectCollision(verticalRect, blockRect)) {
                         verticalRect.y -= Math.sign(this.cubeVel.y);
                     }
                     this.cubePos.y = horizontalRect.y;
-                    this.isJumping = false;
                     this.cubeVel.y = 0;
+                    this.isJumping = false;
                     if (block instanceof DoggyPlatform)
                         block.isActive = true;
                     if (block instanceof BrokenPlatform)
@@ -175,6 +190,10 @@ class Cube {
             //     }
             // }
         });
+    }
+    unblockIfHidding() {
+        if (this.isHidding)
+            this.isHidding = false;
     }
     checkRectCollision(r1, r2) {
         if (r1.x >= r2.x + r2.width) {

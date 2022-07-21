@@ -9,6 +9,7 @@ interface gameTemplate {
     cube: undefined | Cube
     floorBlocks: Array<Cell>
     filteredFloorBlocks: Array<BubbleHole | Spike | TempSpike | BrokenPlatform | Doggy>
+    enemies: Array<Spotlight>
     level: Array<Array<number>>
     distance: number
     maxPos: number
@@ -21,12 +22,14 @@ interface gameTemplate {
     createCube(): void
     createFloorBlocks(): void
     filterFloorBlocks(): void
+    createEnemies(): void
     setEventHandlers(): void
     gameLoop(): void
     clearAll(): void
     updateDistance(): void
     printDistance(): void
     checkCollision(): void
+    drawTriangle(): void
 
 }
 
@@ -41,6 +44,7 @@ const squbeDarkness: gameTemplate = {
     cube: undefined,
     floorBlocks: [],
     filteredFloorBlocks: [],
+    enemies: [],
     level: level1,
     distance: 0,
     maxPos: 0,
@@ -54,6 +58,7 @@ const squbeDarkness: gameTemplate = {
         this.createFloorBlocks()
         // optional
         this.filterFloorBlocks()
+        this.createEnemies()
         this.gameLoop()
     },
 
@@ -63,7 +68,7 @@ const squbeDarkness: gameTemplate = {
     },
 
     createCube() {
-        this.cube = new Cube(this.ctx, 70, 60, this.floorBlocks)
+        this.cube = new Cube(this.ctx, 70, 60, this.floorBlocks, this.enemies)
     },
 
     createFloorBlocks() {
@@ -150,6 +155,10 @@ const squbeDarkness: gameTemplate = {
         this.filteredFloorBlocks = this.floorBlocks.filter(elm => !(elm instanceof FloorBlock))
     },
 
+    createEnemies() {
+        this.enemies.push(new Spotlight(this.ctx, 800, 50, 600, 1000, 'right'))
+    },
+
     // --- INTERVAL
     gameLoop() {
         this.intervalId = setInterval(() => {
@@ -174,8 +183,16 @@ const squbeDarkness: gameTemplate = {
                 }
                 elm.drawBlock()
             })
+            this.enemies.forEach(enemy => {
+                enemy.draw()
+                enemy.move()
+                enemy.light?.draw()
+                enemy.light?.move()
+            })
             this.updateDistance()
             this.printDistance()
+            // this.drawTriangle()
+            // console.log()
         }, 1000 / 60)
     },
 
@@ -206,7 +223,7 @@ const squbeDarkness: gameTemplate = {
         let platformPosReference: number = this.floorBlocks[0].floorPos.x
 
         if (platformPosReference < this.maxPos) {
-            this.distance++
+            this.distance += 1.5
             this.maxPos = platformPosReference
         }
     },
@@ -242,8 +259,21 @@ const squbeDarkness: gameTemplate = {
             if (key === 'ArrowLeft') this.cube!.leftKey = false
             if (key === 'ArrowRight') this.cube!.rightKey = false
         })
+    },
+
+    drawTriangle() {
+        // Light
+        // this.ctx!.beginPath();
+        // this.ctx!.moveTo(this.spotlightPos.x + this.spotlightCenter - 200, 350);
+        // this.ctx!.lineTo(this.spotlightPos.x + this.spotlightCenter + 200, 350);
+        // this.ctx!.lineTo(this.spotlightPos.x + this.spotlightCenter, this.spotlightPos.y + this.spotlightCenter);
+        // this.ctx!.closePath();
+
+        // this.ctx!.fillStyle = "#FFCC00";
+        // this.ctx!.fill();
     }
 
-
 }
+
+
 

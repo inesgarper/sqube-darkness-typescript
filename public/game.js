@@ -7,6 +7,7 @@ const squbeDarkness = {
     cube: undefined,
     floorBlocks: [],
     filteredFloorBlocks: [],
+    enemies: [],
     level: level1,
     distance: 0,
     maxPos: 0,
@@ -18,6 +19,7 @@ const squbeDarkness = {
         this.createFloorBlocks();
         // optional
         this.filterFloorBlocks();
+        this.createEnemies();
         this.gameLoop();
     },
     // --- SET UP
@@ -25,7 +27,7 @@ const squbeDarkness = {
         this.ctx = this.canvas.getContext('2d');
     },
     createCube() {
-        this.cube = new Cube(this.ctx, 70, 60, this.floorBlocks);
+        this.cube = new Cube(this.ctx, 70, 60, this.floorBlocks, this.enemies);
     },
     createFloorBlocks() {
         // ORIGINAL
@@ -105,6 +107,9 @@ const squbeDarkness = {
     filterFloorBlocks() {
         this.filteredFloorBlocks = this.floorBlocks.filter(elm => !(elm instanceof FloorBlock));
     },
+    createEnemies() {
+        this.enemies.push(new Spotlight(this.ctx, 800, 50, 600, 1000, 'right'));
+    },
     // --- INTERVAL
     gameLoop() {
         this.intervalId = setInterval(() => {
@@ -131,8 +136,17 @@ const squbeDarkness = {
                 }
                 elm.drawBlock();
             });
+            this.enemies.forEach(enemy => {
+                var _a, _b;
+                enemy.draw();
+                enemy.move();
+                (_a = enemy.light) === null || _a === void 0 ? void 0 : _a.draw();
+                (_b = enemy.light) === null || _b === void 0 ? void 0 : _b.move();
+            });
             this.updateDistance();
             this.printDistance();
+            // this.drawTriangle()
+            // console.log()
         }, 1000 / 60);
     },
     // --- COLLISIONS
@@ -155,7 +169,7 @@ const squbeDarkness = {
     updateDistance() {
         let platformPosReference = this.floorBlocks[0].floorPos.x;
         if (platformPosReference < this.maxPos) {
-            this.distance++;
+            this.distance += 1.5;
             this.maxPos = platformPosReference;
         }
     },
@@ -190,5 +204,15 @@ const squbeDarkness = {
             if (key === 'ArrowRight')
                 this.cube.rightKey = false;
         });
+    },
+    drawTriangle() {
+        // Light
+        // this.ctx!.beginPath();
+        // this.ctx!.moveTo(this.spotlightPos.x + this.spotlightCenter - 200, 350);
+        // this.ctx!.lineTo(this.spotlightPos.x + this.spotlightCenter + 200, 350);
+        // this.ctx!.lineTo(this.spotlightPos.x + this.spotlightCenter, this.spotlightPos.y + this.spotlightCenter);
+        // this.ctx!.closePath();
+        // this.ctx!.fillStyle = "#FFCC00";
+        // this.ctx!.fill();
     }
 };

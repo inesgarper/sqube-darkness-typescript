@@ -1,18 +1,15 @@
 class Cube {
 
-    public cubePos
-    public cubeSize
-    public cubeVel
-    public cubePhysics
-    public isOnSurface: boolean
-    public isHiddingLeft: boolean
-    public isHiddingRight: boolean
-    public isActive: boolean
+    public cubePos: { x: number, y: number }
+    public cubeSize: { w: number, h: number }
+    public cubeVel: { x: number, y: number, maxVelX: number, maxVelY: number }
+    public cubePhysics: { gravity: number, friction: number }
+    public isHidding: boolean
+    public isFound: boolean
     private isJumping: boolean
+    public isActive: boolean
 
     // Controls
-    public upKey: boolean | undefined
-    public downKey: boolean | undefined
     public leftKey: boolean | undefined
     public rightKey: boolean | undefined
 
@@ -21,24 +18,22 @@ class Cube {
         private ctx: CanvasRenderingContext2D | null,
         private posX: number,
         private posY: number,
-        private floorBlocks: Array<Cell>
+        private floorBlocks: Array<Cell>,
+        private enemies: Array<Spotlight>
 
     ) {
 
-        this.ctx = ctx
-        this.cubePos = { x: posX, y: posY }
+        this.cubePos = { x: this.posX, y: this.posY }
         this.cubeSize = { w: 50, h: 50 }
 
         this.cubeVel = { x: 0, y: 0, maxVelX: 5, maxVelY: 20 }
         this.cubePhysics = { gravity: 0.5, friction: 0.6 }
 
-        this.isOnSurface = false
-        this.isHiddingLeft = false
-        this.isHiddingRight = false
+        this.isHidding = false
+        this.isFound = false
         this.isJumping = false
         this.isActive = true
 
-        this.downKey = undefined
         this.leftKey = undefined
         this.rightKey = undefined
 
@@ -50,7 +45,13 @@ class Cube {
     }
 
     draw(): void {
-        this.ctx!.fillStyle = 'green'
+
+        if (this.isHidding) {
+            this.ctx!.fillStyle = 'black'
+        } else {
+            this.ctx!.fillStyle = 'green'
+        }
+
         this.ctx?.fillRect(this.cubePos.x, this.cubePos.y, this.cubeSize.w, this.cubeSize.h)
 
         this.gravity()
@@ -84,6 +85,7 @@ class Cube {
                 this.cubePos.y += this.cubeVel.y
             } else {
                 this.scrollPlatforms()
+                this.scrollEnemies()
             }
 
         }
@@ -117,10 +119,12 @@ class Cube {
 
     moveRight(): void {
         this.cubeVel.x++
+        this.unblockIfHidding()
     }
 
     moveLeft(): void {
         this.cubeVel.x--
+        this.unblockIfHidding()
     }
 
     stop(): void {
@@ -132,8 +136,23 @@ class Cube {
     }
 
     scrollPlatforms(): void {
-        this.floorBlocks.forEach(block => block.floorPos.x += -this.cubeVel.x)
-        this.floorBlocks.forEach(block => block.floorPos.y += -this.cubeVel.y)
+        this.floorBlocks.forEach(block => {
+            block.floorPos.x += -this.cubeVel.x
+            block.floorPos.y += -this.cubeVel.y
+        })
+    }
+
+    scrollEnemies(): void {
+        this.enemies.forEach(enemy => {
+            enemy.spotlightPos.x += -this.cubeVel.x
+            enemy.spotlightPos.y += -this.cubeVel.y
+            enemy.light!.lightPos.x += -this.cubeVel.x
+            enemy.light!.lightPos.y += -this.cubeVel.y
+
+            // keep spotlight movement range
+            enemy.maxPosX.l += -this.cubeVel.x
+            enemy.maxPosX.r += -this.cubeVel.x
+        })
     }
 
     gravity(): void {
@@ -145,6 +164,16 @@ class Cube {
             this.isJumping = true
             this.cubeVel.y -= this.cubeVel.maxVelY
         }
+
+        this.unblockIfHidding()
+    }
+
+    checkLightCollision(): void {
+
+        this.enemies.forEach(enemy => {
+
+        })
+
     }
 
     checkFloorAndWallCollision(): void {
@@ -180,19 +209,10 @@ class Cube {
                 if (this.checkRectCollision(horizontalRect, blockRect)) {
                     while (this.checkRectCollision(horizontalRect, blockRect)) {
                         horizontalRect.x -= Math.sign(this.cubeVel.x)
-                        if (Math.sign(this.cubeVel.x) === -1) {
-                            console.log('COLISIONO HACIA LA IZQUIERDA')
-                            this.isHiddingLeft = true
-                        } else if (Math.sign(this.cubeVel.x) === 1) {
-                            console.log('COLISIONO HACIA LA DERECHA')
-                            this.isHiddingRight = true
-                        }
                     }
-                    this.isHiddingRight = false
-                    this.isHiddingLeft = false
                     this.cubePos.x = horizontalRect.x
                     this.cubeVel.x = 0
-
+                    this.isHidding = true
                 }
 
                 if (this.checkRectCollision(verticalRect, blockRect)) {
@@ -200,8 +220,8 @@ class Cube {
                         verticalRect.y -= Math.sign(this.cubeVel.y)
                     }
                     this.cubePos.y = horizontalRect.y
-                    this.isJumping = false
                     this.cubeVel.y = 0
+                    this.isJumping = false
 
                     if (block instanceof DoggyPlatform) block.isActive = true
                     if (block instanceof BrokenPlatform) block.isBroken = true
@@ -222,6 +242,10 @@ class Cube {
 
         })
 
+    }
+
+    unblockIfHidding(): void {
+        if (this.isHidding) this.isHidding = false
     }
 
     checkRectCollision(r1: any, r2: any): boolean {
