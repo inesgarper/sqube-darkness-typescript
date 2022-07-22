@@ -219,6 +219,9 @@ const squbeDarkness = {
     },
     gameOver() {
         console.log('GAME OVER BIATCH');
+        this.ctx.font = '30px sans-serif';
+        this.ctx.fillStyle = '#ffffff';
+        this.ctx.fillText('GAME OVER', 450, 200);
         // clearInterval(this.intervalId)
     }
 };
