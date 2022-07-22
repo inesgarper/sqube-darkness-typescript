@@ -1,11 +1,12 @@
 "use strict";
 class Cube {
-    constructor(ctx, posX, posY, floorBlocks, enemies) {
+    constructor(ctx, posX, posY, floorBlocks, enemies, filteredFloorBlocks) {
         this.ctx = ctx;
         this.posX = posX;
         this.posY = posY;
         this.floorBlocks = floorBlocks;
         this.enemies = enemies;
+        this.filteredFloorBlocks = filteredFloorBlocks;
         this.cubePos = { x: this.posX, y: this.posY };
         this.cubeSize = { w: 50, h: 50 };
         this.cubeVel = { x: 0, y: 0, maxVelX: 5, maxVelY: 20 };
@@ -156,8 +157,11 @@ class Cube {
                 width: block.width,
                 height: block.height,
             };
+            if (block instanceof BrokenPlatform) {
+                blockRect.width = 100;
+            }
             // Check collisions
-            if (block instanceof FloorBlock) {
+            if ((block instanceof FloorBlock) || (block instanceof DoggyPlatform)) {
                 if (this.checkRectCollision(horizontalRect, blockRect)) {
                     while (this.checkRectCollision(horizontalRect, blockRect)) {
                         horizontalRect.x -= Math.sign(this.cubeVel.x);
@@ -173,8 +177,9 @@ class Cube {
                     this.cubePos.y = horizontalRect.y;
                     this.cubeVel.y = 0;
                     this.isJumping = false;
-                    if (block instanceof DoggyPlatform)
-                        block.isActive = true;
+                    // if (block instanceof DoggyPlatform) {
+                    //     block.isActive = true
+                    // }
                     if (block instanceof BrokenPlatform)
                         block.isBroken = true;
                 }
@@ -213,3 +218,4 @@ class Cube {
         }
     }
 }
+// HASTA AQUÍ PUEDES BORRAR QUERIDO

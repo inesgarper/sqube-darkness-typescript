@@ -7,12 +7,15 @@ interface gameTemplate {
     frameIndex: number
 
     cube: undefined | Cube
-    floorBlocks: Array<Cell>
-    filteredFloorBlocks: Array<BubbleHole | Spike | TempSpike | BrokenPlatform | Doggy>
+    floorBlocks: Array<Cell | Doggy>
+    doggysArray: Array<Doggy>
+    // enemiessArray: Array<Cell>
+    obstaclesArray: Array<Cell>
     enemies: Array<Spotlight>
     level: Array<Array<number>>
     distance: number
     maxPos: number
+    pixelDistance: number
 
     intervalId: number | undefined
 
@@ -30,6 +33,7 @@ interface gameTemplate {
     printDistance(): void
     checkCollision(): void
     drawTriangle(): void
+    gameOver(): void
 
 }
 
@@ -43,23 +47,25 @@ const squbeDarkness: gameTemplate = {
 
     cube: undefined,
     floorBlocks: [],
-    filteredFloorBlocks: [],
+    doggysArray: [],
+    obstaclesArray: [],
     enemies: [],
     level: level1,
     distance: 0,
+    pixelDistance: 0,
     maxPos: 0,
 
     intervalId: undefined,
 
     init() {
         this.setContext()
+        this.gameLoop()
+        this.createFloorBlocks()
+        this.filterFloorBlocks()
         this.createCube()
         this.setEventHandlers()
-        this.createFloorBlocks()
         // optional
-        this.filterFloorBlocks()
         this.createEnemies()
-        this.gameLoop()
     },
 
     // --- SET UP
@@ -68,31 +74,10 @@ const squbeDarkness: gameTemplate = {
     },
 
     createCube() {
-        this.cube = new Cube(this.ctx, 70, 60, this.floorBlocks, this.enemies)
+        this.cube = new Cube(this.ctx, 70, 60, this.floorBlocks, this.enemies, this.doggysArray)
     },
 
     createFloorBlocks() {
-
-        // ORIGINAL
-
-        // this.level.forEach((row, i) => {
-        //     row.forEach((cell, j) => {
-        //         if (cell === 1) {
-        //             this.floorBlocks.push(new FloorBlock(this.ctx, j * 50, i * 50))
-        //         } else if (cell === 2) {
-        //             this.floorBlocks.push(new BubbleHole(this.ctx, j * 50, i * 50))
-        //         } else if (cell === 3) {
-        //             this.floorBlocks.push(new Doggy(this.ctx, j * 50, i * 50))
-        //         } else if (cell === 4) {
-        //             this.floorBlocks.push(new TempSpike(this.ctx, j * 50, i * 50))
-        //         } else if (cell === 5) {
-        //             this.floorBlocks.push(new Spike(this.ctx, j * 50, i * 50))
-        //         } else if (cell === 6) {
-        //             this.floorBlocks.push(new BrokenPlatform(this.ctx, j * 50, i * 50))
-        //         }
-        //     })
-        // })
-
 
         // INTENTO CON CONTADOR CUTRE
 
@@ -113,7 +98,7 @@ const squbeDarkness: gameTemplate = {
                     this.floorBlocks.push(new BrokenPlatform(this.ctx, (j + contador) * 50, i * 50))
                     contador += 1
                 } else if (cell === 7) {
-                    this.floorBlocks.push(new DoggyPlatform(this.ctx, (j + contador) * 50, i * 50))
+                    this.floorBlocks.push(new FloorBlock(this.ctx, (j + contador) * 50, i * 50))
                 }
             })
         })
@@ -152,7 +137,8 @@ const squbeDarkness: gameTemplate = {
     },
 
     filterFloorBlocks() {
-        this.filteredFloorBlocks = this.floorBlocks.filter(elm => !(elm instanceof FloorBlock))
+        this.doggysArray = this.floorBlocks.filter(elm => (elm instanceof Doggy)) as Array<Doggy>
+        this.obstaclesArray = this.floorBlocks.filter(elm => ((elm instanceof BubbleHole) || (elm instanceof Spike) || (elm instanceof TempSpike))) as Array<BubbleHole | Spike | TempSpike>
     },
 
     createEnemies() {
@@ -183,6 +169,18 @@ const squbeDarkness: gameTemplate = {
                 }
                 elm.drawBlock()
             })
+
+            // DOGGYS
+            this.doggysArray.forEach((elm, i) => {
+                if (elm.initialPos.x < this.cube!.cubePos.x + this.pixelDistance ||
+                    elm.initialPos.x - 350 > this.cube!.cubePos.x + this.pixelDistance) {
+                    elm.isActive = false
+                } else {
+                    elm.isActive = true
+                }
+                if (elm.isActive) elm.canMove = true
+            })
+
             this.enemies.forEach(enemy => {
                 enemy.draw()
                 enemy.move()
@@ -192,27 +190,29 @@ const squbeDarkness: gameTemplate = {
             this.updateDistance()
             this.printDistance()
             // this.drawTriangle()
-            // console.log()
+            // console.log('hola')
         }, 1000 / 60)
     },
 
     // --- COLLISIONS
     checkCollision() {
-        this.filteredFloorBlocks.forEach(elm => {
 
+        this.doggysArray.forEach(elm => {
             if (this.cube!.cubePos.x < elm.floorPos.x + elm.width &&
                 this.cube!.cubePos.x + this.cube!.cubeSize.w > elm.floorPos.x &&
                 this.cube!.cubePos.y < elm.floorPos.y + elm.height &&
                 this.cube!.cubeSize.h + this.cube!.cubePos.y > elm.floorPos.y) {
-
-                if (elm instanceof BrokenPlatform) {
-                    console.log('hola')
-                } else {
-                    console.log('DEBERÍA MORIR')
-                }
-
+                this.gameOver()
             }
+        })
 
+        this.obstaclesArray.forEach(elm => {
+            if (this.cube!.cubePos.x < elm.floorPos.x + elm.width &&
+                this.cube!.cubePos.x + this.cube!.cubeSize.w > elm.floorPos.x &&
+                this.cube!.cubePos.y < elm.floorPos.y + elm.height &&
+                this.cube!.cubeSize.h + this.cube!.cubePos.y > elm.floorPos.y) {
+                this.gameOver()
+            }
         })
 
     },
@@ -221,6 +221,7 @@ const squbeDarkness: gameTemplate = {
     updateDistance() {
 
         let platformPosReference: number = this.floorBlocks[0].floorPos.x
+        this.pixelDistance = -platformPosReference
 
         if (platformPosReference < this.maxPos) {
             this.distance += 1.5
@@ -249,7 +250,9 @@ const squbeDarkness: gameTemplate = {
             if (key === 'ArrowLeft') this.cube!.leftKey = true
             if (key === 'ArrowRight') this.cube!.rightKey = true
             if (key === 'ArrowDown') {
-                console.log(this.cube!.cubePos.x)
+                console.log('POSICION DEL CUBO', this.cube!.cubePos.x)
+                console.log('DISTANCIA EN PIXELES', this.pixelDistance)
+
             }
         })
 
@@ -271,9 +274,15 @@ const squbeDarkness: gameTemplate = {
 
         // this.ctx!.fillStyle = "#FFCC00";
         // this.ctx!.fill();
+    },
+
+    gameOver() {
+        console.log('GAME OVER BIATCH')
+        // clearInterval(this.intervalId)
     }
 
 }
 
 
 
+// HASTA AQUÍ PUEDES BORRAR QUERIDO

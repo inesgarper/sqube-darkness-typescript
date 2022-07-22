@@ -96,7 +96,7 @@ class BrokenPlatform extends FloorBlock {
         }, 400);
     }
 }
-class DoggyPlatform extends FloorBlock {
+class DoggyPlatform extends Cell {
     constructor(ctx, posX, posY) {
         super(ctx, posX, posY);
         this.ctx = ctx;
@@ -110,17 +110,4 @@ class DoggyPlatform extends FloorBlock {
         (_a = this.ctx) === null || _a === void 0 ? void 0 : _a.fillRect(this.floorPos.x, this.floorPos.y, this.width, this.height);
     }
 }
-// ELIMINAR Y METER EN ENEMIGOS
-class Doggy extends Cell {
-    constructor(ctx, posX, posY) {
-        super(ctx, posX, posY);
-        this.ctx = ctx;
-        this.posX = posX;
-        this.posY = posY;
-    }
-    drawBlock() {
-        var _a;
-        this.ctx.fillStyle = '#75b835';
-        (_a = this.ctx) === null || _a === void 0 ? void 0 : _a.fillRect(this.floorPos.x, this.floorPos.y, this.width, this.height);
-    }
-}
+// HASTA AQUÍ PUEDES BORRAR QUERIDO
