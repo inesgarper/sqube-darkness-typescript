@@ -10,6 +10,7 @@ class Spotlight {
     public isMovingRight: boolean | undefined
 
     public light: Light | undefined
+    public bullets: Array<Bullet>
 
     constructor(
 
@@ -18,7 +19,9 @@ class Spotlight {
         private posY: number,
         private maxPosXLeft: number,
         private maxPosXRight: number,
-        private initialDirection: string
+        private initialDirection: string,
+        public cube: Cube,
+        public floorBlocks: Array<Cell>
 
     ) {
 
@@ -32,6 +35,7 @@ class Spotlight {
         this.isMovingRight = undefined
 
         this.light = undefined
+        this.bullets = []
 
         this.initSpotlight()
 
@@ -82,5 +86,13 @@ class Spotlight {
 
     createLight(): void {
         this.light = new Light(this.ctx, this.spotlightPos, this.maxPosX, this.spotlightSize, this.spotlightCenter, this.spotlightVel, this.initialDirection)
+    }
+
+    shoot(): void {
+        this.bullets.push(new Bullet(this.ctx, { x: this.spotlightPos.x + this.spotlightCenter, y: this.spotlightPos.y + this.spotlightCenter }, this.spotlightPos, this.cube, this.floorBlocks))
+    }
+
+    deleteCollisionedBullet(index: number): void {
+        this.bullets.splice(index, 1)
     }
 }

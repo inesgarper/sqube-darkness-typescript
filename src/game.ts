@@ -29,6 +29,8 @@ interface gameTemplate {
     updateDistance(): void
     printDistance(): void
     checkCollision(): void
+    checkLightCollision(): void
+    checkBulletCollision(): void
     drawTriangle(): void
 
 }
@@ -156,7 +158,7 @@ const squbeDarkness: gameTemplate = {
     },
 
     createEnemies() {
-        this.enemies.push(new Spotlight(this.ctx, 800, 50, 600, 1000, 'right'))
+        this.enemies.push(new Spotlight(this.ctx, 800, 50, 600, 1000, 'right', this.cube!, this.floorBlocks))
     },
 
     // --- INTERVAL
@@ -167,6 +169,8 @@ const squbeDarkness: gameTemplate = {
             this.setEventHandlers()
             this.cube?.draw()
             this.cube?.movement()
+            this.checkLightCollision()
+            this.checkBulletCollision()
             this.checkCollision()
             this.floorBlocks.forEach(elm => {
                 if (elm instanceof TempSpike) {
@@ -188,6 +192,10 @@ const squbeDarkness: gameTemplate = {
                 enemy.move()
                 enemy.light?.draw()
                 enemy.light?.move()
+                enemy.bullets.forEach(bullet => {
+                    bullet.draw()
+                    bullet.move()
+                });
             })
             this.updateDistance()
             this.printDistance()
@@ -213,6 +221,63 @@ const squbeDarkness: gameTemplate = {
 
             }
 
+        })
+
+    },
+
+    checkLightCollision(): void {
+
+        this.enemies.forEach(enemy => {
+            if (enemy instanceof Spotlight && !this.cube!.isHidding) {
+
+                if (this.cube!.cubePos.x < enemy.light!.lightPos.x + enemy.light!.lightSize.w &&
+                    this.cube!.cubePos.x + this.cube!.cubeSize.w > enemy.light!.lightPos.x &&
+                    this.cube!.cubePos.y < enemy.light!.lightPos.y + enemy.light!.lightSize.h &&
+                    this.cube!.cubeSize.h + this.cube!.cubePos.y > enemy.light!.lightPos.y) {
+
+                    this.cube!.isFound = true
+
+                    if (this.cube!.isFound) {
+
+                        if (this.frameIndex % 20 === 0) enemy.shoot()
+
+                    }
+
+                } else {
+                    this.cube!.isFound = false
+                }
+            }
+        })
+    },
+
+    checkBulletCollision(): void {
+
+        this.enemies.forEach(enemy => {
+            if (enemy instanceof Spotlight) {
+
+                enemy.bullets.forEach(bullet => {
+                    if (this.cube!.cubePos.x < bullet.bulletPos.x + bullet.bulletSize.w &&
+                        this.cube!.cubePos.x + this.cube!.cubeSize.w > bullet.bulletPos.x &&
+                        this.cube!.cubePos.y < bullet.bulletPos.y + bullet.bulletSize.h &&
+                        this.cube!.cubeSize.h + this.cube!.cubePos.y > bullet.bulletPos.y) {
+
+                        // GAME OVER
+
+                    }
+
+                    this.floorBlocks.forEach(block => {
+                        if (block.floorPos.x < bullet.bulletPos.x + bullet.bulletSize.w &&
+                            block.floorPos.x + block.width > bullet.bulletPos.x &&
+                            block.floorPos.y < bullet.bulletPos.y + bullet.bulletSize.h &&
+                            block.height + block.floorPos.y > bullet.bulletPos.y) {
+
+                            const indexOfBulletToRemove: number = enemy.bullets.indexOf(bullet)
+                            enemy.deleteCollisionedBullet(indexOfBulletToRemove)
+
+                        }
+                    })
+                })
+            }
         })
 
     },
@@ -249,7 +314,7 @@ const squbeDarkness: gameTemplate = {
             if (key === 'ArrowLeft') this.cube!.leftKey = true
             if (key === 'ArrowRight') this.cube!.rightKey = true
             if (key === 'ArrowDown') {
-                console.log(this.cube!.cubePos.x)
+                console.log()
             }
         })
 

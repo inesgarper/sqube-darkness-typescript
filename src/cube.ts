@@ -2,6 +2,7 @@ class Cube {
 
     public cubePos: { x: number, y: number }
     public cubeSize: { w: number, h: number }
+    public cubeCenter: number
     public cubeVel: { x: number, y: number, maxVelX: number, maxVelY: number }
     public cubePhysics: { gravity: number, friction: number }
     public isHidding: boolean
@@ -25,6 +26,7 @@ class Cube {
 
         this.cubePos = { x: this.posX, y: this.posY }
         this.cubeSize = { w: 50, h: 50 }
+        this.cubeCenter = this.cubeSize.w / 2
 
         this.cubeVel = { x: 0, y: 0, maxVelX: 5, maxVelY: 20 }
         this.cubePhysics = { gravity: 0.5, friction: 0.6 }
@@ -48,6 +50,8 @@ class Cube {
 
         if (this.isHidding) {
             this.ctx!.fillStyle = 'black'
+        } else if (this.isFound) {
+            this.ctx!.fillStyle = 'red'
         } else {
             this.ctx!.fillStyle = 'green'
         }
@@ -148,6 +152,10 @@ class Cube {
             enemy.spotlightPos.y += -this.cubeVel.y
             enemy.light!.lightPos.x += -this.cubeVel.x
             enemy.light!.lightPos.y += -this.cubeVel.y
+            enemy.bullets.forEach(bullet => {
+                bullet.bulletPos.x += -this.cubeVel.x
+                bullet.bulletPos.y += -this.cubeVel.y
+            })
 
             // keep spotlight movement range
             enemy.maxPosX.l += -this.cubeVel.x
@@ -166,14 +174,6 @@ class Cube {
         }
 
         this.unblockIfHidding()
-    }
-
-    checkLightCollision(): void {
-
-        this.enemies.forEach(enemy => {
-
-        })
-
     }
 
     checkFloorAndWallCollision(): void {
@@ -213,6 +213,7 @@ class Cube {
                     this.cubePos.x = horizontalRect.x
                     this.cubeVel.x = 0
                     this.isHidding = true
+                    this.isFound = false
                 }
 
                 if (this.checkRectCollision(verticalRect, blockRect)) {

@@ -1,12 +1,14 @@
 "use strict";
 class Spotlight {
-    constructor(ctx, posX, posY, maxPosXLeft, maxPosXRight, initialDirection) {
+    constructor(ctx, posX, posY, maxPosXLeft, maxPosXRight, initialDirection, cube, floorBlocks) {
         this.ctx = ctx;
         this.posX = posX;
         this.posY = posY;
         this.maxPosXLeft = maxPosXLeft;
         this.maxPosXRight = maxPosXRight;
         this.initialDirection = initialDirection;
+        this.cube = cube;
+        this.floorBlocks = floorBlocks;
         this.spotlightPos = { x: this.posX, y: this.posY };
         this.maxPosX = { l: this.maxPosXLeft, r: this.maxPosXRight };
         this.spotlightSize = { w: 70, h: 70 };
@@ -15,6 +17,7 @@ class Spotlight {
         this.isMovingLeft = undefined;
         this.isMovingRight = undefined;
         this.light = undefined;
+        this.bullets = [];
         this.initSpotlight();
     }
     initSpotlight() {
@@ -59,5 +62,11 @@ class Spotlight {
     }
     createLight() {
         this.light = new Light(this.ctx, this.spotlightPos, this.maxPosX, this.spotlightSize, this.spotlightCenter, this.spotlightVel, this.initialDirection);
+    }
+    shoot() {
+        this.bullets.push(new Bullet(this.ctx, { x: this.spotlightPos.x + this.spotlightCenter, y: this.spotlightPos.y + this.spotlightCenter }, this.spotlightPos, this.cube, this.floorBlocks));
+    }
+    deleteCollisionedBullet(index) {
+        this.bullets.splice(index, 1);
     }
 }
