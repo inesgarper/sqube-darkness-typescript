@@ -1,0 +1,27 @@
+* {
+    margin: 0;
+    color: white;
+    font-family: Helvetica, sans-serif;
+}
+
+.gradient {
+    height: 85vh;
+    background-image: linear-gradient(to bottom, #252525, #464646, #6a6a6a, #909090, #b8b8b8);
+}
+
+h1 {
+    padding-top: 80px;
+    text-align: center;
+}
+
+.dark-bg {
+    background-color: black;
+    text-align: center;
+    height: 5vh;
+}
+
+
+canvas {
+    position: fixed;
+    bottom: 15%;
+}

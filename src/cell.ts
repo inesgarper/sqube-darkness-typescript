@@ -127,7 +127,7 @@ class BrokenPlatform extends FloorBlock {
     }
 }
 
-class DoggyPlatform extends FloorBlock {
+class DoggyPlatform extends Cell {
     public isActive: boolean
     constructor(
         public ctx: CanvasRenderingContext2D | null,
@@ -144,18 +144,4 @@ class DoggyPlatform extends FloorBlock {
     }
 }
 
-// ELIMINAR Y METER EN ENEMIGOS
-class Doggy extends Cell {
-    constructor(
-        public ctx: CanvasRenderingContext2D | null,
-        public posX: number,
-        public posY: number,
-    ) {
-        super(ctx, posX, posY)
-    }
-
-    drawBlock(): void {
-        this.ctx!.fillStyle = '#75b835'
-        this.ctx?.fillRect(this.floorPos.x, this.floorPos.y, this.width, this.height)
-    }
-}
+// HASTA AQUÍ PUEDES BORRAR QUERIDO
