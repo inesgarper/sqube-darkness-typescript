@@ -16,6 +16,7 @@ interface gameTemplate {
     distance: number
     maxPos: number
     pixelDistance: number
+    gameOver: { status: boolean, opacity: number }
 
     intervalId: number | undefined
 
@@ -33,7 +34,8 @@ interface gameTemplate {
     printDistance(): void
     checkCollision(): void
     drawTriangle(): void
-    gameOver(): void
+    setGameOver(): void
+    printGameOverScreen(): void
 
 }
 
@@ -54,6 +56,7 @@ const squbeDarkness: gameTemplate = {
     distance: 0,
     pixelDistance: 0,
     maxPos: 0,
+    gameOver: { status: false, opacity: 0 },
 
     intervalId: undefined,
 
@@ -189,6 +192,7 @@ const squbeDarkness: gameTemplate = {
             })
             this.updateDistance()
             this.printDistance()
+            if (this.gameOver.status) this.printGameOverScreen()
             // this.drawTriangle()
             // console.log('hola')
         }, 1000 / 60)
@@ -202,7 +206,7 @@ const squbeDarkness: gameTemplate = {
                 this.cube!.cubePos.x + this.cube!.cubeSize.w > elm.floorPos.x &&
                 this.cube!.cubePos.y < elm.floorPos.y + elm.height &&
                 this.cube!.cubeSize.h + this.cube!.cubePos.y > elm.floorPos.y) {
-                this.gameOver()
+                this.setGameOver()
             }
         })
 
@@ -211,7 +215,7 @@ const squbeDarkness: gameTemplate = {
                 this.cube!.cubePos.x + this.cube!.cubeSize.w > elm.floorPos.x &&
                 this.cube!.cubePos.y < elm.floorPos.y + elm.height &&
                 this.cube!.cubeSize.h + this.cube!.cubePos.y > elm.floorPos.y) {
-                this.gameOver()
+                this.setGameOver()
             }
         })
 
@@ -276,14 +280,27 @@ const squbeDarkness: gameTemplate = {
         // this.ctx!.fill();
     },
 
-    gameOver() {
+    setGameOver() {
         console.log('GAME OVER BIATCH')
+        this.gameOver.status = true
+    },
 
-        this.ctx!.font = '30px sans-serif'
-        this.ctx!.fillStyle = '#ffffff'
-        this.ctx!.fillText('GAME OVER', 450, 200)
+    printGameOverScreen() {
+        this.ctx!.globalAlpha = this.gameOver.opacity
+        this.ctx!.fillStyle = 'black'
+        this.ctx!.fillRect(0, 0, 1200, 500)
+        this.ctx!.globalAlpha = 1
+        this.gameOver.opacity += 0.01
 
-        // clearInterval(this.intervalId)
+        if (this.gameOver.opacity >= 0.40) {
+            this.ctx!.font = '30px sans-serif'
+            this.ctx!.fillStyle = '#ffffff'
+            this.ctx!.fillText('GAME OVER', 450, 200)
+
+        }
+
+        if (this.gameOver.opacity >= 1) clearInterval(this.intervalId)
+
     }
 
 }
