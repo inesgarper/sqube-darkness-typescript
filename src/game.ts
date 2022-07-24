@@ -219,11 +219,20 @@ const squbeDarkness: gameTemplate = {
         })
 
         this.obstaclesArray.forEach(elm => {
-            if (this.cube!.cubePos.x < elm.floorPos.x + elm.width &&
-                this.cube!.cubePos.x + this.cube!.cubeSize.w > elm.floorPos.x &&
-                this.cube!.cubePos.y < elm.floorPos.y + elm.height &&
-                this.cube!.cubeSize.h + this.cube!.cubePos.y > elm.floorPos.y) {
-                this.setGameOver()
+            if (elm instanceof Spike) {
+                if (this.cube!.cubePos.x + 10 < elm.floorPos.x + elm.width &&
+                    this.cube!.cubePos.x + this.cube!.cubeSize.w - 10 > elm.floorPos.x &&
+                    this.cube!.cubePos.y < elm.floorPos.y + elm.height &&
+                    this.cube!.cubeSize.h + this.cube!.cubePos.y > elm.floorPos.y) {
+                    this.setGameOver()
+                }
+            } else {
+                if (this.cube!.cubePos.x < elm.floorPos.x + elm.width &&
+                    this.cube!.cubePos.x + this.cube!.cubeSize.w > elm.floorPos.x &&
+                    this.cube!.cubePos.y < elm.floorPos.y + elm.height &&
+                    this.cube!.cubeSize.h + this.cube!.cubePos.y > elm.floorPos.y) {
+                    this.setGameOver()
+                }
             }
         })
 
