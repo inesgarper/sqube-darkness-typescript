@@ -68,10 +68,10 @@ class TempSpike extends Spike {
         (_a = this.ctx) === null || _a === void 0 ? void 0 : _a.fillRect(this.floorPos.x, this.floorPos.y, this.width, this.height);
     }
     moveUp() {
-        this.floorPos.y++;
+        this.floorPos.y += 6;
     }
     moveDown() {
-        this.floorPos.y--;
+        this.floorPos.y -= 6;
     }
 }
 class BrokenPlatform extends FloorBlock {

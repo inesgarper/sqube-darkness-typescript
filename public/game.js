@@ -110,10 +110,10 @@ const squbeDarkness = {
             this.checkCollision();
             this.floorBlocks.forEach(elm => {
                 if (elm instanceof TempSpike) {
-                    if (this.frameIndex >= 100 && this.frameIndex <= 300) {
+                    if (this.frameIndex >= 100 && this.frameIndex <= 150) {
                         elm.moveUp();
                     }
-                    else if (this.frameIndex >= 400 && this.frameIndex <= 600) {
+                    else if (this.frameIndex >= 250 && this.frameIndex <= 300) {
                         elm.moveDown();
                     }
                 }
@@ -127,7 +127,7 @@ const squbeDarkness = {
             // DOGGYS
             this.doggysArray.forEach((elm, i) => {
                 if (elm.initialPos.x < this.cube.cubePos.x + this.pixelDistance ||
-                    elm.initialPos.x - 350 > this.cube.cubePos.x + this.pixelDistance) {
+                    elm.initialPos.x - 400 > this.cube.cubePos.x + this.pixelDistance) {
                     elm.isActive = false;
                 }
                 else {
@@ -166,7 +166,7 @@ const squbeDarkness = {
             }
         });
         this.obstaclesArray.forEach(elm => {
-            if (elm instanceof Spike) {
+            if (elm instanceof (Spike || TempSpike)) {
                 if (this.cube.cubePos.x + 10 < elm.floorPos.x + elm.width &&
                     this.cube.cubePos.x + this.cube.cubeSize.w - 10 > elm.floorPos.x &&
                     this.cube.cubePos.y < elm.floorPos.y + elm.height &&
@@ -285,7 +285,7 @@ const squbeDarkness = {
     printGameOverScreen() {
         this.ctx.globalAlpha = this.gameOver.opacity;
         this.ctx.fillStyle = 'black';
-        this.ctx.fillRect(0, 0, 1200, 500);
+        this.ctx.fillRect(0, 0, 1800, 500);
         this.ctx.globalAlpha = 1;
         this.gameOver.opacity += 0.01;
         if (this.gameOver.opacity >= 0.40) {

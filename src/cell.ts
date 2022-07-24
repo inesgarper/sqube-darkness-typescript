@@ -88,11 +88,11 @@ class TempSpike extends Spike {
     }
 
     moveUp(): void {
-        this.floorPos.y++
+        this.floorPos.y += 6
     }
 
     moveDown(): void {
-        this.floorPos.y--
+        this.floorPos.y -= 6
     }
 }
 
