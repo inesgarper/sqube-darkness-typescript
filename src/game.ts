@@ -158,6 +158,7 @@ const squbeDarkness: gameTemplate = {
             this.setEventHandlers()
             this.cube?.draw()
             this.cube?.movement()
+            // this.cube?.checkBlockPos()
             this.checkLightCollision()
             this.checkBulletCollision()
             this.checkCollision()
@@ -175,12 +176,6 @@ const squbeDarkness: gameTemplate = {
             this.floorBlocks.forEach((elm, i) => {
                 if (elm instanceof TempSpike) {
                     elm.move()
-                    if (i === 36) console.log(elm.movedDistance)
-                    // if (this.frameIndex >= 100 && this.frameIndex <= 150) {
-                    //     elm.moveUp()
-                    // } else if (this.frameIndex >= 250 && this.frameIndex <= 300) {
-                    //     elm.moveDown()
-                    // }
                 }
                 if (elm instanceof BrokenPlatform) {
                     if (elm.isBroken) {
@@ -217,7 +212,7 @@ const squbeDarkness: gameTemplate = {
                 this.cube!.cubePos.x + this.cube!.cubeSize.w > elm.floorPos.x &&
                 this.cube!.cubePos.y < elm.floorPos.y + elm.height &&
                 this.cube!.cubeSize.h + this.cube!.cubePos.y > elm.floorPos.y) {
-                this.setGameOver()
+                // this.setGameOver()
             }
         })
 
@@ -227,14 +222,14 @@ const squbeDarkness: gameTemplate = {
                     this.cube!.cubePos.x + this.cube!.cubeSize.w - 10 > elm.floorPos.x &&
                     this.cube!.cubePos.y + 12.5 < elm.floorPos.y + elm.height &&
                     this.cube!.cubeSize.h + this.cube!.cubePos.y > elm.floorPos.y) {
-                    this.setGameOver()
+                    // this.setGameOver()
                 }
             } else {
                 if (this.cube!.cubePos.x < elm.floorPos.x + elm.width &&
                     this.cube!.cubePos.x + this.cube!.cubeSize.w > elm.floorPos.x &&
                     this.cube!.cubePos.y < elm.floorPos.y + elm.height &&
                     this.cube!.cubeSize.h + this.cube!.cubePos.y > elm.floorPos.y) {
-                    this.setGameOver()
+                    // this.setGameOver()
                 }
             }
         })
@@ -255,7 +250,7 @@ const squbeDarkness: gameTemplate = {
 
                     if (this.cube!.isFound) {
 
-                        if (this.frameIndex % 20 === 0) enemy.shoot()
+                        if (this.frameIndex % 30 === 0) enemy.shoot()
 
                     }
 

@@ -7,7 +7,7 @@ class Cell {
     constructor(
         public ctx: CanvasRenderingContext2D | null,
         public posX: number,
-        public posY: number
+        public posY: number,
     ) {
         this.ctx = ctx
         this.floorPos = { x: posX, y: posY }
@@ -22,6 +22,8 @@ class Cell {
     }
 
     drawBlock(): void {
+
+
         this.ctx!.fillStyle = 'black'
         this.ctx?.fillRect(this.floorPos.x, this.floorPos.y, this.width, this.height)
     }

@@ -216,6 +216,7 @@ class Cube {
                     while (this.checkRectCollision(horizontalRect, blockRect)) {
                         horizontalRect.x -= Math.sign(this.cubeVel.x)
                     }
+
                     this.cubePos.x = horizontalRect.x
                     this.cubeVel.x = 0
                     this.isHidding = true
@@ -226,28 +227,14 @@ class Cube {
                     while (this.checkRectCollision(verticalRect, blockRect)) {
                         verticalRect.y -= Math.sign(this.cubeVel.y)
                     }
+
                     this.cubePos.y = horizontalRect.y
                     this.cubeVel.y = 0
                     this.isJumping = false
-
-                    // if (block instanceof DoggyPlatform) {
-                    //     block.isActive = true
-                    // }
                     if (block instanceof BrokenPlatform) block.isBroken = true
                 }
 
             }
-
-            // if (block instanceof BrokenPlatform) {
-            //     if (this.checkRectCollision(verticalRect, blockRect)) {
-            //         while (this.checkRectCollision(verticalRect, blockRect)) {
-            //             verticalRect.y -= Math.sign(this.cubeVel.y)
-            //         }
-            //         this.cubePos.y = horizontalRect.y
-            //         this.cubeVel.y = 0
-            //         block.isBroken = true
-            //     }
-            // }
 
         })
 
@@ -270,6 +257,16 @@ class Cube {
             return true
         }
     }
+
+    // checkBlockPos(): void {
+    //     this.floorBlocks.forEach(block => {
+    //         if (this.cubePos.x === block.posX) {
+    //             this.ctx!.fillStyle = 'red'
+    //             this.ctx?.fillRect(block.posX, block.posY, 50, 50)
+    //         }
+
+    //     })
+    // }
 
 }
 

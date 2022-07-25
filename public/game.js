@@ -105,6 +105,7 @@ const squbeDarkness = {
             this.setEventHandlers();
             (_a = this.cube) === null || _a === void 0 ? void 0 : _a.draw();
             (_b = this.cube) === null || _b === void 0 ? void 0 : _b.movement();
+            // this.cube?.checkBlockPos()
             this.checkLightCollision();
             this.checkBulletCollision();
             this.checkCollision();
@@ -123,13 +124,6 @@ const squbeDarkness = {
             this.floorBlocks.forEach((elm, i) => {
                 if (elm instanceof TempSpike) {
                     elm.move();
-                    if (i === 36)
-                        console.log(elm.movedDistance);
-                    // if (this.frameIndex >= 100 && this.frameIndex <= 150) {
-                    //     elm.moveUp()
-                    // } else if (this.frameIndex >= 250 && this.frameIndex <= 300) {
-                    //     elm.moveDown()
-                    // }
                 }
                 if (elm instanceof BrokenPlatform) {
                     if (elm.isBroken) {
@@ -165,7 +159,7 @@ const squbeDarkness = {
                 this.cube.cubePos.x + this.cube.cubeSize.w > elm.floorPos.x &&
                 this.cube.cubePos.y < elm.floorPos.y + elm.height &&
                 this.cube.cubeSize.h + this.cube.cubePos.y > elm.floorPos.y) {
-                this.setGameOver();
+                // this.setGameOver()
             }
         });
         this.obstaclesArray.forEach(elm => {
@@ -174,7 +168,7 @@ const squbeDarkness = {
                     this.cube.cubePos.x + this.cube.cubeSize.w - 10 > elm.floorPos.x &&
                     this.cube.cubePos.y + 12.5 < elm.floorPos.y + elm.height &&
                     this.cube.cubeSize.h + this.cube.cubePos.y > elm.floorPos.y) {
-                    this.setGameOver();
+                    // this.setGameOver()
                 }
             }
             else {
@@ -182,7 +176,7 @@ const squbeDarkness = {
                     this.cube.cubePos.x + this.cube.cubeSize.w > elm.floorPos.x &&
                     this.cube.cubePos.y < elm.floorPos.y + elm.height &&
                     this.cube.cubeSize.h + this.cube.cubePos.y > elm.floorPos.y) {
-                    this.setGameOver();
+                    // this.setGameOver()
                 }
             }
         });
@@ -196,7 +190,7 @@ const squbeDarkness = {
                     this.cube.cubeSize.h + this.cube.cubePos.y > enemy.light.lightPos.y) {
                     this.cube.isFound = true;
                     if (this.cube.isFound) {
-                        if (this.frameIndex % 20 === 0)
+                        if (this.frameIndex % 30 === 0)
                             enemy.shoot();
                     }
                 }

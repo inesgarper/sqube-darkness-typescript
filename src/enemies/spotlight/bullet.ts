@@ -31,26 +31,34 @@ class Bullet {
 
     update(): void {
 
-        this.floorBlocks.forEach(block => {
+        const angle = Math.atan2(
+            this.cube.cubePos.y + this.cube.cubeCenter - this.bulletPos.y,
+            this.cube.cubePos.x + this.cube.cubeCenter - this.bulletPos.x
+        )
 
-            // Take the platform where the cube is placed as shoot's direction of reference
-            if (block.floorPos.x <= this.cube!.cubePos.x + 50 && block.floorPos.x >= this.cube!.cubePos.x - 50) {
+        this.bulletVel.x = Math.cos(angle)
+        this.bulletVel.y = Math.sin(angle)
 
-                const angle = Math.atan2(
-                    block.floorPos.y - this.bulletPos.y,
-                    block.floorPos.x - this.bulletPos.x
-                )
+        // this.floorBlocks.forEach(block => {
 
-                this.bulletVel.x = Math.cos(angle)
-                this.bulletVel.y = Math.sin(angle)
-            }
-        })
+        //     // Take the platform where the cube is placed as shoot's direction of reference
+        //     if (block.floorPos.x <= this.cube!.cubePos.x + 50 && block.floorPos.x >= this.cube!.cubePos.x - 50) {
+
+        //         const angle = Math.atan2(
+        //             block.floorPos.y - this.bulletPos.y,
+        //             block.floorPos.x - this.bulletPos.x
+        //         )
+
+        //         this.bulletVel.x = Math.cos(angle)
+        //         this.bulletVel.y = Math.sin(angle)
+        //     }
+        // })
 
     }
 
     move(): void {
-        this.bulletPos.x += this.bulletVel.x * 5
-        this.bulletPos.y += this.bulletVel.y * 5
+        this.bulletPos.x += this.bulletVel.x * 10
+        this.bulletPos.y += this.bulletVel.y * 10
     }
 
 }

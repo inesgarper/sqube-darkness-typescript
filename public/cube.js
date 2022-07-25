@@ -182,23 +182,10 @@ class Cube {
                     this.cubePos.y = horizontalRect.y;
                     this.cubeVel.y = 0;
                     this.isJumping = false;
-                    // if (block instanceof DoggyPlatform) {
-                    //     block.isActive = true
-                    // }
                     if (block instanceof BrokenPlatform)
                         block.isBroken = true;
                 }
             }
-            // if (block instanceof BrokenPlatform) {
-            //     if (this.checkRectCollision(verticalRect, blockRect)) {
-            //         while (this.checkRectCollision(verticalRect, blockRect)) {
-            //             verticalRect.y -= Math.sign(this.cubeVel.y)
-            //         }
-            //         this.cubePos.y = horizontalRect.y
-            //         this.cubeVel.y = 0
-            //         block.isBroken = true
-            //     }
-            // }
         });
     }
     unblockIfHidding() {
