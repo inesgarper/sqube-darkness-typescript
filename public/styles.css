@@ -5,7 +5,12 @@
 }
 
 .gradient {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
     height: 100vh;
+    z-index: -1;
     background-image: linear-gradient(to bottom, #252525, #464646, #6a6a6a, #909090, #b8b8b8);
 }
 
@@ -25,4 +30,5 @@ canvas {
     position: fixed;
     bottom: 0;
     width: 100%;
+
 }
