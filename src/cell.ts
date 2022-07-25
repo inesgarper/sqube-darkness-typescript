@@ -72,14 +72,22 @@ class Spike extends Cell {
 }
 
 class TempSpike extends Spike {
-    public prueba: string
+
+    private spikeVel: number
+    public movedDistance: number
+    private onTop: boolean
+    private onBottom: boolean
+
     constructor(
         public ctx: CanvasRenderingContext2D | null,
         public posX: number,
         public posY: number,
     ) {
         super(ctx, posX, posY)
-        this.prueba = 'hola'
+        this.spikeVel = 0
+        this.movedDistance = 0
+        this.onTop = true
+        this.onBottom = false
     }
 
     drawBlock(): void {
@@ -88,11 +96,34 @@ class TempSpike extends Spike {
     }
 
     moveUp(): void {
-        this.floorPos.y += 6
+        this.spikeVel = -8
+        this.floorPos.y += this.spikeVel
+        this.movedDistance += this.spikeVel
     }
 
     moveDown(): void {
-        this.floorPos.y -= 6
+        this.spikeVel = +8
+        this.floorPos.y += this.spikeVel
+        this.movedDistance += this.spikeVel
+    }
+
+    move(): void {
+        console.log('la distancia --->', this.movedDistance)
+        if (this.movedDistance >= 50) {
+            this.onTop = false
+            setTimeout(() => {
+                this.onBottom = true
+            }, 1500)
+        } else if (this.movedDistance === 0) {
+            this.onBottom = false
+            setTimeout(() => {
+                this.onTop = true
+            }, 1500)
+
+        }
+
+        if (this.onTop) this.moveDown()
+        else if (this.onBottom) this.moveUp()
     }
 }
 

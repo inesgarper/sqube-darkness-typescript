@@ -60,7 +60,10 @@ class TempSpike extends Spike {
         this.ctx = ctx;
         this.posX = posX;
         this.posY = posY;
-        this.prueba = 'hola';
+        this.spikeVel = 0;
+        this.movedDistance = 0;
+        this.onTop = true;
+        this.onBottom = false;
     }
     drawBlock() {
         var _a;
@@ -68,10 +71,33 @@ class TempSpike extends Spike {
         (_a = this.ctx) === null || _a === void 0 ? void 0 : _a.fillRect(this.floorPos.x, this.floorPos.y, this.width, this.height);
     }
     moveUp() {
-        this.floorPos.y += 6;
+        this.spikeVel = -8;
+        this.floorPos.y += this.spikeVel;
+        this.movedDistance += this.spikeVel;
     }
     moveDown() {
-        this.floorPos.y -= 6;
+        this.spikeVel = +8;
+        this.floorPos.y += this.spikeVel;
+        this.movedDistance += this.spikeVel;
+    }
+    move() {
+        console.log('la distancia --->', this.movedDistance);
+        if (this.movedDistance >= 50) {
+            this.onTop = false;
+            setTimeout(() => {
+                this.onBottom = true;
+            }, 1500);
+        }
+        else if (this.movedDistance === 0) {
+            this.onBottom = false;
+            setTimeout(() => {
+                this.onTop = true;
+            }, 1500);
+        }
+        if (this.onTop)
+            this.moveDown();
+        else if (this.onBottom)
+            this.moveUp();
     }
 }
 class BrokenPlatform extends FloorBlock {

@@ -20,6 +20,10 @@ h1 {
     height: 5vh;
 }
 
+/* #myCanvas {
+    width: 100vw;
+    height: 100vh;
+} */
 
 canvas {
     position: fixed;

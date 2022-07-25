@@ -161,13 +161,26 @@ const squbeDarkness: gameTemplate = {
             this.checkLightCollision()
             this.checkBulletCollision()
             this.checkCollision()
-            this.floorBlocks.forEach(elm => {
+            // ENEMIES
+            this.enemies.forEach(enemy => {
+                enemy.draw()
+                enemy.move()
+                enemy.light?.draw()
+                enemy.light?.move()
+                enemy.bullets.forEach(bullet => {
+                    bullet.draw()
+                    bullet.move()
+                });
+            })
+            this.floorBlocks.forEach((elm, i) => {
                 if (elm instanceof TempSpike) {
-                    if (this.frameIndex >= 100 && this.frameIndex <= 150) {
-                        elm.moveUp()
-                    } else if (this.frameIndex >= 250 && this.frameIndex <= 300) {
-                        elm.moveDown()
-                    }
+                    elm.move()
+                    if (i === 36) console.log(elm.movedDistance)
+                    // if (this.frameIndex >= 100 && this.frameIndex <= 150) {
+                    //     elm.moveUp()
+                    // } else if (this.frameIndex >= 250 && this.frameIndex <= 300) {
+                    //     elm.moveDown()
+                    // }
                 }
                 if (elm instanceof BrokenPlatform) {
                     if (elm.isBroken) {
@@ -180,7 +193,7 @@ const squbeDarkness: gameTemplate = {
             // DOGGYS
             this.doggysArray.forEach((elm, i) => {
                 if (elm.initialPos.x < this.cube!.cubePos.x + this.pixelDistance ||
-                    elm.initialPos.x - 400 > this.cube!.cubePos.x + this.pixelDistance) {
+                    elm.initialPos.x - 350 > this.cube!.cubePos.x + this.pixelDistance) {
                     elm.isActive = false
                 } else {
                     elm.isActive = true
@@ -188,16 +201,6 @@ const squbeDarkness: gameTemplate = {
                 if (elm.isActive) elm.canMove = true
             })
 
-            this.enemies.forEach(enemy => {
-                enemy.draw()
-                enemy.move()
-                enemy.light?.draw()
-                enemy.light?.move()
-                enemy.bullets.forEach(bullet => {
-                    bullet.draw()
-                    bullet.move()
-                });
-            })
             this.updateDistance()
             this.printDistance()
             if (this.gameOver.status) this.printGameOverScreen()
@@ -222,7 +225,7 @@ const squbeDarkness: gameTemplate = {
             if (elm instanceof (Spike || TempSpike)) {
                 if (this.cube!.cubePos.x + 10 < elm.floorPos.x + elm.width &&
                     this.cube!.cubePos.x + this.cube!.cubeSize.w - 10 > elm.floorPos.x &&
-                    this.cube!.cubePos.y < elm.floorPos.y + elm.height &&
+                    this.cube!.cubePos.y + 12.5 < elm.floorPos.y + elm.height &&
                     this.cube!.cubeSize.h + this.cube!.cubePos.y > elm.floorPos.y) {
                     this.setGameOver()
                 }
