@@ -246,7 +246,7 @@ const squbeDarkness = {
     // --- CLEAR SCREEN
     clearAll() {
         var _a;
-        (_a = this.ctx) === null || _a === void 0 ? void 0 : _a.clearRect(0, 0, 1800, 500);
+        (_a = this.ctx) === null || _a === void 0 ? void 0 : _a.clearRect(0, 0, 1800, 800);
     },
     // --- CONTROLS
     setEventHandlers() {
@@ -282,13 +282,12 @@ const squbeDarkness = {
         // this.ctx!.fill();
     },
     setGameOver() {
-        console.log('GAME OVER BIATCH');
         this.gameOver.status = true;
     },
     printGameOverScreen() {
         this.ctx.globalAlpha = this.gameOver.opacity;
         this.ctx.fillStyle = 'black';
-        this.ctx.fillRect(0, 0, 1800, 500);
+        this.ctx.fillRect(0, 0, 1800, 800);
         this.ctx.globalAlpha = 1;
         this.gameOver.opacity += 0.01;
         if (this.gameOver.opacity >= 0.40) {

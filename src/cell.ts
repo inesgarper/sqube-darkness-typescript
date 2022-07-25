@@ -113,12 +113,12 @@ class TempSpike extends Spike {
             this.onTop = false
             setTimeout(() => {
                 this.onBottom = true
-            }, 1500)
+            }, 1000)
         } else if (this.movedDistance === 0) {
             this.onBottom = false
             setTimeout(() => {
                 this.onTop = true
-            }, 1500)
+            }, 1000)
 
         }
 

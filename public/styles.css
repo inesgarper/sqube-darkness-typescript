@@ -5,7 +5,7 @@
 }
 
 .gradient {
-    height: 85vh;
+    height: 100vh;
     background-image: linear-gradient(to bottom, #252525, #464646, #6a6a6a, #909090, #b8b8b8);
 }
 
@@ -17,15 +17,12 @@ h1 {
 .dark-bg {
     background-color: black;
     text-align: center;
-    height: 5vh;
+    position: fixed;
+    bottom: 0;
 }
-
-/* #myCanvas {
-    width: 100vw;
-    height: 100vh;
-} */
 
 canvas {
     position: fixed;
-    bottom: 15%;
+    bottom: 0;
+    width: 100%;
 }

@@ -318,7 +318,7 @@ const squbeDarkness: gameTemplate = {
 
     // --- CLEAR SCREEN
     clearAll() {
-        this.ctx?.clearRect(0, 0, 1800, 500)
+        this.ctx?.clearRect(0, 0, 1800, 800)
     },
 
 
@@ -358,14 +358,13 @@ const squbeDarkness: gameTemplate = {
     },
 
     setGameOver() {
-        console.log('GAME OVER BIATCH')
         this.gameOver.status = true
     },
 
     printGameOverScreen() {
         this.ctx!.globalAlpha = this.gameOver.opacity
         this.ctx!.fillStyle = 'black'
-        this.ctx!.fillRect(0, 0, 1800, 500)
+        this.ctx!.fillRect(0, 0, 1800, 800)
         this.ctx!.globalAlpha = 1
         this.gameOver.opacity += 0.01
 
