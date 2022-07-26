@@ -8,7 +8,7 @@ class Bullet {
         public bulletPos: { x: number, y: number },
         public spotlightPos: { x: number, y: number },
         public cube: Cube,
-        public floorBlocks: Array<Cell>
+        public floorBlocks: Array<Cell | Doggy>
     ) {
 
         this.bulletPos = { x: this.bulletPos.x, y: this.bulletPos.y }

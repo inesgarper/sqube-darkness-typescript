@@ -33,13 +33,13 @@ class Doggy {
         this.touchedRight = true
 
 
-        this.initFloor()
+        // this.initFloor()
     }
 
-    initFloor(): void {
-        // console.log('POSICION INICIAL ----->', this.floorPos.x)
-        this.drawBlock()
-    }
+    // initFloor(): void {
+    //     // console.log('POSICION INICIAL ----->', this.floorPos.x)
+    //     this.drawBlock()
+    // }
 
     drawBlock(): void {
         this.isActive ? this.ctx!.fillStyle = '#75b835' : this.ctx!.fillStyle = '#253a0f'

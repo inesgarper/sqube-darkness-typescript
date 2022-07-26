@@ -4,7 +4,7 @@ interface gameTemplate {
     canvas: HTMLCanvasElement
     ctx: null | CanvasRenderingContext2D
 
-    frameIndex: number
+    framesCounter: number
 
     cube: undefined | Cube
     floorBlocks: Array<Cell | Doggy>
@@ -53,7 +53,7 @@ const squbeDarkness: gameTemplate = {
     canvas: document.querySelector('#myCanvas') as HTMLCanvasElement,
     ctx: null,
 
-    frameIndex: 0,
+    framesCounter: 0,
 
     cube: undefined,
     floorBlocks: [],
@@ -168,9 +168,9 @@ const squbeDarkness: gameTemplate = {
     gameLoop() {
         this.intervalId = setInterval(() => {
             this.clearAll()
-            this.frameIndex >= 600 ? this.frameIndex = 0 : this.frameIndex++
+            this.framesCounter >= 600 ? this.framesCounter = 0 : this.framesCounter++
             this.setEventHandlers()
-            this.cube?.draw(this.frameIndex)
+            this.cube?.draw(this.framesCounter)
             this.cube?.movement()
             if (!this.invisibleCubePowerUp?.isActive) {
                 this.checkLightCollision()
@@ -199,7 +199,7 @@ const squbeDarkness: gameTemplate = {
                         elm.break()
                     }
                 }
-                elm.drawBlock()
+                elm.drawBlock(this.framesCounter)
             })
 
             // DOGGYS
@@ -269,7 +269,7 @@ const squbeDarkness: gameTemplate = {
 
                     if (this.cube!.isFound) {
 
-                        if (this.frameIndex % 30 === 0) spotlight.shoot()
+                        if (this.framesCounter % 30 === 0) spotlight.shoot()
 
                     }
 

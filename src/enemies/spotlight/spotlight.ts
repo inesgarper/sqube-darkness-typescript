@@ -21,7 +21,7 @@ class Spotlight {
         private maxPosXRight: number,
         private initialDirection: string,
         public cube: Cube,
-        public floorBlocks: Array<Cell>
+        public floorBlocks: Array<Cell | Doggy>
 
     ) {
 

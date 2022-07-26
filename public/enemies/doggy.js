@@ -17,12 +17,12 @@ class Doggy {
         this.movedDistance = 0;
         this.touchedLeft = false;
         this.touchedRight = true;
-        this.initFloor();
+        // this.initFloor()
     }
-    initFloor() {
-        // console.log('POSICION INICIAL ----->', this.floorPos.x)
-        this.drawBlock();
-    }
+    // initFloor(): void {
+    //     // console.log('POSICION INICIAL ----->', this.floorPos.x)
+    //     this.drawBlock()
+    // }
     drawBlock() {
         var _a;
         this.isActive ? this.ctx.fillStyle = '#75b835' : this.ctx.fillStyle = '#253a0f';

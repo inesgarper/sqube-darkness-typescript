@@ -11,9 +11,9 @@ class Cell {
         this.initFloor();
     }
     initFloor() {
-        this.drawBlock();
+        // this.drawBlock(framesCounter: number)
     }
-    drawBlock() {
+    drawBlock(framesCounter) {
         var _a;
         this.ctx.fillStyle = 'black';
         (_a = this.ctx) === null || _a === void 0 ? void 0 : _a.fillRect(this.floorPos.x, this.floorPos.y, this.width, this.height);
@@ -34,11 +34,24 @@ class BubbleHole extends Cell {
         this.ctx = ctx;
         this.posX = posX;
         this.posY = posY;
+        this.imageInstance = new Image();
+        this.imageInstance.src = './images/bubble-hole/bubblehole.png';
+        this.imageInstance.frames = 13;
+        this.imageInstance.framesIndex = Math.floor(Math.random() * 12);
     }
-    drawBlock() {
-        var _a;
-        this.ctx.fillStyle = 'purple';
-        (_a = this.ctx) === null || _a === void 0 ? void 0 : _a.fillRect(this.floorPos.x, this.floorPos.y, this.width, this.height);
+    drawBlock(framesCounter) {
+        // this.ctx!.fillStyle = 'purple'
+        // this.ctx?.fillRect(this.floorPos.x, this.floorPos.y, this.width, this.height)
+        this.ctx.drawImage(this.imageInstance, this.imageInstance.framesIndex * (this.imageInstance.width / this.imageInstance.frames), 0, this.imageInstance.width / this.imageInstance.frames, this.imageInstance.height, this.floorPos.x, this.floorPos.y, this.width, this.height);
+        this.animate(framesCounter);
+    }
+    animate(framesCounter) {
+        if (framesCounter % 6 == 0) {
+            this.imageInstance.framesIndex++;
+        }
+        if (this.imageInstance.framesIndex > 12) {
+            this.imageInstance.framesIndex = 0;
+        }
     }
 }
 class Spike extends Cell {
@@ -47,11 +60,13 @@ class Spike extends Cell {
         this.ctx = ctx;
         this.posX = posX;
         this.posY = posY;
+        this.imageInstance = new Image();
+        this.imageInstance.src = './images/spikes/spikes.png';
     }
-    drawBlock() {
-        var _a;
-        this.ctx.fillStyle = '#334295';
-        (_a = this.ctx) === null || _a === void 0 ? void 0 : _a.fillRect(this.floorPos.x, this.floorPos.y, this.width, this.height);
+    drawBlock(framesCounter) {
+        // this.ctx!.fillStyle = '#334295'
+        // this.ctx?.fillRect(this.floorPos.x, this.floorPos.y, this.width, this.height)
+        this.ctx.drawImage(this.imageInstance, this.floorPos.x, this.floorPos.y, this.width, this.height);
     }
 }
 class TempSpike extends Spike {
@@ -65,10 +80,10 @@ class TempSpike extends Spike {
         this.onTop = true;
         this.onBottom = false;
     }
-    drawBlock() {
-        var _a;
-        this.ctx.fillStyle = '#8f9ed0';
-        (_a = this.ctx) === null || _a === void 0 ? void 0 : _a.fillRect(this.floorPos.x, this.floorPos.y, this.width, this.height);
+    drawBlock(framesCounter) {
+        // this.ctx!.fillStyle = '#8f9ed0'
+        // this.ctx?.fillRect(this.floorPos.x, this.floorPos.y, this.width, this.height)
+        this.ctx.drawImage(this.imageInstance, this.floorPos.x, this.floorPos.y, this.width, this.height);
     }
     moveUp() {
         this.spikeVel = -8;
@@ -109,11 +124,22 @@ class BrokenPlatform extends FloorBlock {
         this.brokenPlatformVel = { x: 0, y: 0 };
         this.brokenPlatformPhysics = { gravity: 0.5 };
         this.isBroken = false;
+        this.imageInstance = new Image();
+        this.imageInstance.src = './images/broken-platform/broken-platform.png';
+        this.imageInstance.frames = 10;
+        this.imageInstance.framesIndex = 0;
     }
-    drawBlock() {
-        var _a;
-        this.ctx.fillStyle = '#f3e600';
-        (_a = this.ctx) === null || _a === void 0 ? void 0 : _a.fillRect(this.floorPos.x, this.floorPos.y, this.width + 50, this.height);
+    drawBlock(framesCounter) {
+        // this.ctx!.fillStyle = '#f3e600'
+        // this.ctx?.fillRect(this.floorPos.x, this.floorPos.y, this.width + 50, this.height)
+        this.ctx.drawImage(this.imageInstance, this.imageInstance.framesIndex * (this.imageInstance.width / this.imageInstance.frames), 0, this.imageInstance.width / this.imageInstance.frames, this.imageInstance.height, this.floorPos.x, this.floorPos.y, this.width + 50, this.height);
+        if (this.isBroken)
+            this.animate(framesCounter);
+    }
+    animate(framesCounter) {
+        if (framesCounter % 3 == 0) {
+            this.imageInstance.framesIndex++;
+        }
     }
     break() {
         setTimeout(() => {
@@ -130,7 +156,7 @@ class DoggyPlatform extends Cell {
         this.posY = posY;
         this.isActive = false;
     }
-    drawBlock() {
+    drawBlock(framesCounter) {
         var _a;
         this.isActive ? this.ctx.fillStyle = '#ffffff' : this.ctx.fillStyle = '#ff330b';
         (_a = this.ctx) === null || _a === void 0 ? void 0 : _a.fillRect(this.floorPos.x, this.floorPos.y, this.width, this.height);

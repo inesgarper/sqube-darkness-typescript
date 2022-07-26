@@ -18,10 +18,10 @@ class Cell {
     }
 
     initFloor(): void {
-        this.drawBlock()
+        // this.drawBlock(framesCounter: number)
     }
 
-    drawBlock(): void {
+    drawBlock(framesCounter: number): void {
 
 
         this.ctx!.fillStyle = 'black'
@@ -43,33 +43,70 @@ class FloorBlock extends Cell {
 // Obstacles 
 
 class BubbleHole extends Cell {
-
+    private imageInstance: any
     constructor(
         public ctx: CanvasRenderingContext2D | null,
         public posX: number,
         public posY: number,
     ) {
         super(ctx, posX, posY)
+        this.imageInstance = new Image()
+        this.imageInstance.src = './images/bubble-hole/bubblehole.png'
+        this.imageInstance.frames = 13
+        this.imageInstance.framesIndex = Math.floor(Math.random() * 12)
     }
 
-    drawBlock(): void {
-        this.ctx!.fillStyle = 'purple'
-        this.ctx?.fillRect(this.floorPos.x, this.floorPos.y, this.width, this.height)
+    drawBlock(framesCounter: number): void {
+        // this.ctx!.fillStyle = 'purple'
+        // this.ctx?.fillRect(this.floorPos.x, this.floorPos.y, this.width, this.height)
+
+        this.ctx!.drawImage(
+            this.imageInstance,
+            this.imageInstance.framesIndex * (this.imageInstance.width / this.imageInstance.frames),
+            0,
+            this.imageInstance.width / this.imageInstance.frames,
+            this.imageInstance.height,
+            this.floorPos.x,
+            this.floorPos.y,
+            this.width,
+            this.height
+        )
+        this.animate(framesCounter)
+
     }
+    animate(framesCounter: number): void {
+        if (framesCounter % 6 == 0) {
+            this.imageInstance.framesIndex++;
+        }
+        if (this.imageInstance.framesIndex > 12) {
+            this.imageInstance.framesIndex = 0;
+        }
+    }
+
 }
 
+
 class Spike extends Cell {
+    public imageInstance: any
     constructor(
         public ctx: CanvasRenderingContext2D | null,
         public posX: number,
         public posY: number,
+
+
     ) {
         super(ctx, posX, posY)
+        this.imageInstance = new Image()
+        this.imageInstance.src = './images/spikes/spikes.png'
+
     }
 
-    drawBlock(): void {
-        this.ctx!.fillStyle = '#334295'
-        this.ctx?.fillRect(this.floorPos.x, this.floorPos.y, this.width, this.height)
+    drawBlock(framesCounter: number): void {
+        // this.ctx!.fillStyle = '#334295'
+        // this.ctx?.fillRect(this.floorPos.x, this.floorPos.y, this.width, this.height)
+
+        this.ctx!.drawImage(this.imageInstance, this.floorPos.x, this.floorPos.y, this.width, this.height)
+
     }
 }
 
@@ -80,10 +117,11 @@ class TempSpike extends Spike {
     private onTop: boolean
     private onBottom: boolean
 
+
     constructor(
         public ctx: CanvasRenderingContext2D | null,
         public posX: number,
-        public posY: number,
+        public posY: number
     ) {
         super(ctx, posX, posY)
         this.spikeVel = 0
@@ -92,9 +130,11 @@ class TempSpike extends Spike {
         this.onBottom = false
     }
 
-    drawBlock(): void {
-        this.ctx!.fillStyle = '#8f9ed0'
-        this.ctx?.fillRect(this.floorPos.x, this.floorPos.y, this.width, this.height)
+    drawBlock(framesCounter: number): void {
+        // this.ctx!.fillStyle = '#8f9ed0'
+        // this.ctx?.fillRect(this.floorPos.x, this.floorPos.y, this.width, this.height)
+        this.ctx!.drawImage(this.imageInstance, this.floorPos.x, this.floorPos.y, this.width, this.height)
+
     }
 
     moveUp(): void {
@@ -134,6 +174,7 @@ class BrokenPlatform extends FloorBlock {
     public brokenPlatformVel
     public brokenPlatformPhysics
     public isBroken: boolean
+    private imageInstance: any
 
     constructor(
         public ctx: CanvasRenderingContext2D | null,
@@ -144,12 +185,35 @@ class BrokenPlatform extends FloorBlock {
         this.brokenPlatformVel = { x: 0, y: 0 }
         this.brokenPlatformPhysics = { gravity: 0.5 }
         this.isBroken = false
+
+        this.imageInstance = new Image()
+        this.imageInstance.src = './images/broken-platform/broken-platform.png'
+        this.imageInstance.frames = 10
+        this.imageInstance.framesIndex = 0
     }
 
 
-    drawBlock(): void {
-        this.ctx!.fillStyle = '#f3e600'
-        this.ctx?.fillRect(this.floorPos.x, this.floorPos.y, this.width + 50, this.height)
+    drawBlock(framesCounter: number): void {
+        // this.ctx!.fillStyle = '#f3e600'
+        // this.ctx?.fillRect(this.floorPos.x, this.floorPos.y, this.width + 50, this.height)
+        this.ctx!.drawImage(
+            this.imageInstance,
+            this.imageInstance.framesIndex * (this.imageInstance.width / this.imageInstance.frames),
+            0,
+            this.imageInstance.width / this.imageInstance.frames,
+            this.imageInstance.height,
+            this.floorPos.x,
+            this.floorPos.y,
+            this.width + 50,
+            this.height
+        )
+        if (this.isBroken) this.animate(framesCounter)
+
+    }
+    animate(framesCounter: number): void {
+        if (framesCounter % 3 == 0) {
+            this.imageInstance.framesIndex++;
+        }
     }
 
     break(): void {
@@ -171,7 +235,7 @@ class DoggyPlatform extends Cell {
         this.isActive = false
     }
 
-    drawBlock(): void {
+    drawBlock(framesCounter: number): void {
         this.isActive ? this.ctx!.fillStyle = '#ffffff' : this.ctx!.fillStyle = '#ff330b'
         this.ctx?.fillRect(this.floorPos.x, this.floorPos.y, this.width, this.height)
     }

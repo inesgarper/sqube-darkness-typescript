@@ -3,7 +3,7 @@ const squbeDarkness = {
     authors: 'Guillermo Ávila & Inés García',
     canvas: document.querySelector('#myCanvas'),
     ctx: null,
-    frameIndex: 0,
+    framesCounter: 0,
     cube: undefined,
     floorBlocks: [],
     doggysArray: [],
@@ -108,9 +108,9 @@ const squbeDarkness = {
         this.intervalId = setInterval(() => {
             var _a, _b, _c, _d, _e;
             this.clearAll();
-            this.frameIndex >= 600 ? this.frameIndex = 0 : this.frameIndex++;
+            this.framesCounter >= 600 ? this.framesCounter = 0 : this.framesCounter++;
             this.setEventHandlers();
-            (_a = this.cube) === null || _a === void 0 ? void 0 : _a.draw(this.frameIndex);
+            (_a = this.cube) === null || _a === void 0 ? void 0 : _a.draw(this.framesCounter);
             (_b = this.cube) === null || _b === void 0 ? void 0 : _b.movement();
             if (!((_c = this.invisibleCubePowerUp) === null || _c === void 0 ? void 0 : _c.isActive)) {
                 this.checkLightCollision();
@@ -140,7 +140,7 @@ const squbeDarkness = {
                         elm.break();
                     }
                 }
-                elm.drawBlock();
+                elm.drawBlock(this.framesCounter);
             });
             // DOGGYS
             this.doggysArray.forEach((elm, i) => {
@@ -201,7 +201,7 @@ const squbeDarkness = {
                     this.cube.cubeSize.h + this.cube.cubePos.y > spotlight.light.lightPos.y) {
                     this.cube.isFound = true;
                     if (this.cube.isFound) {
-                        if (this.frameIndex % 30 === 0)
+                        if (this.framesCounter % 30 === 0)
                             spotlight.shoot();
                     }
                 }

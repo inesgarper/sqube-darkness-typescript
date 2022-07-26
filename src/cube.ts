@@ -22,7 +22,7 @@ class Cube {
         private ctx: CanvasRenderingContext2D | null,
         private posX: number,
         private posY: number,
-        private floorBlocks: Array<Cell>,
+        private floorBlocks: Array<Cell | Doggy>,
         private enemies: Array<Spotlight>,
 
     ) {
@@ -43,20 +43,13 @@ class Cube {
         this.rightKey = undefined
 
         this.imageInstance = new Image()
-        this.imageInstance.frames = 0
-        this.imageInstance.framesIndex = 0
-
-        this.initCube()
-    }
-
-    initCube(): void {
         this.imageInstance.src = './images/cube/cube2.png'
         this.imageInstance.frames = 9
         this.imageInstance.framesIndex = 0
-        // this.draw()
+
     }
 
-    draw(frameIndex: number): void {
+    draw(framesCounter: number): void {
 
         // if (this.isHidding) {
         //     this.ctx!.fillStyle = 'black'
@@ -69,6 +62,8 @@ class Cube {
         // }
 
         // this.ctx?.fillRect(this.cubePos.x, this.cubePos.y, this.cubeSize.w, this.cubeSize.h)
+        this.isInvisible ? this.ctx!.globalAlpha = 0.1 : this.ctx!.globalAlpha = 1
+
 
         this.ctx!.drawImage(
             this.imageInstance,
@@ -81,19 +76,19 @@ class Cube {
             this.cubeSize.w,
             this.cubeSize.h
         )
-
-        this.animate(frameIndex)
+        this.ctx!.globalAlpha = 1
+        this.animate(framesCounter)
 
 
         this.gravity()
     }
 
-    animate(frameIndex: number): void {
-        if (frameIndex % 2 == 0) {
+    animate(framesCounter: number): void {
+        if (framesCounter % 2 == 0) {
             this.imageInstance.framesIndex--;
         }
-        if (this.imageInstance.framesIndex === 0) {
-            this.imageInstance.framesIndex = 9;
+        if (this.imageInstance.framesIndex < 0) {
+            this.imageInstance.framesIndex = 8;
         }
     }
 
