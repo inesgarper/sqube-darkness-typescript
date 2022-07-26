@@ -12,6 +12,8 @@ class Spotlight {
     public light: Light | undefined
     public bullets: Array<Bullet>
 
+    private imageInstance: any
+
     constructor(
 
         private ctx: CanvasRenderingContext2D | null,
@@ -21,7 +23,7 @@ class Spotlight {
         private maxPosXRight: number,
         private initialDirection: string,
         public cube: Cube,
-        public floorBlocks: Array<Cell>
+        public floorBlocks: Array<Cell | Doggy>
 
     ) {
 
@@ -37,19 +39,46 @@ class Spotlight {
         this.light = undefined
         this.bullets = []
 
+        this.imageInstance = new Image()
+        this.imageInstance.frames = 9
+        this.imageInstance.framesIndex = 0
+        this.imageInstance.src = './images/spotlight/spotlight.png'
+
         this.initSpotlight()
 
     }
 
     initSpotlight(): void {
-        this.draw()
+        // this.draw()
         this.setDirection()
         this.createLight()
     }
 
-    draw(): void {
-        this.ctx!.fillStyle = 'white'
-        this.ctx?.fillRect(this.spotlightPos.x, this.spotlightPos.y, this.spotlightSize.w, this.spotlightSize.h)
+    draw(frameIndex: number): void {
+        this.ctx!.drawImage(
+            this.imageInstance,
+            this.imageInstance.framesIndex * (this.imageInstance.width / this.imageInstance.frames),
+            0,
+            this.imageInstance.width / this.imageInstance.frames,
+            this.imageInstance.height,
+            this.spotlightPos.x,
+            this.spotlightPos.y,
+            this.spotlightSize.w,
+            this.spotlightSize.h
+        )
+
+        this.animate(frameIndex)
+        // this.ctx!.fillStyle = 'white'
+        // this.ctx?.fillRect(this.spotlightPos.x, this.spotlightPos.y, this.spotlightSize.w, this.spotlightSize.h)
+    }
+
+    animate(frameIndex: number): void {
+        if (frameIndex % 5 == 0) {
+            this.imageInstance.framesIndex++;
+        }
+        if (this.imageInstance.framesIndex >= this.imageInstance.frames) {
+            this.imageInstance.framesIndex = 0;
+        }
     }
 
     setDirection(): void {

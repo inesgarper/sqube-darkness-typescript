@@ -179,12 +179,12 @@ const squbeDarkness: gameTemplate = {
             }
             // SPOTLIGHTS
             this.spotlights.forEach(elm => {
-                elm.draw()
-                elm.move()
                 if (elm.light?.isOn) {
                     elm.light?.draw()
                 }
                 elm.light?.move()
+                elm.draw(this.frameIndex)
+                elm.move()
                 elm.bullets.forEach(bullet => {
                     bullet.draw()
                     bullet.move()
@@ -199,7 +199,7 @@ const squbeDarkness: gameTemplate = {
                         elm.break()
                     }
                 }
-                elm.drawBlock()
+                elm.drawBlock(this.frameIndex)
             })
 
             // DOGGYS

@@ -14,26 +14,21 @@ class Cube {
         this.isHidding = false;
         this.isFound = false;
         this.isJumping = false;
-        // this.isActive = true
         this.isInvisible = false;
         this.leftKey = undefined;
         this.rightKey = undefined;
         this.imageInstance = new Image();
-        this.imageInstance.frames = 0;
-        this.imageInstance.framesIndex = 0;
-        this.initCube();
-    }
-    initCube() {
-        this.imageInstance.src = './images/cube/cube2.png';
         this.imageInstance.frames = 9;
         this.imageInstance.framesIndex = 0;
-        // this.draw()
+        this.imageInstance.src = './images/cube/cube2.png';
     }
     draw(frameIndex) {
         // if (this.isHidding) {
         //     this.ctx!.fillStyle = 'black'
         // } else if (this.isFound) {
         //     this.ctx!.fillStyle = 'red'
+        // } else if (this.isInvisible) {
+        //     this.ctx!.fillStyle = 'rgba(0, 0, 0, 0.1)'
         // } else {
         //     this.ctx!.fillStyle = 'green'
         // }
@@ -46,16 +41,8 @@ class Cube {
         if (frameIndex % 2 == 0) {
             this.imageInstance.framesIndex--;
         }
-<<<<<<< HEAD
-        else if (this.isInvisible) {
-            this.ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
-        }
-        else {
-            this.ctx.fillStyle = 'green';
-=======
-        if (this.imageInstance.framesIndex === 0) {
-            this.imageInstance.framesIndex = 9;
->>>>>>> 511924772e48fa02d6f3d31405e742b2bd328ac2
+        if (this.imageInstance.framesIndex < 0) {
+            this.imageInstance.framesIndex = 8;
         }
     }
     movement() {

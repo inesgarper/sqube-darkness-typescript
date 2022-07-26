@@ -120,12 +120,12 @@ const squbeDarkness = {
             // SPOTLIGHTS
             this.spotlights.forEach(elm => {
                 var _a, _b, _c;
-                elm.draw();
-                elm.move();
                 if ((_a = elm.light) === null || _a === void 0 ? void 0 : _a.isOn) {
                     (_b = elm.light) === null || _b === void 0 ? void 0 : _b.draw();
                 }
                 (_c = elm.light) === null || _c === void 0 ? void 0 : _c.move();
+                elm.draw(this.frameIndex);
+                elm.move();
                 elm.bullets.forEach(bullet => {
                     bullet.draw();
                     bullet.move();
@@ -140,7 +140,7 @@ const squbeDarkness = {
                         elm.break();
                     }
                 }
-                elm.drawBlock();
+                elm.drawBlock(this.frameIndex);
             });
             // DOGGYS
             this.doggysArray.forEach((elm, i) => {

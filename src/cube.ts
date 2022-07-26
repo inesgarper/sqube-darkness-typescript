@@ -22,7 +22,7 @@ class Cube {
         private ctx: CanvasRenderingContext2D | null,
         private posX: number,
         private posY: number,
-        private floorBlocks: Array<Cell>,
+        private floorBlocks: Array<Cell | Doggy>,
         private enemies: Array<Spotlight>,
 
     ) {
@@ -43,17 +43,10 @@ class Cube {
         this.rightKey = undefined
 
         this.imageInstance = new Image()
-        this.imageInstance.frames = 0
-        this.imageInstance.framesIndex = 0
-
-        this.initCube()
-    }
-
-    initCube(): void {
-        this.imageInstance.src = './images/cube/cube2.png'
         this.imageInstance.frames = 9
         this.imageInstance.framesIndex = 0
-        // this.draw()
+        this.imageInstance.src = './images/cube/cube2.png'
+
     }
 
     draw(frameIndex: number): void {
@@ -92,8 +85,8 @@ class Cube {
         if (frameIndex % 2 == 0) {
             this.imageInstance.framesIndex--;
         }
-        if (this.imageInstance.framesIndex === 0) {
-            this.imageInstance.framesIndex = 9;
+        if (this.imageInstance.framesIndex < 0) {
+            this.imageInstance.framesIndex = 8;
         }
     }
 
