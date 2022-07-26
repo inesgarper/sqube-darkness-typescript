@@ -8,12 +8,14 @@ class Cube {
     public isHidding: boolean
     public isFound: boolean
     private isJumping: boolean
-    // public isActive: boolean
     public isInvisible: boolean
 
     // Controls
     public leftKey: boolean | undefined
     public rightKey: boolean | undefined
+
+    private imageInstance: any
+
 
     constructor(
 
@@ -26,7 +28,7 @@ class Cube {
     ) {
 
         this.cubePos = { x: this.posX, y: this.posY }
-        this.cubeSize = { w: 50, h: 50 }
+        this.cubeSize = { w: 70.79, h: 70.79 }
         this.cubeCenter = this.cubeSize.w / 2
 
         this.cubeVel = { x: 0, y: 0, maxVelX: 5, maxVelY: 20 }
@@ -35,34 +37,64 @@ class Cube {
         this.isHidding = false
         this.isFound = false
         this.isJumping = false
-        // this.isActive = true
         this.isInvisible = false
 
         this.leftKey = undefined
         this.rightKey = undefined
 
+        this.imageInstance = new Image()
+        this.imageInstance.frames = 0
+        this.imageInstance.framesIndex = 0
+
         this.initCube()
     }
 
     initCube(): void {
-        this.draw()
+        this.imageInstance.src = './images/cube/cube2.png'
+        this.imageInstance.frames = 9
+        this.imageInstance.framesIndex = 0
+        // this.draw()
     }
 
-    draw(): void {
+    draw(frameIndex: number): void {
 
-        if (this.isHidding) {
-            this.ctx!.fillStyle = 'black'
-        } else if (this.isFound) {
-            this.ctx!.fillStyle = 'red'
-        } else if (this.isInvisible) {
-            this.ctx!.fillStyle = 'rgba(0, 0, 0, 0.1)'
-        } else {
-            this.ctx!.fillStyle = 'green'
-        }
+        // if (this.isHidding) {
+        //     this.ctx!.fillStyle = 'black'
+        // } else if (this.isFound) {
+        //     this.ctx!.fillStyle = 'red'
+        // } else if (this.isInvisible) {
+        //     this.ctx!.fillStyle = 'rgba(0, 0, 0, 0.1)'
+        // } else {
+        //     this.ctx!.fillStyle = 'green'
+        // }
 
-        this.ctx?.fillRect(this.cubePos.x, this.cubePos.y, this.cubeSize.w, this.cubeSize.h)
+        // this.ctx?.fillRect(this.cubePos.x, this.cubePos.y, this.cubeSize.w, this.cubeSize.h)
+
+        this.ctx!.drawImage(
+            this.imageInstance,
+            this.imageInstance.framesIndex * (this.imageInstance.width / this.imageInstance.frames),
+            0,
+            this.imageInstance.width / this.imageInstance.frames,
+            this.imageInstance.height,
+            this.cubePos.x,
+            this.cubePos.y,
+            this.cubeSize.w,
+            this.cubeSize.h
+        )
+
+        this.animate(frameIndex)
+
 
         this.gravity()
+    }
+
+    animate(frameIndex: number): void {
+        if (frameIndex % 2 == 0) {
+            this.imageInstance.framesIndex--;
+        }
+        if (this.imageInstance.framesIndex === 0) {
+            this.imageInstance.framesIndex = 9;
+        }
     }
 
     movement(): void {

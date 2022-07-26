@@ -7,7 +7,7 @@ class Cube {
         this.floorBlocks = floorBlocks;
         this.enemies = enemies;
         this.cubePos = { x: this.posX, y: this.posY };
-        this.cubeSize = { w: 50, h: 50 };
+        this.cubeSize = { w: 70.79, h: 70.79 };
         this.cubeCenter = this.cubeSize.w / 2;
         this.cubeVel = { x: 0, y: 0, maxVelX: 5, maxVelY: 20 };
         this.cubePhysics = { gravity: 0.5, friction: 0.6 };
@@ -18,27 +18,45 @@ class Cube {
         this.isInvisible = false;
         this.leftKey = undefined;
         this.rightKey = undefined;
+        this.imageInstance = new Image();
+        this.imageInstance.frames = 0;
+        this.imageInstance.framesIndex = 0;
         this.initCube();
     }
     initCube() {
-        this.draw();
+        this.imageInstance.src = './images/cube/cube2.png';
+        this.imageInstance.frames = 9;
+        this.imageInstance.framesIndex = 0;
+        // this.draw()
     }
-    draw() {
-        var _a;
-        if (this.isHidding) {
-            this.ctx.fillStyle = 'black';
+    draw(frameIndex) {
+        // if (this.isHidding) {
+        //     this.ctx!.fillStyle = 'black'
+        // } else if (this.isFound) {
+        //     this.ctx!.fillStyle = 'red'
+        // } else {
+        //     this.ctx!.fillStyle = 'green'
+        // }
+        // this.ctx?.fillRect(this.cubePos.x, this.cubePos.y, this.cubeSize.w, this.cubeSize.h)
+        this.ctx.drawImage(this.imageInstance, this.imageInstance.framesIndex * (this.imageInstance.width / this.imageInstance.frames), 0, this.imageInstance.width / this.imageInstance.frames, this.imageInstance.height, this.cubePos.x, this.cubePos.y, this.cubeSize.w, this.cubeSize.h);
+        this.animate(frameIndex);
+        this.gravity();
+    }
+    animate(frameIndex) {
+        if (frameIndex % 2 == 0) {
+            this.imageInstance.framesIndex--;
         }
-        else if (this.isFound) {
-            this.ctx.fillStyle = 'red';
-        }
+<<<<<<< HEAD
         else if (this.isInvisible) {
             this.ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
         }
         else {
             this.ctx.fillStyle = 'green';
+=======
+        if (this.imageInstance.framesIndex === 0) {
+            this.imageInstance.framesIndex = 9;
+>>>>>>> 511924772e48fa02d6f3d31405e742b2bd328ac2
         }
-        (_a = this.ctx) === null || _a === void 0 ? void 0 : _a.fillRect(this.cubePos.x, this.cubePos.y, this.cubeSize.w, this.cubeSize.h);
-        this.gravity();
     }
     movement() {
         // Horizontal movement

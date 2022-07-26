@@ -110,7 +110,7 @@ const squbeDarkness = {
             this.clearAll();
             this.frameIndex >= 600 ? this.frameIndex = 0 : this.frameIndex++;
             this.setEventHandlers();
-            (_a = this.cube) === null || _a === void 0 ? void 0 : _a.draw();
+            (_a = this.cube) === null || _a === void 0 ? void 0 : _a.draw(this.frameIndex);
             (_b = this.cube) === null || _b === void 0 ? void 0 : _b.movement();
             if (!((_c = this.invisibleCubePowerUp) === null || _c === void 0 ? void 0 : _c.isActive)) {
                 this.checkLightCollision();
