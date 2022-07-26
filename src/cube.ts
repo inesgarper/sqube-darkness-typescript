@@ -8,7 +8,8 @@ class Cube {
     public isHidding: boolean
     public isFound: boolean
     private isJumping: boolean
-    public isActive: boolean
+    // public isActive: boolean
+    public isInvisible: boolean
 
     // Controls
     public leftKey: boolean | undefined
@@ -21,7 +22,6 @@ class Cube {
         private posY: number,
         private floorBlocks: Array<Cell>,
         private enemies: Array<Spotlight>,
-        private filteredFloorBlocks: Array<Doggy>
 
     ) {
 
@@ -35,7 +35,8 @@ class Cube {
         this.isHidding = false
         this.isFound = false
         this.isJumping = false
-        this.isActive = true
+        // this.isActive = true
+        this.isInvisible = false
 
         this.leftKey = undefined
         this.rightKey = undefined
@@ -53,6 +54,8 @@ class Cube {
             this.ctx!.fillStyle = 'black'
         } else if (this.isFound) {
             this.ctx!.fillStyle = 'red'
+        } else if (this.isInvisible) {
+            this.ctx!.fillStyle = 'rgba(0, 0, 0, 0.1)'
         } else {
             this.ctx!.fillStyle = 'green'
         }
@@ -63,37 +66,36 @@ class Cube {
     }
 
     movement(): void {
-        if (this.isActive) {
 
-            // Horizontal movement
-            if (!this.leftKey && !this.rightKey || this.leftKey && this.rightKey) {
-                this.slowDown()
-            } else if (this.rightKey) {
-                this.moveRight()
-            } else if (this.leftKey) {
-                this.moveLeft()
-            } else {
-                this.stop()
-            }
-
-            // Apply gravity
-            this.gravity()
-
-            // Correct speed
-            this.regulateSpeed()
-
-            // Define movement area
-            this.checkFloorAndWallCollision()
-
-            if (this.cubePos.x < 450 /* && this.cubePos.x > 50 */) {
-                this.cubePos.x += this.cubeVel.x
-                this.cubePos.y += this.cubeVel.y
-            } else {
-                this.scrollPlatforms()
-                this.scrollEnemies()
-            }
-
+        // Horizontal movement
+        if (!this.leftKey && !this.rightKey || this.leftKey && this.rightKey) {
+            this.slowDown()
+        } else if (this.rightKey) {
+            this.moveRight()
+        } else if (this.leftKey) {
+            this.moveLeft()
+        } else {
+            this.stop()
         }
+
+        // Apply gravity
+        this.gravity()
+
+        // Correct speed
+        this.regulateSpeed()
+
+        // Define movement area
+        this.checkFloorAndWallCollision()
+
+        if (this.cubePos.x < 450 /* && this.cubePos.x > 50 */) {
+            this.cubePos.x += this.cubeVel.x
+            this.cubePos.y += this.cubeVel.y
+        } else {
+            this.scrollPlatforms()
+            this.scrollEnemies()
+        }
+
+
     }
 
     regulateSpeed(): void {
@@ -206,7 +208,6 @@ class Cube {
 
             if (block instanceof BrokenPlatform) {
                 blockRect.width = 100
-
             }
 
             // Check collisions
@@ -257,16 +258,6 @@ class Cube {
             return true
         }
     }
-
-    // checkBlockPos(): void {
-    //     this.floorBlocks.forEach(block => {
-    //         if (this.cubePos.x === block.posX) {
-    //             this.ctx!.fillStyle = 'red'
-    //             this.ctx?.fillRect(block.posX, block.posY, 50, 50)
-    //         }
-
-    //     })
-    // }
 
 }
 

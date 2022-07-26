@@ -27,7 +27,7 @@ class Spotlight {
 
         this.spotlightPos = { x: this.posX, y: this.posY }
         this.maxPosX = { l: this.maxPosXLeft, r: this.maxPosXRight }
-        this.spotlightSize = { w: 70, h: 70 }
+        this.spotlightSize = { w: 80, h: 80 }
         this.spotlightCenter = this.spotlightSize.w / 2
         this.spotlightVel = { x: 0, y: 0 }
 

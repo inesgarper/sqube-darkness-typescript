@@ -4,7 +4,7 @@ class Light {
     public lightSize: { w: number, h: number }
     public rotation: number
 
-    public playerFound: boolean
+    public isOn: boolean
 
     public isMovingLeft: boolean | undefined
     public isMovingRight: boolean | undefined
@@ -23,7 +23,7 @@ class Light {
         this.lightSize = { w: this.spotlightSize.w + 600, h: this.spotlightSize.h + 600 }
         this.rotation = 45
 
-        this.playerFound = false
+        this.isOn = true
 
         this.isMovingLeft = undefined
         this.isMovingRight = undefined

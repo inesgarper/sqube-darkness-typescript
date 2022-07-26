@@ -20,7 +20,7 @@ class Doggy {
         this.initFloor();
     }
     initFloor() {
-        console.log('POSICION INICIAL ----->', this.floorPos.x);
+        // console.log('POSICION INICIAL ----->', this.floorPos.x)
         this.drawBlock();
     }
     drawBlock() {

@@ -81,7 +81,7 @@ class TempSpike extends Spike {
         this.movedDistance += this.spikeVel;
     }
     move() {
-        console.log('la distancia --->', this.movedDistance);
+        // console.log('la distancia --->', this.movedDistance)
         if (this.movedDistance >= 50) {
             this.onTop = false;
             setTimeout(() => {

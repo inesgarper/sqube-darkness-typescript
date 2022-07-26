@@ -11,7 +11,7 @@ class Light {
         this.lightPos = { x: this.spotlightPos.x - 300, y: this.spotlightPos.y + 180 };
         this.lightSize = { w: this.spotlightSize.w + 600, h: this.spotlightSize.h + 600 };
         this.rotation = 45;
-        this.playerFound = false;
+        this.isOn = true;
         this.isMovingLeft = undefined;
         this.isMovingRight = undefined;
         this.initLight();

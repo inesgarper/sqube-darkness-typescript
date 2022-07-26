@@ -9,14 +9,16 @@ interface gameTemplate {
     cube: undefined | Cube
     floorBlocks: Array<Cell | Doggy>
     doggysArray: Array<Doggy>
-    // enemiessArray: Array<Cell>
     obstaclesArray: Array<Cell>
-    enemies: Array<Spotlight>
+    spotlights: Array<Spotlight>
+    invisibleCubePowerUp: undefined | InvisibleCube
+    turnOffLightsPowerUp: undefined | TurnOffLights
     level: Array<Array<number>>
     distance: number
     maxPos: number
     pixelDistance: number
     gameOver: { status: boolean, opacity: number }
+    win: { status: boolean, opacity: number }
 
     intervalId: number | undefined
 
@@ -26,7 +28,8 @@ interface gameTemplate {
     createCube(): void
     createFloorBlocks(): void
     filterFloorBlocks(): void
-    createEnemies(): void
+    createSpotlights(): void
+    createPowerUps(): void
     setEventHandlers(): void
     gameLoop(): void
     clearAll(): void
@@ -35,9 +38,12 @@ interface gameTemplate {
     checkCollision(): void
     checkLightCollision(): void
     checkBulletCollision(): void
-    drawTriangle(): void
+    activeInvisibleCube(): void
+    activeTurnLightsOff(): void
     setGameOver(): void
     printGameOverScreen(): void
+    checkWin(): void
+    printVictoryScreen(): void
 
 }
 
@@ -53,12 +59,15 @@ const squbeDarkness: gameTemplate = {
     floorBlocks: [],
     doggysArray: [],
     obstaclesArray: [],
-    enemies: [],
+    spotlights: [],
+    invisibleCubePowerUp: undefined,
+    turnOffLightsPowerUp: undefined,
     level: level1,
     distance: 0,
     pixelDistance: 0,
     maxPos: 0,
     gameOver: { status: false, opacity: 0 },
+    win: { status: false, opacity: 0 },
 
     intervalId: undefined,
 
@@ -68,9 +77,9 @@ const squbeDarkness: gameTemplate = {
         this.createFloorBlocks()
         this.filterFloorBlocks()
         this.createCube()
+        this.createSpotlights()
+        this.createPowerUps()
         this.setEventHandlers()
-        // optional
-        this.createEnemies()
     },
 
     // --- SET UP
@@ -79,7 +88,7 @@ const squbeDarkness: gameTemplate = {
     },
 
     createCube() {
-        this.cube = new Cube(this.ctx, 70, 60, this.floorBlocks, this.enemies, this.doggysArray)
+        this.cube = new Cube(this.ctx, 70, 60, this.floorBlocks, this.spotlights)
     },
 
     createFloorBlocks() {
@@ -146,8 +155,13 @@ const squbeDarkness: gameTemplate = {
         this.obstaclesArray = this.floorBlocks.filter(elm => ((elm instanceof BubbleHole) || (elm instanceof Spike) || (elm instanceof TempSpike))) as Array<BubbleHole | Spike | TempSpike>
     },
 
-    createEnemies() {
-        this.enemies.push(new Spotlight(this.ctx, 800, 50, 600, 1000, 'right', this.cube!, this.floorBlocks))
+    createSpotlights() {
+        this.spotlights.push(new Spotlight(this.ctx, 800, 50, 600, 1000, 'right', this.cube!, this.floorBlocks))
+    },
+
+    createPowerUps() {
+        this.invisibleCubePowerUp = new InvisibleCube(this.ctx, 1400, 100)
+        this.turnOffLightsPowerUp = new TurnOffLights(this.ctx, 1600, 100)
     },
 
     // --- INTERVAL
@@ -158,17 +172,20 @@ const squbeDarkness: gameTemplate = {
             this.setEventHandlers()
             this.cube?.draw()
             this.cube?.movement()
-            // this.cube?.checkBlockPos()
-            this.checkLightCollision()
-            this.checkBulletCollision()
-            this.checkCollision()
-            // ENEMIES
-            this.enemies.forEach(enemy => {
-                enemy.draw()
-                enemy.move()
-                enemy.light?.draw()
-                enemy.light?.move()
-                enemy.bullets.forEach(bullet => {
+            if (!this.invisibleCubePowerUp?.isActive) {
+                this.checkLightCollision()
+                this.checkCollision()
+                this.checkBulletCollision()
+            }
+            // SPOTLIGHTS
+            this.spotlights.forEach(elm => {
+                elm.draw()
+                elm.move()
+                if (elm.light?.isOn) {
+                    elm.light?.draw()
+                }
+                elm.light?.move()
+                elm.bullets.forEach(bullet => {
                     bullet.draw()
                     bullet.move()
                 });
@@ -195,12 +212,12 @@ const squbeDarkness: gameTemplate = {
                 }
                 if (elm.isActive) elm.canMove = true
             })
-
+            this.invisibleCubePowerUp?.draw()
+            this.turnOffLightsPowerUp?.draw()
             this.updateDistance()
             this.printDistance()
             if (this.gameOver.status) this.printGameOverScreen()
-            // this.drawTriangle()
-            // console.log('hola')
+            this.checkWin()
         }, 1000 / 60)
     },
 
@@ -238,19 +255,21 @@ const squbeDarkness: gameTemplate = {
 
     checkLightCollision(): void {
 
-        this.enemies.forEach(enemy => {
-            if (enemy instanceof Spotlight && !this.cube!.isHidding) {
+        this.spotlights.forEach(spotlight => {
 
-                if (this.cube!.cubePos.x < enemy.light!.lightPos.x + enemy.light!.lightSize.w &&
-                    this.cube!.cubePos.x + this.cube!.cubeSize.w > enemy.light!.lightPos.x &&
-                    this.cube!.cubePos.y < enemy.light!.lightPos.y + enemy.light!.lightSize.h &&
-                    this.cube!.cubeSize.h + this.cube!.cubePos.y > enemy.light!.lightPos.y) {
+
+            if (spotlight.light!.isOn && !this.cube!.isHidding) {
+
+                if (this.cube!.cubePos.x < spotlight.light!.lightPos.x + spotlight.light!.lightSize.w &&
+                    this.cube!.cubePos.x + this.cube!.cubeSize.w > spotlight.light!.lightPos.x &&
+                    this.cube!.cubePos.y < spotlight.light!.lightPos.y + spotlight.light!.lightSize.h &&
+                    this.cube!.cubeSize.h + this.cube!.cubePos.y > spotlight.light!.lightPos.y) {
 
                     this.cube!.isFound = true
 
                     if (this.cube!.isFound) {
 
-                        if (this.frameIndex % 30 === 0) enemy.shoot()
+                        if (this.frameIndex % 30 === 0) spotlight.shoot()
 
                     }
 
@@ -258,40 +277,71 @@ const squbeDarkness: gameTemplate = {
                     this.cube!.isFound = false
                 }
             }
+
         })
     },
 
     checkBulletCollision(): void {
 
-        this.enemies.forEach(enemy => {
-            if (enemy instanceof Spotlight) {
+        this.spotlights.forEach(spotlight => {
 
-                enemy.bullets.forEach(bullet => {
-                    if (this.cube!.cubePos.x < bullet.bulletPos.x + bullet.bulletSize.w &&
-                        this.cube!.cubePos.x + this.cube!.cubeSize.w > bullet.bulletPos.x &&
-                        this.cube!.cubePos.y < bullet.bulletPos.y + bullet.bulletSize.h &&
-                        this.cube!.cubeSize.h + this.cube!.cubePos.y > bullet.bulletPos.y) {
 
-                        // GAME OVER
+            spotlight.bullets.forEach(bullet => {
+                if (this.cube!.cubePos.x < bullet.bulletPos.x + bullet.bulletSize.w &&
+                    this.cube!.cubePos.x + this.cube!.cubeSize.w > bullet.bulletPos.x &&
+                    this.cube!.cubePos.y < bullet.bulletPos.y + bullet.bulletSize.h &&
+                    this.cube!.cubeSize.h + this.cube!.cubePos.y > bullet.bulletPos.y) {
+
+                    // this.setGameOver()
+
+                }
+
+                this.floorBlocks.forEach(block => {
+                    if (block.floorPos.x < bullet.bulletPos.x + bullet.bulletSize.w &&
+                        block.floorPos.x + block.width > bullet.bulletPos.x &&
+                        block.floorPos.y < bullet.bulletPos.y + bullet.bulletSize.h &&
+                        block.height + block.floorPos.y > bullet.bulletPos.y) {
+
+                        const indexOfBulletToRemove: number = spotlight.bullets.indexOf(bullet)
+                        spotlight.deleteCollisionedBullet(indexOfBulletToRemove)
 
                     }
-
-                    this.floorBlocks.forEach(block => {
-                        if (block.floorPos.x < bullet.bulletPos.x + bullet.bulletSize.w &&
-                            block.floorPos.x + block.width > bullet.bulletPos.x &&
-                            block.floorPos.y < bullet.bulletPos.y + bullet.bulletSize.h &&
-                            block.height + block.floorPos.y > bullet.bulletPos.y) {
-
-                            const indexOfBulletToRemove: number = enemy.bullets.indexOf(bullet)
-                            enemy.deleteCollisionedBullet(indexOfBulletToRemove)
-
-                        }
-                    })
                 })
-            }
+            })
+
         })
 
     },
+
+    // --- POWERUPS
+    activeInvisibleCube() {
+        if (this.invisibleCubePowerUp?.isAvailable) {
+
+            this.invisibleCubePowerUp!.isActive = true
+            this.cube!.isInvisible = true
+            this.cube!.isFound = false
+
+            setTimeout(() => {
+                this.invisibleCubePowerUp!.isActive = false
+                this.cube!.isInvisible = false
+            }, 5000)
+        }
+    },
+
+    activeTurnLightsOff() {
+        if (this.turnOffLightsPowerUp?.isAvailable) {
+
+            this.turnOffLightsPowerUp!.isActive = true
+            this.spotlights.forEach(spotlight => spotlight.light!.isOn = false)
+            this.cube!.isFound = false
+
+            setTimeout(() => {
+                this.turnOffLightsPowerUp!.isActive = false
+                this.spotlights.forEach(spotlight => spotlight.light!.isOn = true)
+            }, 5000)
+        }
+    },
+
 
     // --- DISTANCE
     updateDistance() {
@@ -325,10 +375,13 @@ const squbeDarkness: gameTemplate = {
             if (key === 'ArrowUp') this.cube!.jump()
             if (key === 'ArrowLeft') this.cube!.leftKey = true
             if (key === 'ArrowRight') this.cube!.rightKey = true
-            if (key === 'ArrowDown') {
-                console.log('POSICION DEL CUBO', this.cube!.cubePos.x)
-                console.log('DISTANCIA EN PIXELES', this.pixelDistance)
-
+            if (key === 'z') {
+                this.activeInvisibleCube()
+                this.invisibleCubePowerUp!.isAvailable = false
+            }
+            if (key === 'x') {
+                this.activeTurnLightsOff()
+                this.turnOffLightsPowerUp!.isAvailable = false
             }
         })
 
@@ -338,18 +391,6 @@ const squbeDarkness: gameTemplate = {
             if (key === 'ArrowLeft') this.cube!.leftKey = false
             if (key === 'ArrowRight') this.cube!.rightKey = false
         })
-    },
-
-    drawTriangle() {
-        // Light
-        // this.ctx!.beginPath();
-        // this.ctx!.moveTo(this.spotlightPos.x + this.spotlightCenter - 200, 350);
-        // this.ctx!.lineTo(this.spotlightPos.x + this.spotlightCenter + 200, 350);
-        // this.ctx!.lineTo(this.spotlightPos.x + this.spotlightCenter, this.spotlightPos.y + this.spotlightCenter);
-        // this.ctx!.closePath();
-
-        // this.ctx!.fillStyle = "#FFCC00";
-        // this.ctx!.fill();
     },
 
     setGameOver() {
@@ -372,10 +413,29 @@ const squbeDarkness: gameTemplate = {
 
         if (this.gameOver.opacity >= 1) clearInterval(this.intervalId)
 
+    },
+
+    checkWin() {
+        if (this.distance * 0.026458 > 100) this.printVictoryScreen()
+    },
+
+    printVictoryScreen() {
+        this.ctx!.globalAlpha = this.win.opacity
+        this.ctx!.fillStyle = 'black'
+        this.ctx!.fillRect(0, 0, 1800, 800)
+        this.ctx!.globalAlpha = 1
+        this.win.opacity += 0.01
+
+        if (this.win.opacity >= 0.40) {
+            this.ctx!.font = '30px sans-serif'
+            this.ctx!.fillStyle = '#ffffff'
+            this.ctx!.fillText('WINNER', 450, 200)
+
+        }
+
+        if (this.win.opacity >= 1) clearInterval(this.intervalId)
     }
 
+
+
 }
-
-
-
-// HASTA AQUÍ PUEDES BORRAR QUERIDO

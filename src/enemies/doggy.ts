@@ -37,7 +37,7 @@ class Doggy {
     }
 
     initFloor(): void {
-        console.log('POSICION INICIAL ----->', this.floorPos.x)
+        // console.log('POSICION INICIAL ----->', this.floorPos.x)
         this.drawBlock()
     }
 

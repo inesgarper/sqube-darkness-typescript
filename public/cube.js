@@ -1,12 +1,11 @@
 "use strict";
 class Cube {
-    constructor(ctx, posX, posY, floorBlocks, enemies, filteredFloorBlocks) {
+    constructor(ctx, posX, posY, floorBlocks, enemies) {
         this.ctx = ctx;
         this.posX = posX;
         this.posY = posY;
         this.floorBlocks = floorBlocks;
         this.enemies = enemies;
-        this.filteredFloorBlocks = filteredFloorBlocks;
         this.cubePos = { x: this.posX, y: this.posY };
         this.cubeSize = { w: 50, h: 50 };
         this.cubeCenter = this.cubeSize.w / 2;
@@ -15,7 +14,8 @@ class Cube {
         this.isHidding = false;
         this.isFound = false;
         this.isJumping = false;
-        this.isActive = true;
+        // this.isActive = true
+        this.isInvisible = false;
         this.leftKey = undefined;
         this.rightKey = undefined;
         this.initCube();
@@ -31,6 +31,9 @@ class Cube {
         else if (this.isFound) {
             this.ctx.fillStyle = 'red';
         }
+        else if (this.isInvisible) {
+            this.ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+        }
         else {
             this.ctx.fillStyle = 'green';
         }
@@ -38,34 +41,32 @@ class Cube {
         this.gravity();
     }
     movement() {
-        if (this.isActive) {
-            // Horizontal movement
-            if (!this.leftKey && !this.rightKey || this.leftKey && this.rightKey) {
-                this.slowDown();
-            }
-            else if (this.rightKey) {
-                this.moveRight();
-            }
-            else if (this.leftKey) {
-                this.moveLeft();
-            }
-            else {
-                this.stop();
-            }
-            // Apply gravity
-            this.gravity();
-            // Correct speed
-            this.regulateSpeed();
-            // Define movement area
-            this.checkFloorAndWallCollision();
-            if (this.cubePos.x < 450 /* && this.cubePos.x > 50 */) {
-                this.cubePos.x += this.cubeVel.x;
-                this.cubePos.y += this.cubeVel.y;
-            }
-            else {
-                this.scrollPlatforms();
-                this.scrollEnemies();
-            }
+        // Horizontal movement
+        if (!this.leftKey && !this.rightKey || this.leftKey && this.rightKey) {
+            this.slowDown();
+        }
+        else if (this.rightKey) {
+            this.moveRight();
+        }
+        else if (this.leftKey) {
+            this.moveLeft();
+        }
+        else {
+            this.stop();
+        }
+        // Apply gravity
+        this.gravity();
+        // Correct speed
+        this.regulateSpeed();
+        // Define movement area
+        this.checkFloorAndWallCollision();
+        if (this.cubePos.x < 450 /* && this.cubePos.x > 50 */) {
+            this.cubePos.x += this.cubeVel.x;
+            this.cubePos.y += this.cubeVel.y;
+        }
+        else {
+            this.scrollPlatforms();
+            this.scrollEnemies();
         }
     }
     regulateSpeed() {
