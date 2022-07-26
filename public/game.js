@@ -100,19 +100,20 @@ const squbeDarkness = {
         this.spotlights.push(new Spotlight(this.ctx, 800, 50, 600, 1000, 'right', this.cube, this.floorBlocks));
     },
     createPowerUps() {
-        this.invisibleCubePowerUp = new InvisibleCube(this.ctx, 1400, 100);
-        this.turnOffLightsPowerUp = new TurnOffLights(this.ctx, 1600, 100);
+        this.invisibleCubePowerUp = new InvisibleCube(this.ctx, 1650, 50);
+        this.turnOffLightsPowerUp = new TurnOffLights(this.ctx, 1650, 150);
     },
     // --- INTERVAL
     gameLoop() {
         this.intervalId = setInterval(() => {
-            var _a, _b, _c, _d, _e;
+            var _a, _b, _c, _d, _e, _f;
             this.clearAll();
             this.framesCounter >= 600 ? this.framesCounter = 0 : this.framesCounter++;
             this.setEventHandlers();
             (_a = this.cube) === null || _a === void 0 ? void 0 : _a.draw(this.framesCounter);
-            (_b = this.cube) === null || _b === void 0 ? void 0 : _b.movement();
-            if (!((_c = this.invisibleCubePowerUp) === null || _c === void 0 ? void 0 : _c.isActive)) {
+            (_b = this.cube) === null || _b === void 0 ? void 0 : _b.spinRight(this.framesCounter);
+            (_c = this.cube) === null || _c === void 0 ? void 0 : _c.movement();
+            if (!((_d = this.invisibleCubePowerUp) === null || _d === void 0 ? void 0 : _d.isActive)) {
                 this.checkLightCollision();
                 this.checkCollision();
                 this.checkBulletCollision();
@@ -154,8 +155,8 @@ const squbeDarkness = {
                 if (elm.isActive)
                     elm.canMove = true;
             });
-            (_d = this.invisibleCubePowerUp) === null || _d === void 0 ? void 0 : _d.draw();
-            (_e = this.turnOffLightsPowerUp) === null || _e === void 0 ? void 0 : _e.draw();
+            (_e = this.invisibleCubePowerUp) === null || _e === void 0 ? void 0 : _e.draw();
+            (_f = this.turnOffLightsPowerUp) === null || _f === void 0 ? void 0 : _f.draw();
             this.updateDistance();
             this.printDistance();
             if (this.gameOver.status)

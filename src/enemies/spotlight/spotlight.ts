@@ -40,7 +40,7 @@ class Spotlight {
         this.bullets = []
 
         this.imageInstance = new Image()
-        this.imageInstance.frames = 9
+        this.imageInstance.frames = 18
         this.imageInstance.framesIndex = 0
         this.imageInstance.src = './images/spotlight/spotlight.png'
 

@@ -160,8 +160,8 @@ const squbeDarkness: gameTemplate = {
     },
 
     createPowerUps() {
-        this.invisibleCubePowerUp = new InvisibleCube(this.ctx, 1400, 100)
-        this.turnOffLightsPowerUp = new TurnOffLights(this.ctx, 1600, 100)
+        this.invisibleCubePowerUp = new InvisibleCube(this.ctx, 1650, 50)
+        this.turnOffLightsPowerUp = new TurnOffLights(this.ctx, 1650, 150)
     },
 
     // --- INTERVAL
@@ -171,6 +171,7 @@ const squbeDarkness: gameTemplate = {
             this.framesCounter >= 600 ? this.framesCounter = 0 : this.framesCounter++
             this.setEventHandlers()
             this.cube?.draw(this.framesCounter)
+            this.cube?.spinRight(this.framesCounter)
             this.cube?.movement()
             if (!this.invisibleCubePowerUp?.isActive) {
                 this.checkLightCollision()

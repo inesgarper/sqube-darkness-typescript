@@ -15,6 +15,7 @@ class Cube {
         this.isFound = false;
         this.isJumping = false;
         this.isInvisible = false;
+        this.canSpinRight = false;
         this.leftKey = undefined;
         this.rightKey = undefined;
         this.imageInstance = new Image();
@@ -36,15 +37,20 @@ class Cube {
         this.isInvisible ? this.ctx.globalAlpha = 0.1 : this.ctx.globalAlpha = 1;
         this.ctx.drawImage(this.imageInstance, this.imageInstance.framesIndex * (this.imageInstance.width / this.imageInstance.frames), 0, this.imageInstance.width / this.imageInstance.frames, this.imageInstance.height, this.cubePos.x, this.cubePos.y, this.cubeSize.w, this.cubeSize.h);
         this.ctx.globalAlpha = 1;
-        this.animate(framesCounter);
+        if (this.rightKey && this.isJumping)
+            this.canSpinRight = true;
         this.gravity();
     }
-    animate(framesCounter) {
-        if (framesCounter % 2 == 0) {
-            this.imageInstance.framesIndex--;
-        }
-        if (this.imageInstance.framesIndex < 0) {
-            this.imageInstance.framesIndex = 8;
+    spinRight(framesCounter) {
+        if (this.canSpinRight) {
+            if (framesCounter % 2 == 0) {
+                this.imageInstance.framesIndex--;
+            }
+            if (this.imageInstance.framesIndex < 0) {
+                this.imageInstance.framesIndex = 8;
+            }
+            if (this.imageInstance.framesIndex === 0)
+                this.canSpinRight = false;
         }
     }
     movement() {
@@ -149,6 +155,18 @@ class Cube {
     }
     checkFloorAndWallCollision() {
         // Collision Cube Rects
+        // let horizontalRect = {
+        //     x: this.cubePos.x + this.cubeVel.x + 10.395,
+        //     y: this.cubePos.y + 10.395,
+        //     width: this.cubeSize.w - 20.29,
+        //     height: this.cubeSize.h - 20.29
+        // }
+        // let verticalRect = {
+        //     x: this.cubePos.x + 10.395,
+        //     y: this.cubePos.y + this.cubeVel.y + 10.395,
+        //     width: this.cubeSize.w - 20.29,
+        //     height: this.cubeSize.h - 20.29
+        // }
         let horizontalRect = {
             x: this.cubePos.x + this.cubeVel.x,
             y: this.cubePos.y,
