@@ -156,7 +156,7 @@ const squbeDarkness: gameTemplate = {
             this.clearAll()
             this.frameIndex >= 600 ? this.frameIndex = 0 : this.frameIndex++
             this.setEventHandlers()
-            this.cube?.draw()
+            this.cube?.draw(this.frameIndex)
             this.cube?.movement()
             // this.cube?.checkBlockPos()
             this.checkLightCollision()

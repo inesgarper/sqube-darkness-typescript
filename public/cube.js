@@ -8,7 +8,7 @@ class Cube {
         this.enemies = enemies;
         this.filteredFloorBlocks = filteredFloorBlocks;
         this.cubePos = { x: this.posX, y: this.posY };
-        this.cubeSize = { w: 50, h: 50 };
+        this.cubeSize = { w: 70.79, h: 70.79 };
         this.cubeCenter = this.cubeSize.w / 2;
         this.cubeVel = { x: 0, y: 0, maxVelX: 5, maxVelY: 20 };
         this.cubePhysics = { gravity: 0.5, friction: 0.6 };
@@ -18,24 +18,37 @@ class Cube {
         this.isActive = true;
         this.leftKey = undefined;
         this.rightKey = undefined;
+        this.imageInstance = new Image();
+        this.imageInstance.frames = 0;
+        this.imageInstance.framesIndex = 0;
         this.initCube();
     }
     initCube() {
-        this.draw();
+        this.imageInstance.src = './images/cube/cube2.png';
+        this.imageInstance.frames = 9;
+        this.imageInstance.framesIndex = 0;
+        // this.draw()
     }
-    draw() {
-        var _a;
-        if (this.isHidding) {
-            this.ctx.fillStyle = 'black';
-        }
-        else if (this.isFound) {
-            this.ctx.fillStyle = 'red';
-        }
-        else {
-            this.ctx.fillStyle = 'green';
-        }
-        (_a = this.ctx) === null || _a === void 0 ? void 0 : _a.fillRect(this.cubePos.x, this.cubePos.y, this.cubeSize.w, this.cubeSize.h);
+    draw(frameIndex) {
+        // if (this.isHidding) {
+        //     this.ctx!.fillStyle = 'black'
+        // } else if (this.isFound) {
+        //     this.ctx!.fillStyle = 'red'
+        // } else {
+        //     this.ctx!.fillStyle = 'green'
+        // }
+        // this.ctx?.fillRect(this.cubePos.x, this.cubePos.y, this.cubeSize.w, this.cubeSize.h)
+        this.ctx.drawImage(this.imageInstance, this.imageInstance.framesIndex * (this.imageInstance.width / this.imageInstance.frames), 0, this.imageInstance.width / this.imageInstance.frames, this.imageInstance.height, this.cubePos.x, this.cubePos.y, this.cubeSize.w, this.cubeSize.h);
+        this.animate(frameIndex);
         this.gravity();
+    }
+    animate(frameIndex) {
+        if (frameIndex % 2 == 0) {
+            this.imageInstance.framesIndex--;
+        }
+        if (this.imageInstance.framesIndex === 0) {
+            this.imageInstance.framesIndex = 9;
+        }
     }
     movement() {
         if (this.isActive) {
