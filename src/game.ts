@@ -179,12 +179,12 @@ const squbeDarkness: gameTemplate = {
             }
             // SPOTLIGHTS
             this.spotlights.forEach(elm => {
-                elm.draw()
-                elm.move()
                 if (elm.light?.isOn) {
                     elm.light?.draw()
                 }
                 elm.light?.move()
+                elm.draw(this.framesCounter)
+                elm.move()
                 elm.bullets.forEach(bullet => {
                     bullet.draw()
                     bullet.move()

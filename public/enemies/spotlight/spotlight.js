@@ -18,17 +18,30 @@ class Spotlight {
         this.isMovingRight = undefined;
         this.light = undefined;
         this.bullets = [];
+        this.imageInstance = new Image();
+        this.imageInstance.frames = 9;
+        this.imageInstance.framesIndex = 0;
+        this.imageInstance.src = './images/spotlight/spotlight.png';
         this.initSpotlight();
     }
     initSpotlight() {
-        this.draw();
+        // this.draw()
         this.setDirection();
         this.createLight();
     }
-    draw() {
-        var _a;
-        this.ctx.fillStyle = 'white';
-        (_a = this.ctx) === null || _a === void 0 ? void 0 : _a.fillRect(this.spotlightPos.x, this.spotlightPos.y, this.spotlightSize.w, this.spotlightSize.h);
+    draw(framesCounter) {
+        this.ctx.drawImage(this.imageInstance, this.imageInstance.framesIndex * (this.imageInstance.width / this.imageInstance.frames), 0, this.imageInstance.width / this.imageInstance.frames, this.imageInstance.height, this.spotlightPos.x, this.spotlightPos.y, this.spotlightSize.w, this.spotlightSize.h);
+        this.animate(framesCounter);
+        // this.ctx!.fillStyle = 'white'
+        // this.ctx?.fillRect(this.spotlightPos.x, this.spotlightPos.y, this.spotlightSize.w, this.spotlightSize.h)
+    }
+    animate(framesCounter) {
+        if (framesCounter % 5 == 0) {
+            this.imageInstance.framesIndex++;
+        }
+        if (this.imageInstance.framesIndex >= this.imageInstance.frames) {
+            this.imageInstance.framesIndex = 0;
+        }
     }
     setDirection() {
         if (this.initialDirection === 'left') {
