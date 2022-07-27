@@ -36,7 +36,6 @@ const squbeDarkness = {
         this.cube = new Cube(this.ctx, 420, 450, this.floorBlocks, this.spotlights);
     },
     createFloorBlocks() {
-        // INTENTO CON CONTADOR CUTRE
         this.level.forEach((row, i) => {
             let contador = 0;
             row.forEach((cell, j) => {
@@ -64,40 +63,13 @@ const squbeDarkness = {
                 }
             });
         });
-        // SE DESCUAJARINGA EL MAPA
-        // this.level.forEach((row, i) => {
-        //     let point: number = -50
-        //     let variable: number = 50
-        //     row.forEach((cell, j) => {
-        //         if (cell === 1) {
-        //             this.floorBlocks.push(new FloorBlock(this.ctx, point + variable, i * 50))
-        //             variable = 50
-        //         } else if (cell === 2) {
-        //             this.floorBlocks.push(new BubbleHole(this.ctx, point + variable, i * 50))
-        //             variable = 50
-        //         } else if (cell === 3) {
-        //             this.floorBlocks.push(new Doggy(this.ctx, point + variable, i * 50))
-        //             variable = 50
-        //         } else if (cell === 4) {
-        //             this.floorBlocks.push(new TempSpike(this.ctx, point + variable, i * 50))
-        //             variable = 50
-        //         } else if (cell === 5) {
-        //             this.floorBlocks.push(new Spike(this.ctx, point + variable, i * 50))
-        //             variable = 50
-        //         } else if (cell === 6) {
-        //             this.floorBlocks.push(new BrokenPlatform(this.ctx, point + variable, i * 50))
-        //             variable = 100
-        //         }
-        //         point += variable
-        //     })
-        // })
     },
     filterFloorBlocks() {
         this.doggysArray = this.floorBlocks.filter(elm => (elm instanceof Doggy));
         this.obstaclesArray = this.floorBlocks.filter(elm => ((elm instanceof BubbleHole) || (elm instanceof Spike) || (elm instanceof TempSpike)));
     },
     createSpotlights() {
-        this.spotlights.push(new Spotlight(this.ctx, 800, 50, 600, 1000, 'right', this.cube, this.floorBlocks));
+        this.spotlights.push(new Spotlight(this.ctx, 800, 100, 600, 1000, 'right', this.cube, this.floorBlocks));
     },
     createPowerUps() {
         this.invisibleCubePowerUp = new InvisibleCube(this.ctx, 1650, 50);
@@ -169,18 +141,19 @@ const squbeDarkness = {
     checkCollision() {
         this.doggysArray.forEach(elm => {
             if (this.cube.cubePos.x < elm.floorPos.x + elm.width &&
-                this.cube.cubePos.x + this.cube.cubeSize.w > elm.floorPos.x &&
+                this.cube.cubePos.x + this.cube.cubeSize.w - 20 > elm.floorPos.x &&
                 this.cube.cubePos.y < elm.floorPos.y + elm.height &&
                 this.cube.cubeSize.h + this.cube.cubePos.y > elm.floorPos.y) {
+                console.log('perro');
                 // this.setGameOver()
             }
         });
         this.obstaclesArray.forEach(elm => {
             if (elm instanceof (Spike || TempSpike)) {
-                if (this.cube.cubePos.x + 10 < elm.floorPos.x + elm.width &&
-                    this.cube.cubePos.x + this.cube.cubeSize.w - 10 > elm.floorPos.x &&
-                    this.cube.cubePos.y + 12.5 < elm.floorPos.y + elm.height &&
-                    this.cube.cubeSize.h + this.cube.cubePos.y > elm.floorPos.y) {
+                if (this.cube.cubePos.x < elm.floorPos.x + elm.width &&
+                    this.cube.cubePos.x + this.cube.cubeSize.w - 20 > elm.floorPos.x &&
+                    this.cube.cubePos.y < elm.floorPos.y + elm.height &&
+                    this.cube.cubeSize.h + this.cube.cubePos.y - 22.5 > elm.floorPos.y) {
                     // this.setGameOver()
                 }
             }
@@ -189,7 +162,7 @@ const squbeDarkness = {
                     this.cube.cubePos.x + this.cube.cubeSize.w > elm.floorPos.x &&
                     this.cube.cubePos.y < elm.floorPos.y + elm.height &&
                     this.cube.cubeSize.h + this.cube.cubePos.y > elm.floorPos.y) {
-                    // this.setGameOver()
+                    this.setGameOver();
                 }
             }
         });

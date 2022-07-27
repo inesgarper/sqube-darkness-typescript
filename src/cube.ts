@@ -66,24 +66,14 @@ class Cube {
         this.imageInstanceLeft.framesIndex = 0
 
         this.imageInstanceHidden = new Image()
-        this.imageInstanceHidden.src = './images/cube/cube-hidden2.png'
+        this.imageInstanceHidden.src = './images/cube/cube-hidden3.png'
 
         this.imageSrc
 
     }
 
     draw(): void {
-
-        // if (this.isHidding) {
-        //     this.ctx!.fillStyle = 'black'
-        // } else if (this.isFound) {
-        //     this.ctx!.fillStyle = 'red'
-        // } else if (this.isInvisible) {
-        //     this.ctx!.fillStyle = 'rgba(0, 0, 0, 0.1)'
-        // } else {
-        //     this.ctx!.fillStyle = 'green'
-        // }
-
+        
         if (this.isFacingRight) this.imageSrc = this.imageInstanceRight
         if (this.isFacingLeft) this.imageSrc = this.imageInstanceLeft
         if (this.isHidding) this.imageSrc = this.imageInstanceHidden
