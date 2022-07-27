@@ -88,7 +88,7 @@ const squbeDarkness: gameTemplate = {
     },
 
     createCube() {
-        this.cube = new Cube(this.ctx, 70, 60, this.floorBlocks, this.spotlights)
+        this.cube = new Cube(this.ctx, 420, 450, this.floorBlocks, this.spotlights)
     },
 
     createFloorBlocks() {
@@ -146,7 +146,6 @@ const squbeDarkness: gameTemplate = {
         //         point += variable
         //     })
         // })
-
 
     },
 
@@ -377,7 +376,7 @@ const squbeDarkness: gameTemplate = {
 
     // --- CLEAR SCREEN
     clearAll() {
-        this.ctx?.clearRect(0, 0, 1800, 800)
+        this.ctx?.clearRect(0, 0, 1800, 900)
     },
 
 

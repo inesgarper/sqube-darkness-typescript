@@ -26,11 +26,14 @@ class Light {
         (_b = this.ctx) === null || _b === void 0 ? void 0 : _b.translate(this.lightPos.x + (this.lightSize.w / 2), this.lightPos.y + (this.lightSize.h / 2));
         (_c = this.ctx) === null || _c === void 0 ? void 0 : _c.rotate(this.rotation * Math.PI / 180);
         (_d = this.ctx) === null || _d === void 0 ? void 0 : _d.translate(-(this.lightPos.x + this.lightSize.w / 2), -(this.lightPos.y + this.lightSize.h / 2));
-        const lightGradient = this.ctx.createLinearGradient(this.lightPos.x + 40 + this.spotlightSize.w, this.lightPos.y + 40, this.lightPos.x + 40 + this.spotlightSize.w, this.lightSize.h + 500);
-        lightGradient.addColorStop(0, "#EAE22A");
-        lightGradient.addColorStop(1, "#DFDFDF00");
+        const lightGradient = this.ctx.createLinearGradient(0, 0, 1800, 1800);
+        lightGradient.addColorStop(0, 'rgba(255,255,255,0.7)');
+        lightGradient.addColorStop(0.2, 'rgba(255,255,255,0.5)');
+        lightGradient.addColorStop(0.4, 'rgba(255,255,255,0.1)');
+        lightGradient.addColorStop(0.9, 'rgba(255,255,255,0)');
         this.ctx.fillStyle = lightGradient;
         (_e = this.ctx) === null || _e === void 0 ? void 0 : _e.fillRect(this.lightPos.x, this.lightPos.y, this.lightSize.w, this.lightSize.h);
+        // this.ctx?.fillRect(0, 0, 1800, 1800)
         (_f = this.ctx) === null || _f === void 0 ? void 0 : _f.restore();
     }
     setDirection() {

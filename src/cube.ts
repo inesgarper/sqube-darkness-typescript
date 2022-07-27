@@ -56,12 +56,12 @@ class Cube {
         this.rightKey = undefined
 
         this.imageInstanceRight = new Image()
-        this.imageInstanceRight.src = './images/cube/cube-right.png'
+        this.imageInstanceRight.src = './images/cube/cubePORFI.png'
         this.imageInstanceRight.frames = 9
         this.imageInstanceRight.framesIndex = 0
 
         this.imageInstanceLeft = new Image()
-        this.imageInstanceLeft.src = './images/cube/cube-left.png'
+        this.imageInstanceLeft.src = './images/cube/cubePORFI.png'
         this.imageInstanceLeft.frames = 9
         this.imageInstanceLeft.framesIndex = 0
 
@@ -86,7 +86,7 @@ class Cube {
 
         if (this.isFacingRight) this.imageSrc = this.imageInstanceRight
         if (this.isFacingLeft) this.imageSrc = this.imageInstanceLeft
-        if (this.isHidding) this.imageSrc = this.imageInstanceHidden
+        // if (this.isHidding) this.imageSrc = this.imageInstanceHidden
 
         this.isInvisible ? this.ctx!.globalAlpha = 0.1 : this.ctx!.globalAlpha = 1
 
@@ -155,7 +155,7 @@ class Cube {
         // Define movement area
         this.checkFloorAndWallCollision()
 
-        if (this.cubePos.x < 450 /* && this.cubePos.x > 50 */) {
+        if (this.cubePos.x < 420 /* && this.cubePos.x > 50 */) {
             this.cubePos.x += this.cubeVel.x
             this.cubePos.y += this.cubeVel.y
         } else {
@@ -256,33 +256,33 @@ class Cube {
     checkFloorAndWallCollision(): void {
 
         // Collision Cube Rects
-        // let horizontalRect = {
-        //     x: this.cubePos.x + this.cubeVel.x,
-        //     y: this.cubePos.y,
-        //     width: this.cubeSize.w - 10.395,
-        //     height: this.cubeSize.h - 10.395
-        // }
-
-        // let verticalRect = {
-        //     x: this.cubePos.x,
-        //     y: this.cubePos.y + this.cubeVel.y,
-        //     width: this.cubeSize.w - 10.395,
-        //     height: this.cubeSize.h - 10.395
-        // }
-
         let horizontalRect = {
             x: this.cubePos.x + this.cubeVel.x,
             y: this.cubePos.y,
-            width: this.cubeSize.w,
-            height: this.cubeSize.h
+            width: this.cubeSize.w - 20.79,
+            height: this.cubeSize.h - 11
         }
 
         let verticalRect = {
             x: this.cubePos.x,
             y: this.cubePos.y + this.cubeVel.y,
-            width: this.cubeSize.w,
-            height: this.cubeSize.h
+            width: this.cubeSize.w - 20.79,
+            height: this.cubeSize.h - 11
         }
+
+        // let horizontalRect = {
+        //     x: this.cubePos.x + this.cubeVel.x,
+        //     y: this.cubePos.y,
+        //     width: this.cubeSize.w,
+        //     height: this.cubeSize.h
+        // }
+
+        // let verticalRect = {
+        //     x: this.cubePos.x,
+        //     y: this.cubePos.y + this.cubeVel.y,
+        //     width: this.cubeSize.w,
+        //     height: this.cubeSize.h
+        // }
 
         this.floorBlocks.forEach((block, i) => {
 

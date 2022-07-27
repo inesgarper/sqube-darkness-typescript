@@ -33,7 +33,7 @@ const squbeDarkness = {
         this.ctx = this.canvas.getContext('2d');
     },
     createCube() {
-        this.cube = new Cube(this.ctx, 70, 60, this.floorBlocks, this.spotlights);
+        this.cube = new Cube(this.ctx, 420, 450, this.floorBlocks, this.spotlights);
     },
     createFloorBlocks() {
         // INTENTO CON CONTADOR CUTRE
@@ -287,7 +287,7 @@ const squbeDarkness = {
     // --- CLEAR SCREEN
     clearAll() {
         var _a;
-        (_a = this.ctx) === null || _a === void 0 ? void 0 : _a.clearRect(0, 0, 1800, 800);
+        (_a = this.ctx) === null || _a === void 0 ? void 0 : _a.clearRect(0, 0, 1800, 900);
     },
     // --- CONTROLS
     setEventHandlers() {

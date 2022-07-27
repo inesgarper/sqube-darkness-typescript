@@ -38,26 +38,28 @@ class Light {
 
     draw(): void {
 
+
+
         this.ctx?.save()
 
         this.ctx?.translate(this.lightPos.x + (this.lightSize.w / 2), this.lightPos.y + (this.lightSize.h / 2))
         this.ctx?.rotate(this.rotation * Math.PI / 180)
         this.ctx?.translate(-(this.lightPos.x + this.lightSize.w / 2), -(this.lightPos.y + this.lightSize.h / 2))
 
-        const lightGradient = this.ctx!.createLinearGradient(
-            this.lightPos.x + 40 + this.spotlightSize.w,
-            this.lightPos.y + 40,
-            this.lightPos.x + 40 + this.spotlightSize.w,
-            this.lightSize.h + 500
-        );
-
-        lightGradient.addColorStop(0, "#EAE22A");
-        lightGradient.addColorStop(1, "#DFDFDF00");
+        const lightGradient = this.ctx!.createLinearGradient(0, 0, 1800, 1800)
+        lightGradient.addColorStop(0, 'rgba(255,255,255,0.7)')
+        lightGradient.addColorStop(0.2, 'rgba(255,255,255,0.5)');
+        lightGradient.addColorStop(0.4, 'rgba(255,255,255,0.1)')
+        lightGradient.addColorStop(0.9, 'rgba(255,255,255,0)')
 
         this.ctx!.fillStyle = lightGradient;
         this.ctx?.fillRect(this.lightPos.x, this.lightPos.y, this.lightSize.w, this.lightSize.h)
-
+        // this.ctx?.fillRect(0, 0, 1800, 1800)
         this.ctx?.restore()
+
+
+
+
 
     }
 
