@@ -174,6 +174,7 @@ class BrokenPlatform extends FloorBlock {
     public brokenPlatformVel
     public brokenPlatformPhysics
     public isBroken: boolean
+    private isDoneBreaking: boolean
     private imageInstance: any
 
     constructor(
@@ -185,6 +186,7 @@ class BrokenPlatform extends FloorBlock {
         this.brokenPlatformVel = { x: 0, y: 0 }
         this.brokenPlatformPhysics = { gravity: 0.5 }
         this.isBroken = false
+        this.isDoneBreaking = false
 
         this.imageInstance = new Image()
         this.imageInstance.src = './images/broken-platform/broken-platform.png'
@@ -207,12 +209,14 @@ class BrokenPlatform extends FloorBlock {
             this.width + 50,
             this.height
         )
-        if (this.isBroken) this.animate(framesCounter)
+        if (this.isDoneBreaking) this.animate(framesCounter)
 
     }
     animate(framesCounter: number): void {
-        if (framesCounter % 3 == 0) {
-            this.imageInstance.framesIndex++;
+        if (this.isDoneBreaking) {
+            if (framesCounter % 3 == 0) {
+                this.imageInstance.framesIndex++;
+            }
         }
     }
 
@@ -220,6 +224,7 @@ class BrokenPlatform extends FloorBlock {
         setTimeout(() => {
             this.brokenPlatformVel.y += this.brokenPlatformPhysics.gravity
             this.floorPos.y += this.brokenPlatformVel.y
+            this.isDoneBreaking = true
         }, 400)
     }
 }

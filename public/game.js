@@ -100,19 +100,21 @@ const squbeDarkness = {
         this.spotlights.push(new Spotlight(this.ctx, 800, 50, 600, 1000, 'right', this.cube, this.floorBlocks));
     },
     createPowerUps() {
-        this.invisibleCubePowerUp = new InvisibleCube(this.ctx, 1400, 100);
-        this.turnOffLightsPowerUp = new TurnOffLights(this.ctx, 1600, 100);
+        this.invisibleCubePowerUp = new InvisibleCube(this.ctx, 1650, 50);
+        this.turnOffLightsPowerUp = new TurnOffLights(this.ctx, 1650, 150);
     },
     // --- INTERVAL
     gameLoop() {
         this.intervalId = setInterval(() => {
-            var _a, _b, _c, _d, _e;
+            var _a, _b, _c, _d, _e, _f, _g;
             this.clearAll();
             this.framesCounter >= 600 ? this.framesCounter = 0 : this.framesCounter++;
             this.setEventHandlers();
-            (_a = this.cube) === null || _a === void 0 ? void 0 : _a.draw(this.framesCounter);
-            (_b = this.cube) === null || _b === void 0 ? void 0 : _b.movement();
-            if (!((_c = this.invisibleCubePowerUp) === null || _c === void 0 ? void 0 : _c.isActive)) {
+            (_a = this.cube) === null || _a === void 0 ? void 0 : _a.draw();
+            (_b = this.cube) === null || _b === void 0 ? void 0 : _b.spinRight(this.framesCounter);
+            (_c = this.cube) === null || _c === void 0 ? void 0 : _c.spinLeft(this.framesCounter);
+            (_d = this.cube) === null || _d === void 0 ? void 0 : _d.movement();
+            if (!((_e = this.invisibleCubePowerUp) === null || _e === void 0 ? void 0 : _e.isActive)) {
                 this.checkLightCollision();
                 this.checkCollision();
                 this.checkBulletCollision();
@@ -154,8 +156,8 @@ const squbeDarkness = {
                 if (elm.isActive)
                     elm.canMove = true;
             });
-            (_d = this.invisibleCubePowerUp) === null || _d === void 0 ? void 0 : _d.draw();
-            (_e = this.turnOffLightsPowerUp) === null || _e === void 0 ? void 0 : _e.draw();
+            (_f = this.invisibleCubePowerUp) === null || _f === void 0 ? void 0 : _f.draw();
+            (_g = this.turnOffLightsPowerUp) === null || _g === void 0 ? void 0 : _g.draw();
             this.updateDistance();
             this.printDistance();
             if (this.gameOver.status)
@@ -267,9 +269,20 @@ const squbeDarkness = {
         }
     },
     printDistance() {
-        this.ctx.font = '20px Sans-serif';
+        this.ctx.font = '30px Sans-serif';
         this.ctx.fillStyle = 'white';
-        this.ctx.fillText(`DISTANCE: ${(this.distance * 0.026458).toFixed(2)} meters`, 450, 100);
+        if (this.distance * 0.026458 < 10) {
+            this.ctx.fillText(`${(this.distance * 0.026458).toFixed(2)}`, 1652, 300);
+        }
+        else if ((this.distance * 0.026458 > 10)
+            && (this.distance * 0.026458 < 100)) {
+            this.ctx.fillText(`${(this.distance * 0.026458).toFixed(2)}`, 1636, 300);
+        }
+        else {
+            this.ctx.fillText(`${(this.distance * 0.026458).toFixed(2)}`, 1620, 300);
+        }
+        this.ctx.font = '20px Sans-serif';
+        this.ctx.fillText('m', 1715, 300);
     },
     // --- CLEAR SCREEN
     clearAll() {

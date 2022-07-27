@@ -5,13 +5,9 @@ class PowerUp {
         this.posX = posX;
         this.posY = posY;
         this.powerUpPos = { x: this.posX, y: this.posY };
-        this.powerUpSize = { w: 50, h: 100 };
+        this.powerUpSize = { w: 80, h: 80 };
         this.isAvailable = true;
         this.isActive = false;
-        this.initPowerups();
-    }
-    initPowerups() {
-        this.draw();
     }
     draw() {
         var _a;
@@ -30,6 +26,13 @@ class InvisibleCube extends PowerUp {
         this.ctx = ctx;
         this.posX = posX;
         this.posY = posY;
+        this.imageInstance = new Image();
+        this.imageInstance.src = './images/power-ups/invisible-cube.png';
+    }
+    draw() {
+        this.isAvailable ? this.ctx.globalAlpha = 1 : this.ctx.globalAlpha = 0.15;
+        this.ctx.drawImage(this.imageInstance, this.powerUpPos.x, this.powerUpPos.y, this.powerUpSize.w, this.powerUpSize.h);
+        this.ctx.globalAlpha = 1;
     }
 }
 class TurnOffLights extends PowerUp {
@@ -38,5 +41,12 @@ class TurnOffLights extends PowerUp {
         this.ctx = ctx;
         this.posX = posX;
         this.posY = posY;
+        this.imageInstance = new Image();
+        this.imageInstance.src = './images/power-ups/lights-off.png';
+    }
+    draw() {
+        this.isAvailable ? this.ctx.globalAlpha = 1 : this.ctx.globalAlpha = 0.15;
+        this.ctx.drawImage(this.imageInstance, this.powerUpPos.x, this.powerUpPos.y, this.powerUpSize.w, this.powerUpSize.h);
+        this.ctx.globalAlpha = 1;
     }
 }
