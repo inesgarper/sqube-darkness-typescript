@@ -202,7 +202,7 @@ const squbeDarkness: gameTemplate = {
                 elm.drawBlock(this.framesCounter)
             })
 
-            // DOGGYS
+            // DOGGIES
             this.doggysArray.forEach((elm, i) => {
                 if (elm.initialPos.x < this.cube!.cubePos.x + this.pixelDistance ||
                     elm.initialPos.x - 350 > this.cube!.cubePos.x + this.pixelDistance) {
@@ -285,7 +285,6 @@ const squbeDarkness: gameTemplate = {
 
         this.spotlights.forEach(spotlight => {
 
-
             spotlight.bullets.forEach(bullet => {
                 if (this.cube!.cubePos.x < bullet.bulletPos.x + bullet.bulletSize.w &&
                     this.cube!.cubePos.x + this.cube!.cubeSize.w > bullet.bulletPos.x &&
@@ -293,7 +292,6 @@ const squbeDarkness: gameTemplate = {
                     this.cube!.cubeSize.h + this.cube!.cubePos.y > bullet.bulletPos.y) {
 
                     // this.setGameOver()
-
                 }
 
                 this.floorBlocks.forEach(block => {
@@ -304,7 +302,6 @@ const squbeDarkness: gameTemplate = {
 
                         const indexOfBulletToRemove: number = spotlight.bullets.indexOf(bullet)
                         spotlight.deleteCollisionedBullet(indexOfBulletToRemove)
-
                     }
                 })
             })

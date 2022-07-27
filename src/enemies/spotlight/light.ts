@@ -45,10 +45,10 @@ class Light {
         this.ctx?.translate(-(this.lightPos.x + this.lightSize.w / 2), -(this.lightPos.y + this.lightSize.h / 2))
 
         const lightGradient = this.ctx!.createLinearGradient(
-            this.lightPos.x + 40 + this.spotlightSize.w,
             this.lightPos.y + 40,
             this.lightPos.x + 40 + this.spotlightSize.w,
-            this.lightSize.h + 500
+            this.lightSize.h + 500,
+            this.lightPos.x + 40 + this.spotlightSize.w,
         );
 
         lightGradient.addColorStop(0, "#EAE22A");
