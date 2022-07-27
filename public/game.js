@@ -268,9 +268,20 @@ const squbeDarkness = {
         }
     },
     printDistance() {
-        this.ctx.font = '20px Sans-serif';
+        this.ctx.font = '30px Sans-serif';
         this.ctx.fillStyle = 'white';
-        this.ctx.fillText(`DISTANCE: ${(this.distance * 0.026458).toFixed(2)} meters`, 450, 100);
+        if (this.distance * 0.026458 < 10) {
+            this.ctx.fillText(`${(this.distance * 0.026458).toFixed(2)}`, 1652, 300);
+        }
+        else if ((this.distance * 0.026458 > 10)
+            && (this.distance * 0.026458 < 100)) {
+            this.ctx.fillText(`${(this.distance * 0.026458).toFixed(2)}`, 1636, 300);
+        }
+        else {
+            this.ctx.fillText(`${(this.distance * 0.026458).toFixed(2)}`, 1620, 300);
+        }
+        this.ctx.font = '20px Sans-serif';
+        this.ctx.fillText('m', 1715, 300);
     },
     // --- CLEAR SCREEN
     clearAll() {

@@ -124,6 +124,7 @@ class BrokenPlatform extends FloorBlock {
         this.brokenPlatformVel = { x: 0, y: 0 };
         this.brokenPlatformPhysics = { gravity: 0.5 };
         this.isBroken = false;
+        this.isDoneBreaking = false;
         this.imageInstance = new Image();
         this.imageInstance.src = './images/broken-platform/broken-platform.png';
         this.imageInstance.frames = 10;
@@ -133,18 +134,21 @@ class BrokenPlatform extends FloorBlock {
         // this.ctx!.fillStyle = '#f3e600'
         // this.ctx?.fillRect(this.floorPos.x, this.floorPos.y, this.width + 50, this.height)
         this.ctx.drawImage(this.imageInstance, this.imageInstance.framesIndex * (this.imageInstance.width / this.imageInstance.frames), 0, this.imageInstance.width / this.imageInstance.frames, this.imageInstance.height, this.floorPos.x, this.floorPos.y, this.width + 50, this.height);
-        if (this.isBroken)
+        if (this.isDoneBreaking)
             this.animate(framesCounter);
     }
     animate(framesCounter) {
-        if (framesCounter % 3 == 0) {
-            this.imageInstance.framesIndex++;
+        if (this.isDoneBreaking) {
+            if (framesCounter % 3 == 0) {
+                this.imageInstance.framesIndex++;
+            }
         }
     }
     break() {
         setTimeout(() => {
             this.brokenPlatformVel.y += this.brokenPlatformPhysics.gravity;
             this.floorPos.y += this.brokenPlatformVel.y;
+            this.isDoneBreaking = true;
         }, 400);
     }
 }

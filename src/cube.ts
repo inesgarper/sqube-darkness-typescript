@@ -10,12 +10,14 @@ class Cube {
     private isJumping: boolean
     public isInvisible: boolean
     private canSpinRight: boolean
+    private canSpinLeft: boolean
 
     // Controls
     public leftKey: boolean | undefined
     public rightKey: boolean | undefined
 
-    private imageInstance: any
+    private imageInstanceRight: any
+    private imageInstanceLeft: any
 
 
     constructor(
@@ -40,14 +42,21 @@ class Cube {
         this.isJumping = false
         this.isInvisible = false
         this.canSpinRight = false
+        this.canSpinLeft = false
+
 
         this.leftKey = undefined
         this.rightKey = undefined
 
-        this.imageInstance = new Image()
-        this.imageInstance.src = './images/cube/cube2.png'
-        this.imageInstance.frames = 9
-        this.imageInstance.framesIndex = 0
+        this.imageInstanceRight = new Image()
+        this.imageInstanceRight.src = './images/cube/cube-right.png'
+        this.imageInstanceRight.frames = 9
+        this.imageInstanceRight.framesIndex = 0
+
+        this.imageInstanceLeft = new Image()
+        this.imageInstanceLeft.src = './images/cube/cube-left.png'
+        this.imageInstanceLeft.frames = 9
+        this.imageInstanceLeft.framesIndex = 0
 
     }
 
@@ -64,23 +73,21 @@ class Cube {
         // }
 
         // this.ctx?.fillRect(this.cubePos.x, this.cubePos.y, this.cubeSize.w, this.cubeSize.h)
+
         this.isInvisible ? this.ctx!.globalAlpha = 0.1 : this.ctx!.globalAlpha = 1
 
-
         this.ctx!.drawImage(
-            this.imageInstance,
-            this.imageInstance.framesIndex * (this.imageInstance.width / this.imageInstance.frames),
+            this.imageInstanceRight,
+            this.imageInstanceRight.framesIndex * (this.imageInstanceRight.width / this.imageInstanceRight.frames),
             0,
-            this.imageInstance.width / this.imageInstance.frames,
-            this.imageInstance.height,
+            this.imageInstanceRight.width / this.imageInstanceRight.frames,
+            this.imageInstanceRight.height,
             this.cubePos.x,
             this.cubePos.y,
             this.cubeSize.w,
             this.cubeSize.h
         )
         this.ctx!.globalAlpha = 1
-        if (this.rightKey && this.isJumping) this.canSpinRight = true
-
 
         this.gravity()
     }
@@ -88,12 +95,12 @@ class Cube {
     spinRight(framesCounter: number): void {
         if (this.canSpinRight) {
             if (framesCounter % 2 == 0) {
-                this.imageInstance.framesIndex--;
+                this.imageInstanceRight.framesIndex--;
             }
-            if (this.imageInstance.framesIndex < 0) {
-                this.imageInstance.framesIndex = 8;
+            if (this.imageInstanceRight.framesIndex < 0) {
+                this.imageInstanceRight.framesIndex = 8;
             }
-            if (this.imageInstance.framesIndex === 0) this.canSpinRight = false
+            if (this.imageInstanceRight.framesIndex === 0) this.canSpinRight = false
         }
     }
 
@@ -159,11 +166,13 @@ class Cube {
     moveRight(): void {
         this.cubeVel.x++
         this.unblockIfHidding()
+        if (this.isJumping) this.canSpinRight = true
     }
 
     moveLeft(): void {
         this.cubeVel.x--
         this.unblockIfHidding()
+        if (this.isJumping) this.canSpinLeft = true
     }
 
     stop(): void {
