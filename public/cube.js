@@ -15,6 +15,8 @@ class Cube {
         this.isFound = false;
         this.isJumping = false;
         this.isInvisible = false;
+        this.isFacingRight = true;
+        this.isFacingLeft = false;
         this.canSpinRight = false;
         this.canSpinLeft = false;
         this.leftKey = undefined;
@@ -27,6 +29,7 @@ class Cube {
         this.imageInstanceLeft.src = './images/cube/cube-left.png';
         this.imageInstanceLeft.frames = 9;
         this.imageInstanceLeft.framesIndex = 0;
+        this.imageSrc;
     }
     draw(framesCounter) {
         // if (this.isHidding) {
@@ -38,22 +41,37 @@ class Cube {
         // } else {
         //     this.ctx!.fillStyle = 'green'
         // }
-        // this.ctx?.fillRect(this.cubePos.x, this.cubePos.y, this.cubeSize.w, this.cubeSize.h)
+        if (this.isFacingRight)
+            this.imageSrc = this.imageInstanceRight;
+        if (this.isFacingLeft)
+            this.imageSrc = this.imageInstanceLeft;
         this.isInvisible ? this.ctx.globalAlpha = 0.1 : this.ctx.globalAlpha = 1;
-        this.ctx.drawImage(this.imageInstanceRight, this.imageInstanceRight.framesIndex * (this.imageInstanceRight.width / this.imageInstanceRight.frames), 0, this.imageInstanceRight.width / this.imageInstanceRight.frames, this.imageInstanceRight.height, this.cubePos.x, this.cubePos.y, this.cubeSize.w, this.cubeSize.h);
+        this.ctx.drawImage(this.imageSrc, this.imageSrc.framesIndex * (this.imageSrc.width / this.imageSrc.frames), 0, this.imageSrc.width / this.imageSrc.frames, this.imageSrc.height, this.cubePos.x, this.cubePos.y, this.cubeSize.w, this.cubeSize.h);
         this.ctx.globalAlpha = 1;
         this.gravity();
     }
     spinRight(framesCounter) {
         if (this.canSpinRight) {
             if (framesCounter % 2 == 0) {
-                this.imageInstanceRight.framesIndex--;
+                this.imageSrc.framesIndex--;
             }
-            if (this.imageInstanceRight.framesIndex < 0) {
-                this.imageInstanceRight.framesIndex = 8;
+            if (this.imageSrc.framesIndex < 0) {
+                this.imageSrc.framesIndex = 8;
             }
-            if (this.imageInstanceRight.framesIndex === 0)
+            if (this.imageSrc.framesIndex === 0)
                 this.canSpinRight = false;
+        }
+    }
+    spinLeft(framesCounter) {
+        if (this.canSpinLeft) {
+            if (framesCounter % 2 == 0) {
+                this.imageSrc.framesIndex++;
+            }
+            if (this.imageSrc.framesIndex > 8) {
+                this.imageSrc.framesIndex = 0;
+            }
+            if (this.imageSrc.framesIndex === 0)
+                this.canSpinLeft = false;
         }
     }
     movement() {
@@ -112,12 +130,16 @@ class Cube {
         }
     }
     moveRight() {
+        this.isFacingLeft = false;
+        this.isFacingRight = true;
         this.cubeVel.x++;
         this.unblockIfHidding();
         if (this.isJumping)
             this.canSpinRight = true;
     }
     moveLeft() {
+        this.isFacingRight = false;
+        this.isFacingLeft = true;
         this.cubeVel.x--;
         this.unblockIfHidding();
         if (this.isJumping)

@@ -172,6 +172,7 @@ const squbeDarkness: gameTemplate = {
             this.setEventHandlers()
             this.cube?.draw(this.framesCounter)
             this.cube?.spinRight(this.framesCounter)
+            this.cube?.spinLeft(this.framesCounter)
             this.cube?.movement()
             if (!this.invisibleCubePowerUp?.isActive) {
                 this.checkLightCollision()
@@ -230,7 +231,7 @@ const squbeDarkness: gameTemplate = {
                 this.cube!.cubePos.x + this.cube!.cubeSize.w > elm.floorPos.x &&
                 this.cube!.cubePos.y < elm.floorPos.y + elm.height &&
                 this.cube!.cubeSize.h + this.cube!.cubePos.y > elm.floorPos.y) {
-                // this.setGameOver()
+                this.setGameOver()
             }
         })
 
@@ -240,14 +241,14 @@ const squbeDarkness: gameTemplate = {
                     this.cube!.cubePos.x + this.cube!.cubeSize.w - 10 > elm.floorPos.x &&
                     this.cube!.cubePos.y + 12.5 < elm.floorPos.y + elm.height &&
                     this.cube!.cubeSize.h + this.cube!.cubePos.y > elm.floorPos.y) {
-                    // this.setGameOver()
+                    this.setGameOver()
                 }
             } else {
                 if (this.cube!.cubePos.x < elm.floorPos.x + elm.width &&
                     this.cube!.cubePos.x + this.cube!.cubeSize.w > elm.floorPos.x &&
                     this.cube!.cubePos.y < elm.floorPos.y + elm.height &&
                     this.cube!.cubeSize.h + this.cube!.cubePos.y > elm.floorPos.y) {
-                    // this.setGameOver()
+                    this.setGameOver()
                 }
             }
         })

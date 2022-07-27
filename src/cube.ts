@@ -9,6 +9,8 @@ class Cube {
     public isFound: boolean
     private isJumping: boolean
     public isInvisible: boolean
+    private isFacingRight: boolean
+    private isFacingLeft: boolean
     private canSpinRight: boolean
     private canSpinLeft: boolean
 
@@ -16,6 +18,7 @@ class Cube {
     public leftKey: boolean | undefined
     public rightKey: boolean | undefined
 
+    private imageSrc: any
     private imageInstanceRight: any
     private imageInstanceLeft: any
 
@@ -41,6 +44,9 @@ class Cube {
         this.isFound = false
         this.isJumping = false
         this.isInvisible = false
+
+        this.isFacingRight = true
+        this.isFacingLeft = false
         this.canSpinRight = false
         this.canSpinLeft = false
 
@@ -58,6 +64,8 @@ class Cube {
         this.imageInstanceLeft.frames = 9
         this.imageInstanceLeft.framesIndex = 0
 
+        this.imageSrc
+
     }
 
     draw(framesCounter: number): void {
@@ -72,16 +80,17 @@ class Cube {
         //     this.ctx!.fillStyle = 'green'
         // }
 
-        // this.ctx?.fillRect(this.cubePos.x, this.cubePos.y, this.cubeSize.w, this.cubeSize.h)
+        if (this.isFacingRight) this.imageSrc = this.imageInstanceRight
+        if (this.isFacingLeft) this.imageSrc = this.imageInstanceLeft
 
         this.isInvisible ? this.ctx!.globalAlpha = 0.1 : this.ctx!.globalAlpha = 1
 
         this.ctx!.drawImage(
-            this.imageInstanceRight,
-            this.imageInstanceRight.framesIndex * (this.imageInstanceRight.width / this.imageInstanceRight.frames),
+            this.imageSrc,
+            this.imageSrc.framesIndex * (this.imageSrc.width / this.imageSrc.frames),
             0,
-            this.imageInstanceRight.width / this.imageInstanceRight.frames,
-            this.imageInstanceRight.height,
+            this.imageSrc.width / this.imageSrc.frames,
+            this.imageSrc.height,
             this.cubePos.x,
             this.cubePos.y,
             this.cubeSize.w,
@@ -95,12 +104,23 @@ class Cube {
     spinRight(framesCounter: number): void {
         if (this.canSpinRight) {
             if (framesCounter % 2 == 0) {
-                this.imageInstanceRight.framesIndex--;
+                this.imageSrc.framesIndex--;
             }
-            if (this.imageInstanceRight.framesIndex < 0) {
-                this.imageInstanceRight.framesIndex = 8;
+            if (this.imageSrc.framesIndex < 0) {
+                this.imageSrc.framesIndex = 8;
             }
-            if (this.imageInstanceRight.framesIndex === 0) this.canSpinRight = false
+            if (this.imageSrc.framesIndex === 0) this.canSpinRight = false
+        }
+    }
+    spinLeft(framesCounter: number): void {
+        if (this.canSpinLeft) {
+            if (framesCounter % 2 == 0) {
+                this.imageSrc.framesIndex++;
+            }
+            if (this.imageSrc.framesIndex > 8) {
+                this.imageSrc.framesIndex = 0;
+            }
+            if (this.imageSrc.framesIndex === 0) this.canSpinLeft = false
         }
     }
 
@@ -164,12 +184,16 @@ class Cube {
     }
 
     moveRight(): void {
+        this.isFacingLeft = false
+        this.isFacingRight = true
         this.cubeVel.x++
         this.unblockIfHidding()
         if (this.isJumping) this.canSpinRight = true
     }
 
     moveLeft(): void {
+        this.isFacingRight = false
+        this.isFacingLeft = true
         this.cubeVel.x--
         this.unblockIfHidding()
         if (this.isJumping) this.canSpinLeft = true

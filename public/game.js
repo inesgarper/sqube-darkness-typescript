@@ -106,14 +106,15 @@ const squbeDarkness = {
     // --- INTERVAL
     gameLoop() {
         this.intervalId = setInterval(() => {
-            var _a, _b, _c, _d, _e, _f;
+            var _a, _b, _c, _d, _e, _f, _g;
             this.clearAll();
             this.framesCounter >= 600 ? this.framesCounter = 0 : this.framesCounter++;
             this.setEventHandlers();
             (_a = this.cube) === null || _a === void 0 ? void 0 : _a.draw(this.framesCounter);
             (_b = this.cube) === null || _b === void 0 ? void 0 : _b.spinRight(this.framesCounter);
-            (_c = this.cube) === null || _c === void 0 ? void 0 : _c.movement();
-            if (!((_d = this.invisibleCubePowerUp) === null || _d === void 0 ? void 0 : _d.isActive)) {
+            (_c = this.cube) === null || _c === void 0 ? void 0 : _c.spinLeft(this.framesCounter);
+            (_d = this.cube) === null || _d === void 0 ? void 0 : _d.movement();
+            if (!((_e = this.invisibleCubePowerUp) === null || _e === void 0 ? void 0 : _e.isActive)) {
                 this.checkLightCollision();
                 this.checkCollision();
                 this.checkBulletCollision();
@@ -155,8 +156,8 @@ const squbeDarkness = {
                 if (elm.isActive)
                     elm.canMove = true;
             });
-            (_e = this.invisibleCubePowerUp) === null || _e === void 0 ? void 0 : _e.draw();
-            (_f = this.turnOffLightsPowerUp) === null || _f === void 0 ? void 0 : _f.draw();
+            (_f = this.invisibleCubePowerUp) === null || _f === void 0 ? void 0 : _f.draw();
+            (_g = this.turnOffLightsPowerUp) === null || _g === void 0 ? void 0 : _g.draw();
             this.updateDistance();
             this.printDistance();
             if (this.gameOver.status)
@@ -171,7 +172,7 @@ const squbeDarkness = {
                 this.cube.cubePos.x + this.cube.cubeSize.w > elm.floorPos.x &&
                 this.cube.cubePos.y < elm.floorPos.y + elm.height &&
                 this.cube.cubeSize.h + this.cube.cubePos.y > elm.floorPos.y) {
-                // this.setGameOver()
+                this.setGameOver();
             }
         });
         this.obstaclesArray.forEach(elm => {
@@ -180,7 +181,7 @@ const squbeDarkness = {
                     this.cube.cubePos.x + this.cube.cubeSize.w - 10 > elm.floorPos.x &&
                     this.cube.cubePos.y + 12.5 < elm.floorPos.y + elm.height &&
                     this.cube.cubeSize.h + this.cube.cubePos.y > elm.floorPos.y) {
-                    // this.setGameOver()
+                    this.setGameOver();
                 }
             }
             else {
@@ -188,7 +189,7 @@ const squbeDarkness = {
                     this.cube.cubePos.x + this.cube.cubeSize.w > elm.floorPos.x &&
                     this.cube.cubePos.y < elm.floorPos.y + elm.height &&
                     this.cube.cubeSize.h + this.cube.cubePos.y > elm.floorPos.y) {
-                    // this.setGameOver()
+                    this.setGameOver();
                 }
             }
         });
