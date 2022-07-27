@@ -21,6 +21,7 @@ class Cube {
     private imageSrc: any
     private imageInstanceRight: any
     private imageInstanceLeft: any
+    private imageInstanceHidden: any
 
 
     constructor(
@@ -64,11 +65,14 @@ class Cube {
         this.imageInstanceLeft.frames = 9
         this.imageInstanceLeft.framesIndex = 0
 
+        this.imageInstanceHidden = new Image()
+        this.imageInstanceHidden.src = './images/cube/cube-hidden.png'
+
         this.imageSrc
 
     }
 
-    draw(framesCounter: number): void {
+    draw(): void {
 
         // if (this.isHidding) {
         //     this.ctx!.fillStyle = 'black'
@@ -82,20 +86,25 @@ class Cube {
 
         if (this.isFacingRight) this.imageSrc = this.imageInstanceRight
         if (this.isFacingLeft) this.imageSrc = this.imageInstanceLeft
+        if (this.isHidding) this.imageSrc = this.imageInstanceHidden
 
         this.isInvisible ? this.ctx!.globalAlpha = 0.1 : this.ctx!.globalAlpha = 1
 
-        this.ctx!.drawImage(
-            this.imageSrc,
-            this.imageSrc.framesIndex * (this.imageSrc.width / this.imageSrc.frames),
-            0,
-            this.imageSrc.width / this.imageSrc.frames,
-            this.imageSrc.height,
-            this.cubePos.x,
-            this.cubePos.y,
-            this.cubeSize.w,
-            this.cubeSize.h
-        )
+        if (this.imageSrc === this.imageInstanceHidden) {
+            this.ctx!.drawImage(this.imageSrc, this.cubePos.x, this.cubePos.y, this.cubeSize.w, this.cubeSize.h)
+        } else {
+            this.ctx!.drawImage(
+                this.imageSrc,
+                this.imageSrc.framesIndex * (this.imageSrc.width / this.imageSrc.frames),
+                0,
+                this.imageSrc.width / this.imageSrc.frames,
+                this.imageSrc.height,
+                this.cubePos.x,
+                this.cubePos.y,
+                this.cubeSize.w,
+                this.cubeSize.h
+            )
+        }
         this.ctx!.globalAlpha = 1
 
         this.gravity()
@@ -248,17 +257,17 @@ class Cube {
 
         // Collision Cube Rects
         // let horizontalRect = {
-        //     x: this.cubePos.x + this.cubeVel.x + 10.395,
-        //     y: this.cubePos.y + 10.395,
-        //     width: this.cubeSize.w - 20.29,
-        //     height: this.cubeSize.h - 20.29
+        //     x: this.cubePos.x + this.cubeVel.x,
+        //     y: this.cubePos.y,
+        //     width: this.cubeSize.w - 10.395,
+        //     height: this.cubeSize.h - 10.395
         // }
 
         // let verticalRect = {
-        //     x: this.cubePos.x + 10.395,
-        //     y: this.cubePos.y + this.cubeVel.y + 10.395,
-        //     width: this.cubeSize.w - 20.29,
-        //     height: this.cubeSize.h - 20.29
+        //     x: this.cubePos.x,
+        //     y: this.cubePos.y + this.cubeVel.y,
+        //     width: this.cubeSize.w - 10.395,
+        //     height: this.cubeSize.h - 10.395
         // }
 
         let horizontalRect = {
@@ -299,6 +308,7 @@ class Cube {
 
                     this.cubePos.x = horizontalRect.x
                     this.cubeVel.x = 0
+                    console.log('se esconde')
                     this.isHidding = true
                     this.isFound = false
                 }
