@@ -4,6 +4,10 @@
     font-family: Helvetica, sans-serif;
 }
 
+.logo {
+    width: 300px;
+}
+
 .gradient {
     position: absolute;
     top: 0;
@@ -16,7 +20,11 @@
 
 .header {
     background-color: black;
+    padding: 30px;
     box-shadow: 1px -1px 31px 7px rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+
 }
 
 h1 {
