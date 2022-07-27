@@ -26,7 +26,7 @@ class Light {
         (_b = this.ctx) === null || _b === void 0 ? void 0 : _b.translate(this.lightPos.x + (this.lightSize.w / 2), this.lightPos.y + (this.lightSize.h / 2));
         (_c = this.ctx) === null || _c === void 0 ? void 0 : _c.rotate(this.rotation * Math.PI / 180);
         (_d = this.ctx) === null || _d === void 0 ? void 0 : _d.translate(-(this.lightPos.x + this.lightSize.w / 2), -(this.lightPos.y + this.lightSize.h / 2));
-        const lightGradient = this.ctx.createLinearGradient(this.lightPos.x + 40 + this.spotlightSize.w, this.lightPos.y + 40, this.lightPos.x + 40 + this.spotlightSize.w, this.lightSize.h + 500);
+        const lightGradient = this.ctx.createLinearGradient(this.lightPos.y + 40, this.lightPos.x + 40 + this.spotlightSize.w, this.lightSize.h + 500, this.lightPos.x + 40 + this.spotlightSize.w);
         lightGradient.addColorStop(0, "#EAE22A");
         lightGradient.addColorStop(1, "#DFDFDF00");
         this.ctx.fillStyle = lightGradient;

@@ -144,7 +144,7 @@ const squbeDarkness = {
                 }
                 elm.drawBlock(this.framesCounter);
             });
-            // DOGGYS
+            // DOGGIES
             this.doggysArray.forEach((elm, i) => {
                 if (elm.initialPos.x < this.cube.cubePos.x + this.pixelDistance ||
                     elm.initialPos.x - 350 > this.cube.cubePos.x + this.pixelDistance) {
