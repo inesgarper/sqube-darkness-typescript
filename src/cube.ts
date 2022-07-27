@@ -73,7 +73,7 @@ class Cube {
     }
 
     draw(): void {
-        
+
         if (this.isFacingRight) this.imageSrc = this.imageInstanceRight
         if (this.isFacingLeft) this.imageSrc = this.imageInstanceLeft
         if (this.isHidding) this.imageSrc = this.imageInstanceHidden
@@ -145,7 +145,7 @@ class Cube {
         // Define movement area
         this.checkFloorAndWallCollision()
 
-        if (this.cubePos.x < 420 /* && this.cubePos.x > 50 */) {
+        if (this.cubePos.x < 400 /* && this.cubePos.x > 50 */) {
             this.cubePos.x += this.cubeVel.x
             this.cubePos.y += this.cubeVel.y
         } else {

@@ -33,7 +33,7 @@ const squbeDarkness = {
         this.ctx = this.canvas.getContext('2d');
     },
     createCube() {
-        this.cube = new Cube(this.ctx, 420, 450, this.floorBlocks, this.spotlights);
+        this.cube = new Cube(this.ctx, 400, 450, this.floorBlocks, this.spotlights);
     },
     createFloorBlocks() {
         this.level.forEach((row, i) => {
@@ -69,7 +69,7 @@ const squbeDarkness = {
         this.obstaclesArray = this.floorBlocks.filter(elm => ((elm instanceof BubbleHole) || (elm instanceof Spike) || (elm instanceof TempSpike)));
     },
     createSpotlights() {
-        this.spotlights.push(new Spotlight(this.ctx, 800, 100, 600, 1000, 'right', this.cube, this.floorBlocks));
+        this.spotlights.push(new Spotlight(this.ctx, 1200, 100, 600, 1000, 'right', this.cube, this.floorBlocks));
     },
     createPowerUps() {
         this.invisibleCubePowerUp = new InvisibleCube(this.ctx, 1650, 50);
@@ -162,7 +162,7 @@ const squbeDarkness = {
                     this.cube.cubePos.x + this.cube.cubeSize.w > elm.floorPos.x &&
                     this.cube.cubePos.y < elm.floorPos.y + elm.height &&
                     this.cube.cubeSize.h + this.cube.cubePos.y > elm.floorPos.y) {
-                    this.setGameOver();
+                    // this.setGameOver()
                 }
             }
         });
@@ -307,7 +307,7 @@ const squbeDarkness = {
             clearInterval(this.intervalId);
     },
     checkWin() {
-        if (this.distance * 0.026458 > 100)
+        if (this.distance * 0.026458 > 103)
             this.printVictoryScreen();
     },
     printVictoryScreen() {

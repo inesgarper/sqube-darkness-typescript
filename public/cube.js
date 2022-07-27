@@ -94,7 +94,7 @@ class Cube {
         this.regulateSpeed();
         // Define movement area
         this.checkFloorAndWallCollision();
-        if (this.cubePos.x < 420 /* && this.cubePos.x > 50 */) {
+        if (this.cubePos.x < 400 /* && this.cubePos.x > 50 */) {
             this.cubePos.x += this.cubeVel.x;
             this.cubePos.y += this.cubeVel.y;
         }

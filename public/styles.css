@@ -33,14 +33,24 @@ h1 {
 }
 
 .dark-bg {
-    background-color: black;
     text-align: center;
     position: fixed;
     bottom: 0;
+    right: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
 }
 
 canvas {
     position: fixed;
     bottom: 0;
     width: 100%;
+}
+
+p {
+    font-family: Helvetica, sans-serif;
+    font-size: 14px;
+    color: #6f6f6f;
+    padding: 10px;
 }

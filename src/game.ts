@@ -88,7 +88,7 @@ const squbeDarkness: gameTemplate = {
     },
 
     createCube() {
-        this.cube = new Cube(this.ctx, 420, 450, this.floorBlocks, this.spotlights)
+        this.cube = new Cube(this.ctx, 400, 450, this.floorBlocks, this.spotlights)
     },
 
     createFloorBlocks() {
@@ -123,7 +123,7 @@ const squbeDarkness: gameTemplate = {
     },
 
     createSpotlights() {
-        this.spotlights.push(new Spotlight(this.ctx, 800, 100, 600, 1000, 'right', this.cube!, this.floorBlocks))
+        this.spotlights.push(new Spotlight(this.ctx, 1200, 100, 600, 1000, 'right', this.cube!, this.floorBlocks))
     },
 
     createPowerUps() {
@@ -216,7 +216,7 @@ const squbeDarkness: gameTemplate = {
                     this.cube!.cubePos.x + this.cube!.cubeSize.w > elm.floorPos.x &&
                     this.cube!.cubePos.y < elm.floorPos.y + elm.height &&
                     this.cube!.cubeSize.h + this.cube!.cubePos.y > elm.floorPos.y) {
-                    this.setGameOver()
+                    // this.setGameOver()
                 }
             }
         })
@@ -260,7 +260,6 @@ const squbeDarkness: gameTemplate = {
                     this.cube!.cubePos.x + this.cube!.cubeSize.w > bullet.bulletPos.x &&
                     this.cube!.cubePos.y < bullet.bulletPos.y + bullet.bulletSize.h &&
                     this.cube!.cubeSize.h + this.cube!.cubePos.y > bullet.bulletPos.y) {
-
                     // this.setGameOver()
                 }
 
@@ -392,7 +391,7 @@ const squbeDarkness: gameTemplate = {
     },
 
     checkWin() {
-        if (this.distance * 0.026458 > 100) this.printVictoryScreen()
+        if (this.distance * 0.026458 > 103) this.printVictoryScreen()
     },
 
     printVictoryScreen() {
