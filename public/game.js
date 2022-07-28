@@ -17,9 +17,14 @@ const squbeDarkness = {
     maxPos: 0,
     gameOver: { status: false, opacity: 0 },
     win: { status: false, opacity: 0 },
+    shootAudio: undefined,
+    backgroundMusicAudio: undefined,
+    lightAudio: undefined,
+    invisibilityAudio: undefined,
     imageInstanceGameOver: new Image(),
     imageInstanceWinner: new Image(),
     intervalId: undefined,
+    startButton: document.querySelector('button'),
     init() {
         this.setContext();
         this.gameLoop();
@@ -30,6 +35,14 @@ const squbeDarkness = {
         this.createPowerUps();
         this.setEventHandlers();
         this.getImageInstance();
+        this.backgroundMusicAudio = new Audio('./sounds/background-music.mp3');
+        this.backgroundMusicAudio.volume = 0.2;
+        this.shootAudio = new Audio('./sounds/shoot.wav');
+        this.shootAudio.volume = 0.1;
+        this.lightAudio = new Audio('./sounds/light.wav');
+        this.lightAudio.volume = 0.1;
+        this.invisibilityAudio = new Audio('./sounds/invisibility.wav');
+        this.invisibilityAudio.volume = 0.1;
     },
     // --- SET UP
     setContext() {
@@ -83,6 +96,7 @@ const squbeDarkness = {
         this.intervalId = setInterval(() => {
             var _a, _b, _c, _d, _e, _f, _g, _h, _j;
             this.clearAll();
+            this.backgroundMusicAudio.play();
             this.framesCounter >= 600 ? this.framesCounter = 0 : this.framesCounter++;
             this.setEventHandlers();
             (_a = this.cube) === null || _a === void 0 ? void 0 : _a.draw();
@@ -145,6 +159,7 @@ const squbeDarkness = {
             if (this.gameOver.status)
                 this.printGameOverScreen();
             this.checkWin();
+            this.resetGame();
         }, 1000 / 60);
     },
     // --- COLLISIONS
@@ -186,7 +201,7 @@ const squbeDarkness = {
                     this.cube.cubeSize.h + this.cube.cubePos.y > spotlight.light.lightPos.y) {
                     this.cube.isFound = true;
                     if (this.cube.isFound) {
-                        if (this.framesCounter % 30 === 0)
+                        if (this.framesCounter % 70 === 0)
                             spotlight.shoot();
                     }
                 }
@@ -203,13 +218,17 @@ const squbeDarkness = {
                     this.cube.cubePos.x + this.cube.cubeSize.w > bullet.bulletPos.x &&
                     this.cube.cubePos.y < bullet.bulletPos.y + bullet.bulletSize.h &&
                     this.cube.cubeSize.h + this.cube.cubePos.y > bullet.bulletPos.y) {
-                    // this.setGameOver()
+                    this.shootAudio.currentTime = 0;
+                    this.shootAudio.play();
+                    this.setGameOver();
                 }
                 this.floorBlocks.forEach(block => {
                     if (block.floorPos.x < bullet.bulletPos.x + bullet.bulletSize.w &&
                         block.floorPos.x + block.width > bullet.bulletPos.x &&
                         block.floorPos.y < bullet.bulletPos.y + bullet.bulletSize.h &&
                         block.height + block.floorPos.y > bullet.bulletPos.y) {
+                        this.shootAudio.currentTime = 0;
+                        this.shootAudio.play();
                         const indexOfBulletToRemove = spotlight.bullets.indexOf(bullet);
                         spotlight.deleteCollisionedBullet(indexOfBulletToRemove);
                     }
@@ -221,6 +240,7 @@ const squbeDarkness = {
     activeInvisibleCube() {
         var _a;
         if ((_a = this.invisibleCubePowerUp) === null || _a === void 0 ? void 0 : _a.isAvailable) {
+            this.invisibilityAudio.play();
             this.invisibleCubePowerUp.isActive = true;
             this.cube.isInvisible = true;
             this.cube.isFound = false;
@@ -233,12 +253,14 @@ const squbeDarkness = {
     activeTurnLightsOff() {
         var _a;
         if ((_a = this.turnOffLightsPowerUp) === null || _a === void 0 ? void 0 : _a.isAvailable) {
+            this.lightAudio.play();
             this.turnOffLightsPowerUp.isActive = true;
             this.spotlights.forEach(spotlight => spotlight.light.isOn = false);
             this.cube.isFound = false;
             setTimeout(() => {
                 this.turnOffLightsPowerUp.isActive = false;
                 this.spotlights.forEach(spotlight => spotlight.light.isOn = true);
+                this.lightAudio.play();
             }, 5000);
         }
     },
@@ -367,5 +389,11 @@ const squbeDarkness = {
         }
         if (this.win.opacity >= 1)
             clearInterval(this.intervalId);
+    },
+    resetGame() {
+        var _a;
+        (_a = this.startButton) === null || _a === void 0 ? void 0 : _a.addEventListener('click', () => {
+            window.location.reload();
+        });
     }
 };
