@@ -216,6 +216,7 @@ const squbeDarkness: gameTemplate = {
                 this.cube!.cubePos.x + this.cube!.cubeSize.w - 20 > elm.floorPos.x &&
                 this.cube!.cubePos.y < elm.floorPos.y + elm.height &&
                 this.cube!.cubeSize.h + this.cube!.cubePos.y > elm.floorPos.y) {
+
                 // this.setGameOver()
             }
         })
@@ -234,6 +235,8 @@ const squbeDarkness: gameTemplate = {
                     this.cube!.cubePos.y < elm.floorPos.y + elm.height &&
                     this.cube!.cubeSize.h + this.cube!.cubePos.y > elm.floorPos.y) {
                     // this.setGameOver()
+                    this.printVictoryScreen()
+
                 }
             }
         })
@@ -277,7 +280,6 @@ const squbeDarkness: gameTemplate = {
                     this.cube!.cubePos.x + this.cube!.cubeSize.w > bullet.bulletPos.x &&
                     this.cube!.cubePos.y < bullet.bulletPos.y + bullet.bulletSize.h &&
                     this.cube!.cubeSize.h + this.cube!.cubePos.y > bullet.bulletPos.y) {
-
                     // this.setGameOver()
                 }
 
@@ -462,7 +464,6 @@ const squbeDarkness: gameTemplate = {
 
         if (this.win.opacity >= 0.40) {
             this.ctx!.drawImage(this.imageInstanceWinner, 900 - (200 * this.gameOver.opacity / 2), 300, 275 * this.gameOver.opacity, 50 * this.gameOver.opacity)
-
         }
 
         if (this.win.opacity >= 1) clearInterval(this.intervalId)

@@ -172,6 +172,7 @@ const squbeDarkness = {
                     this.cube.cubePos.y < elm.floorPos.y + elm.height &&
                     this.cube.cubeSize.h + this.cube.cubePos.y > elm.floorPos.y) {
                     // this.setGameOver()
+                    this.printVictoryScreen();
                 }
             }
         });
