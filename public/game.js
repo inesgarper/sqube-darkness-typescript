@@ -33,10 +33,9 @@ const squbeDarkness = {
         this.ctx = this.canvas.getContext('2d');
     },
     createCube() {
-        this.cube = new Cube(this.ctx, 70, 60, this.floorBlocks, this.spotlights);
+        this.cube = new Cube(this.ctx, 420, 450, this.floorBlocks, this.spotlights);
     },
     createFloorBlocks() {
-        // INTENTO CON CONTADOR CUTRE
         this.level.forEach((row, i) => {
             let contador = 0;
             row.forEach((cell, j) => {
@@ -64,40 +63,13 @@ const squbeDarkness = {
                 }
             });
         });
-        // SE DESCUAJARINGA EL MAPA
-        // this.level.forEach((row, i) => {
-        //     let point: number = -50
-        //     let variable: number = 50
-        //     row.forEach((cell, j) => {
-        //         if (cell === 1) {
-        //             this.floorBlocks.push(new FloorBlock(this.ctx, point + variable, i * 50))
-        //             variable = 50
-        //         } else if (cell === 2) {
-        //             this.floorBlocks.push(new BubbleHole(this.ctx, point + variable, i * 50))
-        //             variable = 50
-        //         } else if (cell === 3) {
-        //             this.floorBlocks.push(new Doggy(this.ctx, point + variable, i * 50))
-        //             variable = 50
-        //         } else if (cell === 4) {
-        //             this.floorBlocks.push(new TempSpike(this.ctx, point + variable, i * 50))
-        //             variable = 50
-        //         } else if (cell === 5) {
-        //             this.floorBlocks.push(new Spike(this.ctx, point + variable, i * 50))
-        //             variable = 50
-        //         } else if (cell === 6) {
-        //             this.floorBlocks.push(new BrokenPlatform(this.ctx, point + variable, i * 50))
-        //             variable = 100
-        //         }
-        //         point += variable
-        //     })
-        // })
     },
     filterFloorBlocks() {
         this.doggysArray = this.floorBlocks.filter(elm => (elm instanceof Doggy));
         this.obstaclesArray = this.floorBlocks.filter(elm => ((elm instanceof BubbleHole) || (elm instanceof Spike) || (elm instanceof TempSpike)));
     },
     createSpotlights() {
-        this.spotlights.push(new Spotlight(this.ctx, 800, 50, 600, 1000, 'right', this.cube, this.floorBlocks));
+        this.spotlights.push(new Spotlight(this.ctx, 1200, 150, 1000, 1400, 'right', this.cube, this.floorBlocks), new Spotlight(this.ctx, 1500, 200, 1300, 1700, 'left', this.cube, this.floorBlocks));
     },
     createPowerUps() {
         this.invisibleCubePowerUp = new InvisibleCube(this.ctx, 1650, 50);
@@ -124,6 +96,10 @@ const squbeDarkness = {
                 var _a, _b, _c;
                 if ((_a = elm.light) === null || _a === void 0 ? void 0 : _a.isOn) {
                     (_b = elm.light) === null || _b === void 0 ? void 0 : _b.draw();
+                    elm.imageInstance.src = './images/spotlight/spotlight.png';
+                }
+                else {
+                    elm.imageInstance.src = './images/spotlight/spotlight-off.png';
                 }
                 (_c = elm.light) === null || _c === void 0 ? void 0 : _c.move();
                 elm.draw(this.framesCounter);
@@ -287,7 +263,7 @@ const squbeDarkness = {
     // --- CLEAR SCREEN
     clearAll() {
         var _a;
-        (_a = this.ctx) === null || _a === void 0 ? void 0 : _a.clearRect(0, 0, 1800, 800);
+        (_a = this.ctx) === null || _a === void 0 ? void 0 : _a.clearRect(0, 0, 1800, 900);
     },
     // --- CONTROLS
     setEventHandlers() {

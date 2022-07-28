@@ -12,7 +12,7 @@ class Spotlight {
     public light: Light | undefined
     public bullets: Array<Bullet>
 
-    private imageInstance: any
+    public imageInstance: any
 
     constructor(
 
@@ -118,7 +118,9 @@ class Spotlight {
     }
 
     shoot(): void {
+
         this.bullets.push(new Bullet(this.ctx, { x: this.spotlightPos.x + this.spotlightCenter, y: this.spotlightPos.y + this.spotlightCenter }, this.spotlightPos, this.cube, this.floorBlocks))
+
     }
 
     deleteCollisionedBullet(index: number): void {

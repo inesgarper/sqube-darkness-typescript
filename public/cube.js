@@ -7,7 +7,7 @@ class Cube {
         this.floorBlocks = floorBlocks;
         this.enemies = enemies;
         this.cubePos = { x: this.posX, y: this.posY };
-        this.cubeSize = { w: 50, h: 50 };
+        this.cubeSize = { w: 70.79, h: 70.79 };
         this.cubeCenter = this.cubeSize.w / 2;
         this.cubeVel = { x: 0, y: 0, maxVelX: 5, maxVelY: 20 };
         this.cubePhysics = { gravity: 0.5, friction: 0.6 };
@@ -21,18 +21,14 @@ class Cube {
         this.canSpinLeft = false;
         this.leftKey = undefined;
         this.rightKey = undefined;
-        this.imageInstanceJumpingRight = new Image();
-        this.imageInstanceJumpingRight.src = './images/cube/cube-right.png';
-        this.imageInstanceJumpingRight.frames = 9;
-        this.imageInstanceJumpingRight.framesIndex = 0;
         this.imageInstanceRight = new Image();
-        this.imageInstanceRight.src = './images/cube/right.png';
-        this.imageInstanceJumpingLeft = new Image();
-        this.imageInstanceJumpingLeft.src = './images/cube/cube-left.png';
-        this.imageInstanceJumpingLeft.frames = 9;
-        this.imageInstanceJumpingLeft.framesIndex = 0;
+        this.imageInstanceRight.src = './images/cube/cubePORFI.png';
+        this.imageInstanceRight.frames = 9;
+        this.imageInstanceRight.framesIndex = 0;
         this.imageInstanceLeft = new Image();
-        this.imageInstanceLeft.src = './images/cube/left.png';
+        this.imageInstanceLeft.src = './images/cube/cubePORFI.png';
+        this.imageInstanceLeft.frames = 9;
+        this.imageInstanceLeft.framesIndex = 0;
         this.imageInstanceHidden = new Image();
         this.imageInstanceHidden.src = './images/cube/hidden.png';
         this.imageSrc;
@@ -51,20 +47,9 @@ class Cube {
             this.imageSrc = this.imageInstanceRight;
         if (this.isFacingLeft)
             this.imageSrc = this.imageInstanceLeft;
-        if (this.isJumping || this.isJumping && this.isFacingRight)
-            this.imageSrc = this.imageInstanceJumpingRight;
-        if (this.isJumping || this.isJumping && this.isFacingLeft)
-            this.imageSrc = this.imageInstanceJumpingLeft;
-        if (this.isHidding)
-            this.imageSrc = this.imageInstanceHidden;
-        // if (this.isJumping) {
-        //     this.cubeSize.w = 50
-        //     this.cubeSize.h = 50
-        // }
+        // if (this.isHidding) this.imageSrc = this.imageInstanceHidden
         this.isInvisible ? this.ctx.globalAlpha = 0.1 : this.ctx.globalAlpha = 1;
-        if (this.imageSrc === this.imageInstanceHidden || this.imageSrc === this.imageInstanceLeft || this.imageSrc === this.imageInstanceRight) {
-            this.cubeSize.w = 50;
-            this.cubeSize.h = 50;
+        if (this.imageSrc === this.imageInstanceHidden) {
             this.ctx.drawImage(this.imageSrc, this.cubePos.x, this.cubePos.y, this.cubeSize.w, this.cubeSize.h);
         }
         else {
@@ -75,8 +60,6 @@ class Cube {
     }
     spinRight(framesCounter) {
         if (this.canSpinRight) {
-            this.cubeSize.w = 70.79;
-            this.cubeSize.h = 70.79;
             if (framesCounter % 2 == 0) {
                 this.imageSrc.framesIndex--;
             }
@@ -86,14 +69,10 @@ class Cube {
             if (this.imageSrc.framesIndex === 0) {
                 this.canSpinRight = false;
             }
-            this.cubeSize.w = 50;
-            this.cubeSize.h = 50;
         }
     }
     spinLeft(framesCounter) {
         if (this.canSpinLeft) {
-            this.cubeSize.w = 70.79;
-            this.cubeSize.h = 70.79;
             if (framesCounter % 2 == 0) {
                 this.imageSrc.framesIndex++;
             }
@@ -103,8 +82,6 @@ class Cube {
             if (this.imageSrc.framesIndex === 0) {
                 this.canSpinLeft = false;
             }
-            this.cubeSize.w = 50;
-            this.cubeSize.h = 50;
         }
     }
     movement() {
@@ -127,7 +104,7 @@ class Cube {
         this.regulateSpeed();
         // Define movement area
         this.checkFloorAndWallCollision();
-        if (this.cubePos.x < 450 /* && this.cubePos.x > 50 */) {
+        if (this.cubePos.x < 420 /* && this.cubePos.x > 50 */) {
             this.cubePos.x += this.cubeVel.x;
             this.cubePos.y += this.cubeVel.y;
         }
@@ -220,15 +197,27 @@ class Cube {
         let horizontalRect = {
             x: this.cubePos.x + this.cubeVel.x,
             y: this.cubePos.y,
-            width: this.cubeSize.w,
-            height: this.cubeSize.h
+            width: this.cubeSize.w - 20.79,
+            height: this.cubeSize.h - 11
         };
         let verticalRect = {
             x: this.cubePos.x,
             y: this.cubePos.y + this.cubeVel.y,
-            width: this.cubeSize.w,
-            height: this.cubeSize.h
+            width: this.cubeSize.w - 20.79,
+            height: this.cubeSize.h - 11
         };
+        // let horizontalRect = {
+        //     x: this.cubePos.x + this.cubeVel.x,
+        //     y: this.cubePos.y,
+        //     width: this.cubeSize.w,
+        //     height: this.cubeSize.h
+        // }
+        // let verticalRect = {
+        //     x: this.cubePos.x,
+        //     y: this.cubePos.y + this.cubeVel.y,
+        //     width: this.cubeSize.w,
+        //     height: this.cubeSize.h
+        // }
         this.floorBlocks.forEach((block, i) => {
             // Collision Block Rect
             let blockRect = {
