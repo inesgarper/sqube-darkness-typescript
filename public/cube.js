@@ -22,32 +22,24 @@ class Cube {
         this.leftKey = undefined;
         this.rightKey = undefined;
         this.imageInstanceRight = new Image();
-        this.imageInstanceRight.src = './images/cube/cubePORFI.png';
+        this.imageInstanceRight.src = './images/cube/cube-right.png';
         this.imageInstanceRight.frames = 9;
         this.imageInstanceRight.framesIndex = 0;
         this.imageInstanceLeft = new Image();
-        this.imageInstanceLeft.src = './images/cube/cubePORFI.png';
+        this.imageInstanceLeft.src = './images/cube/cube-left.png';
         this.imageInstanceLeft.frames = 9;
         this.imageInstanceLeft.framesIndex = 0;
         this.imageInstanceHidden = new Image();
-        this.imageInstanceHidden.src = './images/cube/hidden.png';
+        this.imageInstanceHidden.src = './images/cube/cube-hidden3.png';
         this.imageSrc;
     }
     draw() {
-        // if (this.isHidding) {
-        //     this.ctx!.fillStyle = 'black'
-        // } else if (this.isFound) {
-        //     this.ctx!.fillStyle = 'red'
-        // } else if (this.isInvisible) {
-        //     this.ctx!.fillStyle = 'rgba(0, 0, 0, 0.1)'
-        // } else {
-        //     this.ctx!.fillStyle = 'green'
-        // }
         if (this.isFacingRight)
             this.imageSrc = this.imageInstanceRight;
         if (this.isFacingLeft)
             this.imageSrc = this.imageInstanceLeft;
-        // if (this.isHidding) this.imageSrc = this.imageInstanceHidden
+        if (this.isHidding)
+            this.imageSrc = this.imageInstanceHidden;
         this.isInvisible ? this.ctx.globalAlpha = 0.1 : this.ctx.globalAlpha = 1;
         if (this.imageSrc === this.imageInstanceHidden) {
             this.ctx.drawImage(this.imageSrc, this.cubePos.x, this.cubePos.y, this.cubeSize.w, this.cubeSize.h);
@@ -104,7 +96,7 @@ class Cube {
         this.regulateSpeed();
         // Define movement area
         this.checkFloorAndWallCollision();
-        if (this.cubePos.x < 420 /* && this.cubePos.x > 50 */) {
+        if (this.cubePos.x < 400 /* && this.cubePos.x > 50 */) {
             this.cubePos.x += this.cubeVel.x;
             this.cubePos.y += this.cubeVel.y;
         }

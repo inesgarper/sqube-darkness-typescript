@@ -33,7 +33,7 @@ const squbeDarkness = {
         this.ctx = this.canvas.getContext('2d');
     },
     createCube() {
-        this.cube = new Cube(this.ctx, 420, 450, this.floorBlocks, this.spotlights);
+        this.cube = new Cube(this.ctx, 400, 450, this.floorBlocks, this.spotlights);
     },
     createFloorBlocks() {
         this.level.forEach((row, i) => {
@@ -145,18 +145,19 @@ const squbeDarkness = {
     checkCollision() {
         this.doggysArray.forEach(elm => {
             if (this.cube.cubePos.x < elm.floorPos.x + elm.width &&
-                this.cube.cubePos.x + this.cube.cubeSize.w > elm.floorPos.x &&
+                this.cube.cubePos.x + this.cube.cubeSize.w - 20 > elm.floorPos.x &&
                 this.cube.cubePos.y < elm.floorPos.y + elm.height &&
                 this.cube.cubeSize.h + this.cube.cubePos.y > elm.floorPos.y) {
+                console.log('perro');
                 // this.setGameOver()
             }
         });
         this.obstaclesArray.forEach(elm => {
             if (elm instanceof (Spike || TempSpike)) {
-                if (this.cube.cubePos.x + 10 < elm.floorPos.x + elm.width &&
-                    this.cube.cubePos.x + this.cube.cubeSize.w - 10 > elm.floorPos.x &&
-                    this.cube.cubePos.y + 12.5 < elm.floorPos.y + elm.height &&
-                    this.cube.cubeSize.h + this.cube.cubePos.y > elm.floorPos.y) {
+                if (this.cube.cubePos.x < elm.floorPos.x + elm.width &&
+                    this.cube.cubePos.x + this.cube.cubeSize.w - 20 > elm.floorPos.x &&
+                    this.cube.cubePos.y < elm.floorPos.y + elm.height &&
+                    this.cube.cubeSize.h + this.cube.cubePos.y - 22.5 > elm.floorPos.y) {
                     // this.setGameOver()
                 }
             }
@@ -310,7 +311,7 @@ const squbeDarkness = {
             clearInterval(this.intervalId);
     },
     checkWin() {
-        if (this.distance * 0.026458 > 100)
+        if (this.distance * 0.026458 > 103)
             this.printVictoryScreen();
     },
     printVictoryScreen() {

@@ -88,7 +88,7 @@ const squbeDarkness: gameTemplate = {
     },
 
     createCube() {
-        this.cube = new Cube(this.ctx, 420, 450, this.floorBlocks, this.spotlights)
+        this.cube = new Cube(this.ctx, 400, 450, this.floorBlocks, this.spotlights)
     },
 
     createFloorBlocks() {
@@ -199,19 +199,20 @@ const squbeDarkness: gameTemplate = {
 
         this.doggysArray.forEach(elm => {
             if (this.cube!.cubePos.x < elm.floorPos.x + elm.width &&
-                this.cube!.cubePos.x + this.cube!.cubeSize.w > elm.floorPos.x &&
+                this.cube!.cubePos.x + this.cube!.cubeSize.w - 20 > elm.floorPos.x &&
                 this.cube!.cubePos.y < elm.floorPos.y + elm.height &&
                 this.cube!.cubeSize.h + this.cube!.cubePos.y > elm.floorPos.y) {
+                console.log('perro')
                 // this.setGameOver()
             }
         })
 
         this.obstaclesArray.forEach(elm => {
             if (elm instanceof (Spike || TempSpike)) {
-                if (this.cube!.cubePos.x + 10 < elm.floorPos.x + elm.width &&
-                    this.cube!.cubePos.x + this.cube!.cubeSize.w - 10 > elm.floorPos.x &&
-                    this.cube!.cubePos.y + 12.5 < elm.floorPos.y + elm.height &&
-                    this.cube!.cubeSize.h + this.cube!.cubePos.y > elm.floorPos.y) {
+                if (this.cube!.cubePos.x < elm.floorPos.x + elm.width &&
+                    this.cube!.cubePos.x + this.cube!.cubeSize.w - 20 > elm.floorPos.x &&
+                    this.cube!.cubePos.y < elm.floorPos.y + elm.height &&
+                    this.cube!.cubeSize.h + this.cube!.cubePos.y - 22.5 > elm.floorPos.y) {
                     // this.setGameOver()
                 }
             } else {
@@ -263,7 +264,6 @@ const squbeDarkness: gameTemplate = {
                     this.cube!.cubePos.x + this.cube!.cubeSize.w > bullet.bulletPos.x &&
                     this.cube!.cubePos.y < bullet.bulletPos.y + bullet.bulletSize.h &&
                     this.cube!.cubeSize.h + this.cube!.cubePos.y > bullet.bulletPos.y) {
-
                     // this.setGameOver()
                 }
 
@@ -340,14 +340,12 @@ const squbeDarkness: gameTemplate = {
         this.ctx!.font = '20px Sans-serif'
         this.ctx!.fillText('m', 1715, 300)
 
-
     },
 
     // --- CLEAR SCREEN
     clearAll() {
         this.ctx?.clearRect(0, 0, 1800, 900)
     },
-
 
     // --- CONTROLS
     setEventHandlers() {
@@ -390,7 +388,6 @@ const squbeDarkness: gameTemplate = {
             this.ctx!.font = '30px sans-serif'
             this.ctx!.fillStyle = '#ffffff'
             this.ctx!.fillText('GAME OVER', 450, 200)
-
         }
 
         if (this.gameOver.opacity >= 1) clearInterval(this.intervalId)
@@ -398,7 +395,7 @@ const squbeDarkness: gameTemplate = {
     },
 
     checkWin() {
-        if (this.distance * 0.026458 > 100) this.printVictoryScreen()
+        if (this.distance * 0.026458 > 103) this.printVictoryScreen()
     },
 
     printVictoryScreen() {
@@ -412,12 +409,9 @@ const squbeDarkness: gameTemplate = {
             this.ctx!.font = '30px sans-serif'
             this.ctx!.fillStyle = '#ffffff'
             this.ctx!.fillText('WINNER', 450, 200)
-
         }
 
         if (this.win.opacity >= 1) clearInterval(this.intervalId)
     }
-
-
 
 }
