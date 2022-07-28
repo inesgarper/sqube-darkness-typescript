@@ -5,10 +5,13 @@ class Cube {
     public cubeCenter: number
     public cubeVel: { x: number, y: number, maxVelX: number, maxVelY: number }
     public cubePhysics: { gravity: number, friction: number }
+
+    public canMove: boolean
     public isHidding: boolean
     public isFound: boolean
     private isJumping: boolean
     public isInvisible: boolean
+    public isDead: boolean
     private isFacingRight: boolean
     private isFacingLeft: boolean
     private canSpinRight: boolean
@@ -22,6 +25,7 @@ class Cube {
     private imageInstanceRight: any
     private imageInstanceLeft: any
     private imageInstanceHidden: any
+    private imageInstanceGameOver: any
 
 
     constructor(
@@ -41,10 +45,12 @@ class Cube {
         this.cubeVel = { x: 0, y: 0, maxVelX: 5, maxVelY: 20 }
         this.cubePhysics = { gravity: 0.5, friction: 0.6 }
 
+        this.canMove = true
         this.isHidding = false
         this.isFound = false
         this.isJumping = false
         this.isInvisible = false
+        this.isDead = false
 
         this.isFacingRight = true
         this.isFacingLeft = false
@@ -65,6 +71,11 @@ class Cube {
         this.imageInstanceLeft.frames = 9
         this.imageInstanceLeft.framesIndex = 0
 
+        this.imageInstanceGameOver = new Image()
+        this.imageInstanceGameOver.src = './images/cube/cube-gameOver.png'
+        this.imageInstanceGameOver.frames = 20
+        this.imageInstanceGameOver.framesIndex = 0
+
         this.imageInstanceHidden = new Image()
         this.imageInstanceHidden.src = './images/cube/cube-hidden3.png'
 
@@ -77,6 +88,7 @@ class Cube {
         if (this.isFacingRight) this.imageSrc = this.imageInstanceRight
         if (this.isFacingLeft) this.imageSrc = this.imageInstanceLeft
         if (this.isHidding) this.imageSrc = this.imageInstanceHidden
+        if (this.isDead) this.imageSrc = this.imageInstanceGameOver
 
         this.isInvisible ? this.ctx!.globalAlpha = 0.1 : this.ctx!.globalAlpha = 1
 
@@ -98,6 +110,17 @@ class Cube {
         this.ctx!.globalAlpha = 1
 
         this.gravity()
+    }
+
+    animate(framesCounter: number): void {
+        this.cubeSize.w = 120.79
+
+        if (framesCounter % 2 == 0) {
+            this.imageSrc.framesIndex++;
+        }
+        if (this.imageSrc.framesIndex > 19) {
+            this.imageSrc.framesIndex = 19;
+        }
     }
 
     spinRight(framesCounter: number): void {
@@ -132,7 +155,6 @@ class Cube {
 
     movement(): void {
 
-        // Horizontal movement
         if (!this.leftKey && !this.rightKey || this.leftKey && this.rightKey) {
             this.slowDown()
         } else if (this.rightKey) {
@@ -159,8 +181,7 @@ class Cube {
             this.scrollPlatforms()
             this.scrollEnemies()
         }
-
-
+        // Horizontal movement
     }
 
     regulateSpeed(): void {
@@ -195,6 +216,7 @@ class Cube {
         this.cubeVel.x++
         this.unblockIfHidding()
         if (this.isJumping) this.canSpinRight = true
+
     }
 
     moveLeft(): void {
@@ -203,6 +225,7 @@ class Cube {
         this.cubeVel.x--
         this.unblockIfHidding()
         if (this.isJumping) this.canSpinLeft = true
+
     }
 
     stop(): void {

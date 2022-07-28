@@ -78,15 +78,18 @@ const squbeDarkness = {
     // --- INTERVAL
     gameLoop() {
         this.intervalId = setInterval(() => {
-            var _a, _b, _c, _d, _e, _f, _g;
+            var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+            console.log(this.cube.canMove);
             this.clearAll();
             this.framesCounter >= 600 ? this.framesCounter = 0 : this.framesCounter++;
             this.setEventHandlers();
             (_a = this.cube) === null || _a === void 0 ? void 0 : _a.draw();
             (_b = this.cube) === null || _b === void 0 ? void 0 : _b.spinRight(this.framesCounter);
             (_c = this.cube) === null || _c === void 0 ? void 0 : _c.spinLeft(this.framesCounter);
-            (_d = this.cube) === null || _d === void 0 ? void 0 : _d.movement();
-            if (!((_e = this.invisibleCubePowerUp) === null || _e === void 0 ? void 0 : _e.isActive)) {
+            if ((_d = this.cube) === null || _d === void 0 ? void 0 : _d.isDead)
+                (_e = this.cube) === null || _e === void 0 ? void 0 : _e.animate(this.framesCounter);
+            (_f = this.cube) === null || _f === void 0 ? void 0 : _f.movement();
+            if (!((_g = this.invisibleCubePowerUp) === null || _g === void 0 ? void 0 : _g.isActive)) {
                 this.checkLightCollision();
                 this.checkCollision();
                 this.checkBulletCollision();
@@ -132,8 +135,8 @@ const squbeDarkness = {
                 if (elm.isActive)
                     elm.canMove = true;
             });
-            (_f = this.invisibleCubePowerUp) === null || _f === void 0 ? void 0 : _f.draw();
-            (_g = this.turnOffLightsPowerUp) === null || _g === void 0 ? void 0 : _g.draw();
+            (_h = this.invisibleCubePowerUp) === null || _h === void 0 ? void 0 : _h.draw();
+            (_j = this.turnOffLightsPowerUp) === null || _j === void 0 ? void 0 : _j.draw();
             this.updateDistance();
             this.printDistance();
             if (this.gameOver.status)
@@ -148,17 +151,16 @@ const squbeDarkness = {
                 this.cube.cubePos.x + this.cube.cubeSize.w - 20 > elm.floorPos.x &&
                 this.cube.cubePos.y < elm.floorPos.y + elm.height &&
                 this.cube.cubeSize.h + this.cube.cubePos.y > elm.floorPos.y) {
-                console.log('perro');
-                // this.setGameOver()
+                this.setGameOver();
             }
         });
         this.obstaclesArray.forEach(elm => {
             if (elm instanceof (Spike || TempSpike)) {
                 if (this.cube.cubePos.x < elm.floorPos.x + elm.width &&
-                    this.cube.cubePos.x + this.cube.cubeSize.w - 20 > elm.floorPos.x &&
+                    this.cube.cubePos.x + this.cube.cubeSize.w - 30 > elm.floorPos.x &&
                     this.cube.cubePos.y < elm.floorPos.y + elm.height &&
                     this.cube.cubeSize.h + this.cube.cubePos.y - 22.5 > elm.floorPos.y) {
-                    // this.setGameOver()
+                    this.setGameOver();
                 }
             }
             else {
@@ -166,7 +168,7 @@ const squbeDarkness = {
                     this.cube.cubePos.x + this.cube.cubeSize.w > elm.floorPos.x &&
                     this.cube.cubePos.y < elm.floorPos.y + elm.height &&
                     this.cube.cubeSize.h + this.cube.cubePos.y > elm.floorPos.y) {
-                    // this.setGameOver()
+                    this.setGameOver();
                 }
             }
         });
@@ -270,19 +272,27 @@ const squbeDarkness = {
     setEventHandlers() {
         document.addEventListener('keydown', event => {
             const { key } = event;
-            if (key === 'ArrowUp')
-                this.cube.jump();
-            if (key === 'ArrowLeft')
-                this.cube.leftKey = true;
-            if (key === 'ArrowRight')
-                this.cube.rightKey = true;
-            if (key === 'z') {
-                this.activeInvisibleCube();
-                this.invisibleCubePowerUp.isAvailable = false;
-            }
-            if (key === 'x') {
-                this.activeTurnLightsOff();
-                this.turnOffLightsPowerUp.isAvailable = false;
+            if (!this.cube.isDead) {
+                if (key === 'ArrowUp')
+                    this.cube.jump();
+                if (key === 'ArrowLeft') {
+                    if (!this.cube.isDead) {
+                        this.cube.leftKey = true;
+                    }
+                }
+                if (key === 'ArrowRight') {
+                    if (!this.cube.isDead) {
+                        this.cube.rightKey = true;
+                    }
+                }
+                if (key === 'z') {
+                    this.activeInvisibleCube();
+                    this.invisibleCubePowerUp.isAvailable = false;
+                }
+                if (key === 'x') {
+                    this.activeTurnLightsOff();
+                    this.turnOffLightsPowerUp.isAvailable = false;
+                }
             }
         });
         document.addEventListener('keyup', event => {
@@ -294,7 +304,9 @@ const squbeDarkness = {
         });
     },
     setGameOver() {
+        this.cube.canMove = false;
         this.gameOver.status = true;
+        this.cube.isDead = true;
     },
     printGameOverScreen() {
         this.ctx.globalAlpha = this.gameOver.opacity;

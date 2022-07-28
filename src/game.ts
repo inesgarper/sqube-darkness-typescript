@@ -135,12 +135,14 @@ const squbeDarkness: gameTemplate = {
     // --- INTERVAL
     gameLoop() {
         this.intervalId = setInterval(() => {
+            console.log(this.cube!.canMove)
             this.clearAll()
             this.framesCounter >= 600 ? this.framesCounter = 0 : this.framesCounter++
             this.setEventHandlers()
             this.cube?.draw()
             this.cube?.spinRight(this.framesCounter)
             this.cube?.spinLeft(this.framesCounter)
+            if (this.cube?.isDead) this.cube?.animate(this.framesCounter)
             this.cube?.movement()
             if (!this.invisibleCubePowerUp?.isActive) {
                 this.checkLightCollision()
@@ -202,25 +204,24 @@ const squbeDarkness: gameTemplate = {
                 this.cube!.cubePos.x + this.cube!.cubeSize.w - 20 > elm.floorPos.x &&
                 this.cube!.cubePos.y < elm.floorPos.y + elm.height &&
                 this.cube!.cubeSize.h + this.cube!.cubePos.y > elm.floorPos.y) {
-                console.log('perro')
-                // this.setGameOver()
+                this.setGameOver()
             }
         })
 
         this.obstaclesArray.forEach(elm => {
             if (elm instanceof (Spike || TempSpike)) {
                 if (this.cube!.cubePos.x < elm.floorPos.x + elm.width &&
-                    this.cube!.cubePos.x + this.cube!.cubeSize.w - 20 > elm.floorPos.x &&
+                    this.cube!.cubePos.x + this.cube!.cubeSize.w - 30 > elm.floorPos.x &&
                     this.cube!.cubePos.y < elm.floorPos.y + elm.height &&
                     this.cube!.cubeSize.h + this.cube!.cubePos.y - 22.5 > elm.floorPos.y) {
-                    // this.setGameOver()
+                    this.setGameOver()
                 }
             } else {
                 if (this.cube!.cubePos.x < elm.floorPos.x + elm.width &&
                     this.cube!.cubePos.x + this.cube!.cubeSize.w > elm.floorPos.x &&
                     this.cube!.cubePos.y < elm.floorPos.y + elm.height &&
                     this.cube!.cubeSize.h + this.cube!.cubePos.y > elm.floorPos.y) {
-                    // this.setGameOver()
+                    this.setGameOver()
                 }
             }
         })
@@ -351,17 +352,26 @@ const squbeDarkness: gameTemplate = {
     setEventHandlers() {
         document.addEventListener('keydown', event => {
             const { key } = event
-
-            if (key === 'ArrowUp') this.cube!.jump()
-            if (key === 'ArrowLeft') this.cube!.leftKey = true
-            if (key === 'ArrowRight') this.cube!.rightKey = true
-            if (key === 'z') {
-                this.activeInvisibleCube()
-                this.invisibleCubePowerUp!.isAvailable = false
-            }
-            if (key === 'x') {
-                this.activeTurnLightsOff()
-                this.turnOffLightsPowerUp!.isAvailable = false
+            if (!this.cube!.isDead) {
+                if (key === 'ArrowUp') this.cube!.jump()
+                if (key === 'ArrowLeft') {
+                    if (!this.cube!.isDead) {
+                        this.cube!.leftKey = true
+                    }
+                }
+                if (key === 'ArrowRight') {
+                    if (!this.cube!.isDead) {
+                        this.cube!.rightKey = true
+                    }
+                }
+                if (key === 'z') {
+                    this.activeInvisibleCube()
+                    this.invisibleCubePowerUp!.isAvailable = false
+                }
+                if (key === 'x') {
+                    this.activeTurnLightsOff()
+                    this.turnOffLightsPowerUp!.isAvailable = false
+                }
             }
         })
 
@@ -374,7 +384,9 @@ const squbeDarkness: gameTemplate = {
     },
 
     setGameOver() {
+        this.cube!.canMove = false
         this.gameOver.status = true
+        this.cube!.isDead = true
     },
 
     printGameOverScreen() {

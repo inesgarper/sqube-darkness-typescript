@@ -11,10 +11,12 @@ class Cube {
         this.cubeCenter = this.cubeSize.w / 2;
         this.cubeVel = { x: 0, y: 0, maxVelX: 5, maxVelY: 20 };
         this.cubePhysics = { gravity: 0.5, friction: 0.6 };
+        this.canMove = true;
         this.isHidding = false;
         this.isFound = false;
         this.isJumping = false;
         this.isInvisible = false;
+        this.isDead = false;
         this.isFacingRight = true;
         this.isFacingLeft = false;
         this.canSpinRight = false;
@@ -29,6 +31,10 @@ class Cube {
         this.imageInstanceLeft.src = './images/cube/cube-left.png';
         this.imageInstanceLeft.frames = 9;
         this.imageInstanceLeft.framesIndex = 0;
+        this.imageInstanceGameOver = new Image();
+        this.imageInstanceGameOver.src = './images/cube/cube-gameOver.png';
+        this.imageInstanceGameOver.frames = 20;
+        this.imageInstanceGameOver.framesIndex = 0;
         this.imageInstanceHidden = new Image();
         this.imageInstanceHidden.src = './images/cube/cube-hidden3.png';
         this.imageSrc;
@@ -40,6 +46,8 @@ class Cube {
             this.imageSrc = this.imageInstanceLeft;
         if (this.isHidding)
             this.imageSrc = this.imageInstanceHidden;
+        if (this.isDead)
+            this.imageSrc = this.imageInstanceGameOver;
         this.isInvisible ? this.ctx.globalAlpha = 0.1 : this.ctx.globalAlpha = 1;
         if (this.imageSrc === this.imageInstanceHidden) {
             this.ctx.drawImage(this.imageSrc, this.cubePos.x, this.cubePos.y, this.cubeSize.w, this.cubeSize.h);
@@ -49,6 +57,15 @@ class Cube {
         }
         this.ctx.globalAlpha = 1;
         this.gravity();
+    }
+    animate(framesCounter) {
+        this.cubeSize.w = 120.79;
+        if (framesCounter % 2 == 0) {
+            this.imageSrc.framesIndex++;
+        }
+        if (this.imageSrc.framesIndex > 19) {
+            this.imageSrc.framesIndex = 19;
+        }
     }
     spinRight(framesCounter) {
         if (this.canSpinRight) {
@@ -77,7 +94,6 @@ class Cube {
         }
     }
     movement() {
-        // Horizontal movement
         if (!this.leftKey && !this.rightKey || this.leftKey && this.rightKey) {
             this.slowDown();
         }
@@ -104,6 +120,7 @@ class Cube {
             this.scrollPlatforms();
             this.scrollEnemies();
         }
+        // Horizontal movement
     }
     regulateSpeed() {
         if (this.cubeVel.x > this.cubeVel.maxVelX) {
