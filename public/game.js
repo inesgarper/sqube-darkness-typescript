@@ -256,7 +256,6 @@ const squbeDarkness = {
                     this.cube.cubePos.x + this.cube.cubeSize.w > bullet.bulletPos.x &&
                     this.cube.cubePos.y < bullet.bulletPos.y + bullet.bulletSize.h &&
                     this.cube.cubeSize.h + this.cube.cubePos.y > bullet.bulletPos.y) {
-                    this.deathAudio.play();
                     this.setGameOver();
                 }
                 this.floorBlocks.forEach(block => {
@@ -377,6 +376,7 @@ const squbeDarkness = {
         this.cube.canMove = false;
         this.gameOver.status = true;
         this.cube.isDead = true;
+        this.deathAudio.play();
     },
     printGameOverScreen() {
         this.ctx.globalAlpha = this.gameOver.opacity;

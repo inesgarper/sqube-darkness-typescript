@@ -351,7 +351,6 @@ const squbeDarkness: gameTemplate = {
                     this.cube!.cubePos.y < bullet.bulletPos.y + bullet.bulletSize.h &&
                     this.cube!.cubeSize.h + this.cube!.cubePos.y > bullet.bulletPos.y) {
 
-                    this.deathAudio.play()
                     this.setGameOver()
                 }
 
@@ -491,6 +490,8 @@ const squbeDarkness: gameTemplate = {
         this.cube!.canMove = false
         this.gameOver.status = true
         this.cube!.isDead = true
+        this.deathAudio.play()
+
     },
 
     printGameOverScreen() {
