@@ -151,11 +151,7 @@ const squbeDarkness = {
                 this.cube.cubePos.x + this.cube.cubeSize.w - 20 > elm.floorPos.x &&
                 this.cube.cubePos.y < elm.floorPos.y + elm.height &&
                 this.cube.cubeSize.h + this.cube.cubePos.y > elm.floorPos.y) {
-<<<<<<< HEAD
                 this.setGameOver();
-=======
-                // this.setGameOver()
->>>>>>> 3d00b9fb46fce624e9567aa1781887a3e8292e68
             }
         });
         this.obstaclesArray.forEach(elm => {
