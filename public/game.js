@@ -79,7 +79,6 @@ const squbeDarkness = {
     gameLoop() {
         this.intervalId = setInterval(() => {
             var _a, _b, _c, _d, _e, _f, _g, _h, _j;
-            console.log(this.cube.canMove);
             this.clearAll();
             this.framesCounter >= 600 ? this.framesCounter = 0 : this.framesCounter++;
             this.setEventHandlers();
@@ -91,7 +90,8 @@ const squbeDarkness = {
             (_f = this.cube) === null || _f === void 0 ? void 0 : _f.movement();
             if (!((_g = this.invisibleCubePowerUp) === null || _g === void 0 ? void 0 : _g.isActive)) {
                 this.checkLightCollision();
-                this.checkCollision();
+                if (!this.cube.isDead)
+                    this.checkCollision();
                 this.checkBulletCollision();
             }
             // SPOTLIGHTS
@@ -151,11 +151,7 @@ const squbeDarkness = {
                 this.cube.cubePos.x + this.cube.cubeSize.w - 20 > elm.floorPos.x &&
                 this.cube.cubePos.y < elm.floorPos.y + elm.height &&
                 this.cube.cubeSize.h + this.cube.cubePos.y > elm.floorPos.y) {
-<<<<<<< HEAD
                 this.setGameOver();
-=======
-                // this.setGameOver()
->>>>>>> 3d00b9fb46fce624e9567aa1781887a3e8292e68
             }
         });
         this.obstaclesArray.forEach(elm => {
@@ -203,7 +199,7 @@ const squbeDarkness = {
                     this.cube.cubePos.x + this.cube.cubeSize.w > bullet.bulletPos.x &&
                     this.cube.cubePos.y < bullet.bulletPos.y + bullet.bulletSize.h &&
                     this.cube.cubeSize.h + this.cube.cubePos.y > bullet.bulletPos.y) {
-                    // this.setGameOver()
+                    this.setGameOver();
                 }
                 this.floorBlocks.forEach(block => {
                     if (block.floorPos.x < bullet.bulletPos.x + bullet.bulletSize.w &&
@@ -327,7 +323,7 @@ const squbeDarkness = {
             clearInterval(this.intervalId);
     },
     checkWin() {
-        if (this.distance * 0.026458 > 103)
+        if (this.distance * 0.026458 > 107)
             this.printVictoryScreen();
     },
     printVictoryScreen() {

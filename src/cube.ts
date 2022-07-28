@@ -115,6 +115,8 @@ class Cube {
     animate(framesCounter: number): void {
         this.cubeSize.w = 120.79
 
+        console.log(this.imageSrc.framesIndex)
+
         if (framesCounter % 2 == 0) {
             this.imageSrc.framesIndex++;
         }
@@ -124,7 +126,7 @@ class Cube {
     }
 
     spinRight(framesCounter: number): void {
-        if (this.canSpinRight) {
+        if (!this.isDead && this.canSpinRight) {
 
             if (framesCounter % 2 == 0) {
                 this.imageSrc.framesIndex--;
@@ -139,7 +141,7 @@ class Cube {
     }
 
     spinLeft(framesCounter: number): void {
-        if (this.canSpinLeft) {
+        if (!this.isDead && this.canSpinLeft) {
 
             if (framesCounter % 2 == 0) {
                 this.imageSrc.framesIndex++;
@@ -180,6 +182,7 @@ class Cube {
         } else {
             this.scrollPlatforms()
             this.scrollEnemies()
+
         }
         // Horizontal movement
     }
@@ -238,9 +241,10 @@ class Cube {
 
     scrollPlatforms(): void {
         this.floorBlocks.forEach(block => {
-            block.floorPos.x += -this.cubeVel.x
+            if (!this.isDead) block.floorPos.x += -this.cubeVel.x
             block.floorPos.y += -this.cubeVel.y
         })
+
     }
 
     scrollEnemies(): void {
@@ -290,20 +294,6 @@ class Cube {
             height: this.cubeSize.h - 11
         }
 
-        // let horizontalRect = {
-        //     x: this.cubePos.x + this.cubeVel.x,
-        //     y: this.cubePos.y,
-        //     width: this.cubeSize.w,
-        //     height: this.cubeSize.h
-        // }
-
-        // let verticalRect = {
-        //     x: this.cubePos.x,
-        //     y: this.cubePos.y + this.cubeVel.y,
-        //     width: this.cubeSize.w,
-        //     height: this.cubeSize.h
-        // }
-
         this.floorBlocks.forEach((block, i) => {
 
             // Collision Block Rect
@@ -321,16 +311,17 @@ class Cube {
             // Check collisions
             if ((block instanceof FloorBlock) || (block instanceof DoggyPlatform)) {
 
-                if (this.checkRectCollision(horizontalRect, blockRect)) {
-                    while (this.checkRectCollision(horizontalRect, blockRect)) {
-                        horizontalRect.x -= Math.sign(this.cubeVel.x)
-                    }
+                if (!this.isDead) {
+                    if (this.checkRectCollision(horizontalRect, blockRect)) {
+                        while (this.checkRectCollision(horizontalRect, blockRect)) {
+                            horizontalRect.x -= Math.sign(this.cubeVel.x)
+                        }
 
-                    this.cubePos.x = horizontalRect.x
-                    this.cubeVel.x = 0
-                    console.log('se esconde')
-                    this.isHidding = true
-                    this.isFound = false
+                        this.cubePos.x = horizontalRect.x
+                        this.cubeVel.x = 0
+                        this.isHidding = true
+                        this.isFound = false
+                    }
                 }
 
                 if (this.checkRectCollision(verticalRect, blockRect)) {

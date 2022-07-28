@@ -141,7 +141,6 @@ const squbeDarkness: gameTemplate = {
     // --- INTERVAL
     gameLoop() {
         this.intervalId = setInterval(() => {
-            console.log(this.cube!.canMove)
             this.clearAll()
             this.framesCounter >= 600 ? this.framesCounter = 0 : this.framesCounter++
             this.setEventHandlers()
@@ -152,7 +151,7 @@ const squbeDarkness: gameTemplate = {
             this.cube?.movement()
             if (!this.invisibleCubePowerUp?.isActive) {
                 this.checkLightCollision()
-                this.checkCollision()
+                if (!this.cube!.isDead) this.checkCollision()
                 this.checkBulletCollision()
             }
             // SPOTLIGHTS
@@ -272,7 +271,7 @@ const squbeDarkness: gameTemplate = {
                     this.cube!.cubePos.y < bullet.bulletPos.y + bullet.bulletSize.h &&
                     this.cube!.cubeSize.h + this.cube!.cubePos.y > bullet.bulletPos.y) {
 
-                    // this.setGameOver()
+                    this.setGameOver()
                 }
 
                 this.floorBlocks.forEach(block => {
@@ -414,7 +413,7 @@ const squbeDarkness: gameTemplate = {
     },
 
     checkWin() {
-        if (this.distance * 0.026458 > 103) this.printVictoryScreen()
+        if (this.distance * 0.026458 > 107) this.printVictoryScreen()
     },
 
     printVictoryScreen() {
