@@ -21,6 +21,8 @@ const squbeDarkness = {
     backgroundMusicAudio: undefined,
     lightAudio: undefined,
     invisibilityAudio: undefined,
+    imageInstanceGameOver: new Image(),
+    imageInstanceWinner: new Image(),
     intervalId: undefined,
     startButton: document.querySelector('button'),
     init() {
@@ -32,6 +34,7 @@ const squbeDarkness = {
         this.createSpotlights();
         this.createPowerUps();
         this.setEventHandlers();
+        this.getImageInstance();
         this.backgroundMusicAudio = new Audio('./sounds/background-music.mp3');
         this.backgroundMusicAudio.volume = 0.2;
         this.shootAudio = new Audio('./sounds/shoot.wav');
@@ -82,7 +85,7 @@ const squbeDarkness = {
         this.obstaclesArray = this.floorBlocks.filter(elm => ((elm instanceof BubbleHole) || (elm instanceof Spike) || (elm instanceof TempSpike)));
     },
     createSpotlights() {
-        this.spotlights.push(new Spotlight(this.ctx, 1300, 150, 900, 2100, 'left', this.cube, this.floorBlocks), new Spotlight(this.ctx, 3250, 100, 2500, 3900, 'right', this.cube, this.floorBlocks), new Spotlight(this.ctx, 5300, 100, 4900, 5700, 'left', this.cube, this.floorBlocks), new Spotlight(this.ctx, 7350, 100, 6800, 7900, 'right', this.cube, this.floorBlocks), new Spotlight(this.ctx, 9350, 30, 8800, 9900, 'left', this.cube, this.floorBlocks), new Spotlight(this.ctx, 11500, 150, 10700, 12300, 'right', this.cube, this.floorBlocks), new Spotlight(this.ctx, 12300, 100, 11900, 12700, 'left', this.cube, this.floorBlocks));
+        this.spotlights.push(new Spotlight(this.ctx, 1300, 150, 900, 2100, 'left', this.cube, this.floorBlocks), new Spotlight(this.ctx, 3250, 100, 2500, 3900, 'right', this.cube, this.floorBlocks), new Spotlight(this.ctx, 5300, 100, 4900, 5700, 'left', this.cube, this.floorBlocks), new Spotlight(this.ctx, 7350, 70, 6800, 7900, 'right', this.cube, this.floorBlocks), new Spotlight(this.ctx, 9350, 30, 8800, 9900, 'left', this.cube, this.floorBlocks), new Spotlight(this.ctx, 11500, 150, 10700, 12300, 'right', this.cube, this.floorBlocks), new Spotlight(this.ctx, 12300, 100, 11900, 12700, 'left', this.cube, this.floorBlocks));
     },
     createPowerUps() {
         this.invisibleCubePowerUp = new InvisibleCube(this.ctx, 1650, 50);
@@ -166,7 +169,7 @@ const squbeDarkness = {
                 this.cube.cubePos.x + this.cube.cubeSize.w - 20 > elm.floorPos.x &&
                 this.cube.cubePos.y < elm.floorPos.y + elm.height &&
                 this.cube.cubeSize.h + this.cube.cubePos.y > elm.floorPos.y) {
-                this.setGameOver();
+                // this.setGameOver()
             }
         });
         this.obstaclesArray.forEach(elm => {
@@ -175,7 +178,7 @@ const squbeDarkness = {
                     this.cube.cubePos.x + this.cube.cubeSize.w - 30 > elm.floorPos.x &&
                     this.cube.cubePos.y < elm.floorPos.y + elm.height &&
                     this.cube.cubeSize.h + this.cube.cubePos.y - 22.5 > elm.floorPos.y) {
-                    this.setGameOver();
+                    // this.setGameOver()
                 }
             }
             else {
@@ -183,7 +186,7 @@ const squbeDarkness = {
                     this.cube.cubePos.x + this.cube.cubeSize.w > elm.floorPos.x &&
                     this.cube.cubePos.y < elm.floorPos.y + elm.height &&
                     this.cube.cubeSize.h + this.cube.cubePos.y > elm.floorPos.y) {
-                    this.setGameOver();
+                    // this.setGameOver()
                 }
             }
         });
@@ -325,6 +328,10 @@ const squbeDarkness = {
                 this.cube.rightKey = false;
         });
     },
+    getImageInstance() {
+        this.imageInstanceGameOver.src = './images/gameover.png';
+        this.imageInstanceWinner.src = './images/winner.png';
+    },
     setGameOver() {
         this.cube.canMove = false;
         this.gameOver.status = true;
@@ -335,17 +342,39 @@ const squbeDarkness = {
         this.ctx.fillStyle = 'black';
         this.ctx.fillRect(0, 0, 1800, 800);
         this.ctx.globalAlpha = 1;
-        this.gameOver.opacity += 0.01;
+        this.gameOver.opacity += 0.02;
         if (this.gameOver.opacity >= 0.40) {
+            this.ctx.drawImage(this.imageInstanceGameOver, 900 - (275 * this.gameOver.opacity / 2), 300, 275 * this.gameOver.opacity, 50 * this.gameOver.opacity);
+            this.ctx.fillStyle = '#919191';
             this.ctx.font = '30px sans-serif';
-            this.ctx.fillStyle = '#ffffff';
-            this.ctx.fillText('GAME OVER', 450, 200);
+            if (this.gameOver.opacity >= 1) {
+                if (this.distance * 0.026458 < 10) {
+                    this.ctx.fillText(`${(this.distance * 0.026458).toFixed(2)}`, 856, 400);
+                    this.ctx.fillText('m', 926, 400);
+                }
+                else if ((this.distance * 0.026458 > 10)
+                    && (this.distance * 0.026458 < 100)) {
+                    this.ctx.fillText(`${(this.distance * 0.026458).toFixed(2)}`, 845, 400);
+                    this.ctx.fillText('m', 931, 400);
+                }
+                else {
+                    this.ctx.fillText(`${(this.distance * 0.026458).toFixed(2)}`, 834, 400);
+                    this.ctx.fillText('m', 936, 400);
+                }
+            }
         }
+        // linea roja centro del canvas
+        this.ctx.beginPath();
+        this.ctx.moveTo(900, 0);
+        this.ctx.lineTo(900, 800);
+        this.ctx.stroke();
+        this.ctx.strokeStyle = '#ff0000';
+        // borrar intervalo
         if (this.gameOver.opacity >= 1)
             clearInterval(this.intervalId);
     },
     checkWin() {
-        if (this.distance * 0.026458 > 107)
+        if (this.distance * 0.026458 > 103)
             this.printVictoryScreen();
     },
     printVictoryScreen() {
@@ -355,9 +384,7 @@ const squbeDarkness = {
         this.ctx.globalAlpha = 1;
         this.win.opacity += 0.01;
         if (this.win.opacity >= 0.40) {
-            this.ctx.font = '30px sans-serif';
-            this.ctx.fillStyle = '#ffffff';
-            this.ctx.fillText('WINNER', 450, 200);
+            this.ctx.drawImage(this.imageInstanceWinner, 900 - (200 * this.gameOver.opacity / 2), 300, 275 * this.gameOver.opacity, 50 * this.gameOver.opacity);
         }
         if (this.win.opacity >= 1)
             clearInterval(this.intervalId);
