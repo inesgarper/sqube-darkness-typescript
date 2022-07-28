@@ -69,7 +69,7 @@ const squbeDarkness = {
         this.obstaclesArray = this.floorBlocks.filter(elm => ((elm instanceof BubbleHole) || (elm instanceof Spike) || (elm instanceof TempSpike)));
     },
     createSpotlights() {
-        this.spotlights.push(new Spotlight(this.ctx, 1200, 150, 1000, 1400, 'right', this.cube, this.floorBlocks), new Spotlight(this.ctx, 1500, 200, 1300, 1700, 'left', this.cube, this.floorBlocks));
+        this.spotlights.push(new Spotlight(this.ctx, 1300, 150, 900, 2100, 'left', this.cube, this.floorBlocks), new Spotlight(this.ctx, 3250, 100, 2500, 3900, 'right', this.cube, this.floorBlocks), new Spotlight(this.ctx, 5300, 100, 4900, 5700, 'left', this.cube, this.floorBlocks), new Spotlight(this.ctx, 7350, 100, 6800, 7900, 'right', this.cube, this.floorBlocks), new Spotlight(this.ctx, 9350, 30, 8800, 9900, 'left', this.cube, this.floorBlocks), new Spotlight(this.ctx, 11500, 150, 10700, 12300, 'right', this.cube, this.floorBlocks), new Spotlight(this.ctx, 12300, 100, 11900, 12700, 'left', this.cube, this.floorBlocks));
     },
     createPowerUps() {
         this.invisibleCubePowerUp = new InvisibleCube(this.ctx, 1650, 50);
@@ -148,14 +148,13 @@ const squbeDarkness = {
                 this.cube.cubePos.x + this.cube.cubeSize.w - 20 > elm.floorPos.x &&
                 this.cube.cubePos.y < elm.floorPos.y + elm.height &&
                 this.cube.cubeSize.h + this.cube.cubePos.y > elm.floorPos.y) {
-                console.log('perro');
                 // this.setGameOver()
             }
         });
         this.obstaclesArray.forEach(elm => {
             if (elm instanceof (Spike || TempSpike)) {
                 if (this.cube.cubePos.x < elm.floorPos.x + elm.width &&
-                    this.cube.cubePos.x + this.cube.cubeSize.w - 20 > elm.floorPos.x &&
+                    this.cube.cubePos.x + this.cube.cubeSize.w - 30 > elm.floorPos.x &&
                     this.cube.cubePos.y < elm.floorPos.y + elm.height &&
                     this.cube.cubeSize.h + this.cube.cubePos.y - 22.5 > elm.floorPos.y) {
                     // this.setGameOver()
