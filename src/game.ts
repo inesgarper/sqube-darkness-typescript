@@ -20,6 +20,13 @@ interface gameTemplate {
     gameOver: { status: boolean, opacity: number }
     win: { status: boolean, opacity: number }
 
+    shootAudio: any
+    backgroundMusicAudio: any
+    lightAudio: any
+    invisibilityAudio: any
+
+    startButton: null | HTMLButtonElement
+
     intervalId: number | undefined
 
 
@@ -44,7 +51,7 @@ interface gameTemplate {
     printGameOverScreen(): void
     checkWin(): void
     printVictoryScreen(): void
-
+    resetGame(): void
 }
 
 const squbeDarkness: gameTemplate = {
@@ -69,7 +76,14 @@ const squbeDarkness: gameTemplate = {
     gameOver: { status: false, opacity: 0 },
     win: { status: false, opacity: 0 },
 
+    shootAudio: undefined,
+    backgroundMusicAudio: undefined,
+    lightAudio: undefined,
+    invisibilityAudio: undefined,
+
     intervalId: undefined,
+
+    startButton: document.querySelector('button'),
 
     init() {
         this.setContext()
@@ -80,6 +94,15 @@ const squbeDarkness: gameTemplate = {
         this.createSpotlights()
         this.createPowerUps()
         this.setEventHandlers()
+
+        this.backgroundMusicAudio = new Audio('./sounds/background-music.mp3')
+        this.backgroundMusicAudio.volume = 0.2
+        this.shootAudio = new Audio('./sounds/shoot.wav')
+        this.shootAudio.volume = 0.1
+        this.lightAudio = new Audio('./sounds/light.wav')
+        this.lightAudio.volume = 0.1
+        this.invisibilityAudio = new Audio('./sounds/invisibility.wav')
+        this.invisibilityAudio.volume = 0.1
     },
 
     // --- SET UP
@@ -142,6 +165,7 @@ const squbeDarkness: gameTemplate = {
     gameLoop() {
         this.intervalId = setInterval(() => {
             this.clearAll()
+            this.backgroundMusicAudio.play()
             this.framesCounter >= 600 ? this.framesCounter = 0 : this.framesCounter++
             this.setEventHandlers()
             this.cube?.draw()
@@ -198,6 +222,7 @@ const squbeDarkness: gameTemplate = {
             this.printDistance()
             if (this.gameOver.status) this.printGameOverScreen()
             this.checkWin()
+            this.resetGame()
         }, 1000 / 60)
     },
 
@@ -249,7 +274,7 @@ const squbeDarkness: gameTemplate = {
 
                     if (this.cube!.isFound) {
 
-                        if (this.framesCounter % 30 === 0) spotlight.shoot()
+                        if (this.framesCounter % 70 === 0) spotlight.shoot()
 
                     }
 
@@ -271,6 +296,8 @@ const squbeDarkness: gameTemplate = {
                     this.cube!.cubePos.y < bullet.bulletPos.y + bullet.bulletSize.h &&
                     this.cube!.cubeSize.h + this.cube!.cubePos.y > bullet.bulletPos.y) {
 
+                    this.shootAudio.currentTime = 0
+                    this.shootAudio.play()
                     this.setGameOver()
                 }
 
@@ -279,6 +306,9 @@ const squbeDarkness: gameTemplate = {
                         block.floorPos.x + block.width > bullet.bulletPos.x &&
                         block.floorPos.y < bullet.bulletPos.y + bullet.bulletSize.h &&
                         block.height + block.floorPos.y > bullet.bulletPos.y) {
+
+                        this.shootAudio.currentTime = 0
+                        this.shootAudio.play()
 
                         const indexOfBulletToRemove: number = spotlight.bullets.indexOf(bullet)
                         spotlight.deleteCollisionedBullet(indexOfBulletToRemove)
@@ -294,6 +324,8 @@ const squbeDarkness: gameTemplate = {
     activeInvisibleCube() {
         if (this.invisibleCubePowerUp?.isAvailable) {
 
+            this.invisibilityAudio.play()
+
             this.invisibleCubePowerUp!.isActive = true
             this.cube!.isInvisible = true
             this.cube!.isFound = false
@@ -308,6 +340,8 @@ const squbeDarkness: gameTemplate = {
     activeTurnLightsOff() {
         if (this.turnOffLightsPowerUp?.isAvailable) {
 
+            this.lightAudio.play()
+
             this.turnOffLightsPowerUp!.isActive = true
             this.spotlights.forEach(spotlight => spotlight.light!.isOn = false)
             this.cube!.isFound = false
@@ -315,6 +349,7 @@ const squbeDarkness: gameTemplate = {
             setTimeout(() => {
                 this.turnOffLightsPowerUp!.isActive = false
                 this.spotlights.forEach(spotlight => spotlight.light!.isOn = true)
+                this.lightAudio.play()
             }, 5000)
         }
     },
@@ -430,6 +465,12 @@ const squbeDarkness: gameTemplate = {
         }
 
         if (this.win.opacity >= 1) clearInterval(this.intervalId)
+    },
+
+    resetGame() {
+        this.startButton?.addEventListener('click', () => {
+            window.location.reload()
+        })
     }
 
 }
