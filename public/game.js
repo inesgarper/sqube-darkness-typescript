@@ -18,6 +18,8 @@ const squbeDarkness = {
     gameOver: { status: false, opacity: 0 },
     win: { status: false, opacity: 0 },
     shootAudio: undefined,
+    jumpAudio: undefined,
+    deathAudio: undefined,
     backgroundMusicAudio: undefined,
     lightAudio: undefined,
     invisibilityAudio: undefined,
@@ -41,6 +43,10 @@ const squbeDarkness = {
         this.backgroundMusicAudio.volume = 0.2;
         this.shootAudio = new Audio('./sounds/shoot.wav');
         this.shootAudio.volume = 0.1;
+        this.jumpAudio = new Audio('./sounds/jump.wav');
+        this.jumpAudio.volume = 0.05;
+        this.deathAudio = new Audio('./sounds/death.wav');
+        this.deathAudio.volume = 0.1;
         this.lightAudio = new Audio('./sounds/light.wav');
         this.lightAudio.volume = 0.1;
         this.invisibilityAudio = new Audio('./sounds/invisibility.wav');
@@ -250,8 +256,7 @@ const squbeDarkness = {
                     this.cube.cubePos.x + this.cube.cubeSize.w > bullet.bulletPos.x &&
                     this.cube.cubePos.y < bullet.bulletPos.y + bullet.bulletSize.h &&
                     this.cube.cubeSize.h + this.cube.cubePos.y > bullet.bulletPos.y) {
-                    this.shootAudio.currentTime = 0;
-                    this.shootAudio.play();
+                    this.deathAudio.play();
                     this.setGameOver();
                 }
                 this.floorBlocks.forEach(block => {
@@ -331,8 +336,11 @@ const squbeDarkness = {
         document.addEventListener('keydown', event => {
             const { key } = event;
             if (!this.cube.isDead) {
-                if (key === 'ArrowUp')
+                if (key === 'ArrowUp') {
                     this.cube.jump();
+                    this.jumpAudio.currentTime = 0;
+                    this.jumpAudio.play();
+                }
                 if (key === 'ArrowLeft') {
                     if (!this.cube.isDead) {
                         this.cube.leftKey = true;
