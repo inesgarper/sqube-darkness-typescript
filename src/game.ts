@@ -19,6 +19,8 @@ interface gameTemplate {
     pixelDistance: number
     gameOver: { status: boolean, opacity: number }
     win: { status: boolean, opacity: number }
+    imageInstanceGameOver: any
+    imageInstanceWinner: any
 
     intervalId: number | undefined
 
@@ -31,6 +33,7 @@ interface gameTemplate {
     createSpotlights(): void
     createPowerUps(): void
     setEventHandlers(): void
+    getImageInstance(): void
     gameLoop(): void
     clearAll(): void
     updateDistance(): void
@@ -69,6 +72,9 @@ const squbeDarkness: gameTemplate = {
     gameOver: { status: false, opacity: 0 },
     win: { status: false, opacity: 0 },
 
+    imageInstanceGameOver: new Image(),
+    imageInstanceWinner: new Image(),
+
     intervalId: undefined,
 
     init() {
@@ -80,6 +86,7 @@ const squbeDarkness: gameTemplate = {
         this.createSpotlights()
         this.createPowerUps()
         this.setEventHandlers()
+        this.getImageInstance()
     },
 
     // --- SET UP
@@ -126,7 +133,7 @@ const squbeDarkness: gameTemplate = {
             new Spotlight(this.ctx, 1300, 150, 900, 2100, 'left', this.cube!, this.floorBlocks),
             new Spotlight(this.ctx, 3250, 100, 2500, 3900, 'right', this.cube!, this.floorBlocks),
             new Spotlight(this.ctx, 5300, 100, 4900, 5700, 'left', this.cube!, this.floorBlocks),
-            new Spotlight(this.ctx, 7350, 100, 6800, 7900, 'right', this.cube!, this.floorBlocks),
+            new Spotlight(this.ctx, 7350, 70, 6800, 7900, 'right', this.cube!, this.floorBlocks),
             new Spotlight(this.ctx, 9350, 30, 8800, 9900, 'left', this.cube!, this.floorBlocks),
             new Spotlight(this.ctx, 11500, 150, 10700, 12300, 'right', this.cube!, this.floorBlocks),
             new Spotlight(this.ctx, 12300, 100, 11900, 12700, 'left', this.cube!, this.floorBlocks),
@@ -209,7 +216,7 @@ const squbeDarkness: gameTemplate = {
                 this.cube!.cubePos.x + this.cube!.cubeSize.w - 20 > elm.floorPos.x &&
                 this.cube!.cubePos.y < elm.floorPos.y + elm.height &&
                 this.cube!.cubeSize.h + this.cube!.cubePos.y > elm.floorPos.y) {
-                this.setGameOver()
+                // this.setGameOver()
             }
         })
 
@@ -219,14 +226,14 @@ const squbeDarkness: gameTemplate = {
                     this.cube!.cubePos.x + this.cube!.cubeSize.w - 30 > elm.floorPos.x &&
                     this.cube!.cubePos.y < elm.floorPos.y + elm.height &&
                     this.cube!.cubeSize.h + this.cube!.cubePos.y - 22.5 > elm.floorPos.y) {
-                    this.setGameOver()
+                    // this.setGameOver()
                 }
             } else {
                 if (this.cube!.cubePos.x < elm.floorPos.x + elm.width &&
                     this.cube!.cubePos.x + this.cube!.cubeSize.w > elm.floorPos.x &&
                     this.cube!.cubePos.y < elm.floorPos.y + elm.height &&
                     this.cube!.cubeSize.h + this.cube!.cubePos.y > elm.floorPos.y) {
-                    this.setGameOver()
+                    // this.setGameOver()
                 }
             }
         })
@@ -271,7 +278,7 @@ const squbeDarkness: gameTemplate = {
                     this.cube!.cubePos.y < bullet.bulletPos.y + bullet.bulletSize.h &&
                     this.cube!.cubeSize.h + this.cube!.cubePos.y > bullet.bulletPos.y) {
 
-                    this.setGameOver()
+                    // this.setGameOver()
                 }
 
                 this.floorBlocks.forEach(block => {
@@ -389,6 +396,11 @@ const squbeDarkness: gameTemplate = {
         })
     },
 
+    getImageInstance(): void {
+        this.imageInstanceGameOver.src = './images/gameover.png'
+        this.imageInstanceWinner.src = './images/winner.png'
+    },
+
     setGameOver() {
         this.cube!.canMove = false
         this.gameOver.status = true
@@ -396,24 +408,49 @@ const squbeDarkness: gameTemplate = {
     },
 
     printGameOverScreen() {
+
         this.ctx!.globalAlpha = this.gameOver.opacity
         this.ctx!.fillStyle = 'black'
         this.ctx!.fillRect(0, 0, 1800, 800)
         this.ctx!.globalAlpha = 1
-        this.gameOver.opacity += 0.01
+        this.gameOver.opacity += 0.02
 
         if (this.gameOver.opacity >= 0.40) {
+            this.ctx!.drawImage(this.imageInstanceGameOver, 900 - (275 * this.gameOver.opacity / 2), 300, 275 * this.gameOver.opacity, 50 * this.gameOver.opacity)
+
+            this.ctx!.fillStyle = '#919191'
             this.ctx!.font = '30px sans-serif'
-            this.ctx!.fillStyle = '#ffffff'
-            this.ctx!.fillText('GAME OVER', 450, 200)
+
+            if (this.gameOver.opacity >= 1) {
+                if (this.distance * 0.026458 < 10) {
+                    this.ctx!.fillText(`${(this.distance * 0.026458).toFixed(2)}`, 856, 400)
+                    this.ctx!.fillText('m', 926, 400)
+                } else if ((this.distance * 0.026458 > 10)
+                    && (this.distance * 0.026458 < 100)) {
+                    this.ctx!.fillText(`${(this.distance * 0.026458).toFixed(2)}`, 845, 400)
+                    this.ctx!.fillText('m', 931, 400)
+                } else {
+                    this.ctx!.fillText(`${(this.distance * 0.026458).toFixed(2)}`, 834, 400)
+                    this.ctx!.fillText('m', 936, 400)
+                }
+            }
+
         }
 
+        // linea roja centro del canvas
+        this.ctx!.beginPath();
+        this.ctx!.moveTo(900, 0);
+        this.ctx!.lineTo(900, 800);
+        this.ctx!.stroke();
+        this.ctx!.strokeStyle = '#ff0000'
+
+        // borrar intervalo
         if (this.gameOver.opacity >= 1) clearInterval(this.intervalId)
 
     },
 
     checkWin() {
-        if (this.distance * 0.026458 > 107) this.printVictoryScreen()
+        if (this.distance * 0.026458 > 103) this.printVictoryScreen()
     },
 
     printVictoryScreen() {
@@ -424,9 +461,8 @@ const squbeDarkness: gameTemplate = {
         this.win.opacity += 0.01
 
         if (this.win.opacity >= 0.40) {
-            this.ctx!.font = '30px sans-serif'
-            this.ctx!.fillStyle = '#ffffff'
-            this.ctx!.fillText('WINNER', 450, 200)
+            this.ctx!.drawImage(this.imageInstanceWinner, 900 - (200 * this.gameOver.opacity / 2), 300, 275 * this.gameOver.opacity, 50 * this.gameOver.opacity)
+
         }
 
         if (this.win.opacity >= 1) clearInterval(this.intervalId)
