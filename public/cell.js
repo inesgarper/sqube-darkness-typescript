@@ -34,6 +34,7 @@ class BubbleHole extends Cell {
         this.ctx = ctx;
         this.posX = posX;
         this.posY = posY;
+        this.initialPos = { x: posX, y: posY };
         this.imageInstance = new Image();
         this.imageInstance.src = './images/bubble-hole/bubblehole.png';
         this.imageInstance.frames = 13;

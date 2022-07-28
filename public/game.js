@@ -21,6 +21,7 @@ const squbeDarkness = {
     backgroundMusicAudio: undefined,
     lightAudio: undefined,
     invisibilityAudio: undefined,
+    bubblesAudio: undefined,
     imageInstanceGameOver: new Image(),
     imageInstanceWinner: new Image(),
     intervalId: undefined,
@@ -35,6 +36,7 @@ const squbeDarkness = {
         this.createPowerUps();
         this.setEventHandlers();
         this.getImageInstance();
+        this.resetGame();
         this.backgroundMusicAudio = new Audio('./sounds/background-music.mp3');
         this.backgroundMusicAudio.volume = 0.2;
         this.shootAudio = new Audio('./sounds/shoot.wav');
@@ -43,6 +45,8 @@ const squbeDarkness = {
         this.lightAudio.volume = 0.1;
         this.invisibilityAudio = new Audio('./sounds/invisibility.wav');
         this.invisibilityAudio.volume = 0.1;
+        this.bubblesAudio = new Audio('./sounds/bubbles.mp3');
+        this.bubblesAudio.volume = 0.6;
     },
     // --- SET UP
     setContext() {
@@ -89,12 +93,19 @@ const squbeDarkness = {
     },
     createPowerUps() {
         this.invisibleCubePowerUp = new InvisibleCube(this.ctx, 1650, 50);
-        this.turnOffLightsPowerUp = new TurnOffLights(this.ctx, 1650, 150);
+        this.turnOffLightsPowerUp = new TurnOffLights(this.ctx, 1650, 170);
+    },
+    drawPowerUps() {
+        var _a, _b;
+        (_a = this.invisibleCubePowerUp) === null || _a === void 0 ? void 0 : _a.draw();
+        (_b = this.turnOffLightsPowerUp) === null || _b === void 0 ? void 0 : _b.draw();
+        this.ctx.fillText('Press Z', 1652, 150);
+        this.ctx.fillText('Press X', 1652, 270);
     },
     // --- INTERVAL
     gameLoop() {
         this.intervalId = setInterval(() => {
-            var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+            var _a, _b, _c, _d, _e, _f, _g;
             this.clearAll();
             this.backgroundMusicAudio.play();
             this.framesCounter >= 600 ? this.framesCounter = 0 : this.framesCounter++;
@@ -152,14 +163,13 @@ const squbeDarkness = {
                 if (elm.isActive)
                     elm.canMove = true;
             });
-            (_h = this.invisibleCubePowerUp) === null || _h === void 0 ? void 0 : _h.draw();
-            (_j = this.turnOffLightsPowerUp) === null || _j === void 0 ? void 0 : _j.draw();
+            this.drawPowerUps();
+            this.playBubbleAudio();
             this.updateDistance();
             this.printDistance();
             if (this.gameOver.status)
                 this.printGameOverScreen();
             this.checkWin();
-            this.resetGame();
         }, 1000 / 60);
     },
     // --- COLLISIONS
@@ -169,7 +179,7 @@ const squbeDarkness = {
                 this.cube.cubePos.x + this.cube.cubeSize.w - 20 > elm.floorPos.x &&
                 this.cube.cubePos.y < elm.floorPos.y + elm.height &&
                 this.cube.cubeSize.h + this.cube.cubePos.y > elm.floorPos.y) {
-                // this.setGameOver()
+                this.setGameOver();
             }
         });
         this.obstaclesArray.forEach(elm => {
@@ -178,7 +188,7 @@ const squbeDarkness = {
                     this.cube.cubePos.x + this.cube.cubeSize.w - 30 > elm.floorPos.x &&
                     this.cube.cubePos.y < elm.floorPos.y + elm.height &&
                     this.cube.cubeSize.h + this.cube.cubePos.y - 22.5 > elm.floorPos.y) {
-                    // this.setGameOver()
+                    this.setGameOver();
                 }
             }
             else {
@@ -186,8 +196,30 @@ const squbeDarkness = {
                     this.cube.cubePos.x + this.cube.cubeSize.w > elm.floorPos.x &&
                     this.cube.cubePos.y < elm.floorPos.y + elm.height &&
                     this.cube.cubeSize.h + this.cube.cubePos.y > elm.floorPos.y) {
-                    // this.setGameOver()
-                    this.printVictoryScreen();
+                    this.setGameOver();
+                }
+            }
+        });
+    },
+    playBubbleAudio() {
+        this.obstaclesArray.forEach((elm, i) => {
+            if (elm instanceof BubbleHole) {
+                // if ((this.cube!.cubePos.x > elm.floorPos.x) || (this.cube!.cubePos.x < elm.floorPos.x)) {
+                //     console.log('estas cerca')
+                //     this.bubblesAudio.play()
+                // } else {
+                //     this.bubblesAudio.stop()
+                // }
+                if (elm.initialPos.x + 100 > this.cube.cubePos.x + this.pixelDistance ||
+                    elm.initialPos.x - 100 < this.cube.cubePos.x + this.pixelDistance) {
+                    if (i === 17) {
+                        // console.log('el pozo -->', elm.initialPos.x)
+                        // console.log('el cubo -->', this.cube!.cubePos.x)
+                    }
+                    this.bubblesAudio.play();
+                }
+                else {
+                    this.bubblesAudio.stop();
                 }
             }
         });
@@ -277,17 +309,17 @@ const squbeDarkness = {
         this.ctx.font = '30px Sans-serif';
         this.ctx.fillStyle = 'white';
         if (this.distance * 0.026458 < 10) {
-            this.ctx.fillText(`${(this.distance * 0.026458).toFixed(2)}`, 1652, 300);
+            this.ctx.fillText(`${(this.distance * 0.026458).toFixed(2)}`, 1652, 320);
         }
         else if ((this.distance * 0.026458 > 10)
             && (this.distance * 0.026458 < 100)) {
-            this.ctx.fillText(`${(this.distance * 0.026458).toFixed(2)}`, 1636, 300);
+            this.ctx.fillText(`${(this.distance * 0.026458).toFixed(2)}`, 1636, 320);
         }
         else {
-            this.ctx.fillText(`${(this.distance * 0.026458).toFixed(2)}`, 1620, 300);
+            this.ctx.fillText(`${(this.distance * 0.026458).toFixed(2)}`, 1620, 320);
         }
         this.ctx.font = '20px Sans-serif';
-        this.ctx.fillText('m', 1715, 300);
+        this.ctx.fillText('m', 1715, 320);
     },
     // --- CLEAR SCREEN
     clearAll() {
@@ -364,13 +396,6 @@ const squbeDarkness = {
                 }
             }
         }
-        // linea roja centro del canvas
-        this.ctx.beginPath();
-        this.ctx.moveTo(900, 0);
-        this.ctx.lineTo(900, 800);
-        this.ctx.stroke();
-        this.ctx.strokeStyle = '#ff0000';
-        // borrar intervalo
         if (this.gameOver.opacity >= 1)
             clearInterval(this.intervalId);
     },
@@ -385,7 +410,7 @@ const squbeDarkness = {
         this.ctx.globalAlpha = 1;
         this.win.opacity += 0.01;
         if (this.win.opacity >= 0.40) {
-            this.ctx.drawImage(this.imageInstanceWinner, 900 - (200 * this.gameOver.opacity / 2), 300, 275 * this.gameOver.opacity, 50 * this.gameOver.opacity);
+            this.ctx.drawImage(this.imageInstanceWinner, 900 - (200 * this.win.opacity / 2), 300, 200 * this.win.opacity, 50 * this.win.opacity);
         }
         if (this.win.opacity >= 1)
             clearInterval(this.intervalId);
