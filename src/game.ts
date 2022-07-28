@@ -123,8 +123,14 @@ const squbeDarkness: gameTemplate = {
 
     createSpotlights() {
         this.spotlights.push(
-            new Spotlight(this.ctx, 1200, 150, 1000, 1400, 'right', this.cube!, this.floorBlocks),
-            new Spotlight(this.ctx, 1500, 200, 1300, 1700, 'left', this.cube!, this.floorBlocks))
+            new Spotlight(this.ctx, 1300, 150, 900, 2100, 'left', this.cube!, this.floorBlocks),
+            new Spotlight(this.ctx, 3250, 100, 2500, 3900, 'right', this.cube!, this.floorBlocks),
+            new Spotlight(this.ctx, 5300, 100, 4900, 5700, 'left', this.cube!, this.floorBlocks),
+            new Spotlight(this.ctx, 7350, 100, 6800, 7900, 'right', this.cube!, this.floorBlocks),
+            new Spotlight(this.ctx, 9350, 30, 8800, 9900, 'left', this.cube!, this.floorBlocks),
+            new Spotlight(this.ctx, 11500, 150, 10700, 12300, 'right', this.cube!, this.floorBlocks),
+            new Spotlight(this.ctx, 12300, 100, 11900, 12700, 'left', this.cube!, this.floorBlocks),
+        )
     },
 
     createPowerUps() {
@@ -265,6 +271,7 @@ const squbeDarkness: gameTemplate = {
                     this.cube!.cubePos.x + this.cube!.cubeSize.w > bullet.bulletPos.x &&
                     this.cube!.cubePos.y < bullet.bulletPos.y + bullet.bulletSize.h &&
                     this.cube!.cubeSize.h + this.cube!.cubePos.y > bullet.bulletPos.y) {
+
                     // this.setGameOver()
                 }
 
