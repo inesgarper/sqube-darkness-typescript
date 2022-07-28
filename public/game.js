@@ -84,9 +84,6 @@ const squbeDarkness = {
                     this.floorBlocks.push(new BrokenPlatform(this.ctx, (j + contador) * 50, i * 50));
                     contador += 1;
                 }
-                else if (cell === 7) {
-                    this.floorBlocks.push(new FloorBlock(this.ctx, (j + contador) * 50, i * 50));
-                }
             });
         });
     },
