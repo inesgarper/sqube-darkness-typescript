@@ -5,9 +5,11 @@ const squbeDarkness = {
     ctx: null,
     framesCounter: 0,
     cube: undefined,
+    // map: [],
+    // enemies: [],
     floorBlocks: [],
-    doggysArray: [],
-    obstaclesArray: [],
+    obstacles: [],
+    doggies: [],
     spotlights: [],
     invisibleCubePowerUp: undefined,
     turnOffLightsPowerUp: undefined,
@@ -28,61 +30,46 @@ const squbeDarkness = {
     init() {
         this.setContext();
         this.gameLoop();
-        this.createFloorBlocks();
-        this.filterFloorBlocks();
+        this.createMap();
         this.createCube();
         this.createSpotlights();
         this.createPowerUps();
         this.setEventHandlers();
         this.getImageInstance();
-        this.backgroundMusicAudio = new Audio('./sounds/background-music.mp3');
-        this.backgroundMusicAudio.volume = 0.2;
-        this.shootAudio = new Audio('./sounds/shoot.wav');
-        this.shootAudio.volume = 0.1;
-        this.lightAudio = new Audio('./sounds/light.wav');
-        this.lightAudio.volume = 0.1;
-        this.invisibilityAudio = new Audio('./sounds/invisibility.wav');
-        this.invisibilityAudio.volume = 0.1;
+        this.setSounds();
     },
     // --- SET UP
     setContext() {
         this.ctx = this.canvas.getContext('2d');
     },
     createCube() {
-        this.cube = new Cube(this.ctx, 400, 450, this.floorBlocks, this.spotlights);
+        this.cube = new Cube(this.ctx, 400, 450, this.floorBlocks, this.obstacles, this.spotlights, this.doggies);
     },
-    createFloorBlocks() {
+    createMap() {
         this.level.forEach((row, i) => {
-            let contador = 0;
+            let counter = 0;
             row.forEach((cell, j) => {
                 if (cell === 1) {
-                    this.floorBlocks.push(new FloorBlock(this.ctx, (j + contador) * 50, i * 50));
+                    this.floorBlocks.push(new MapBlock(this.ctx, (j + counter) * 50, i * 50));
                 }
                 else if (cell === 2) {
-                    this.floorBlocks.push(new BubbleHole(this.ctx, (j + contador) * 50, i * 50));
+                    this.obstacles.push(new BubbleHole(this.ctx, (j + counter) * 50, i * 50));
                 }
                 else if (cell === 3) {
-                    this.floorBlocks.push(new Doggy(this.ctx, (j + contador) * 50, i * 50));
+                    this.doggies.push(new Doggy(this.ctx, (j + counter) * 50, i * 50));
                 }
                 else if (cell === 4) {
-                    this.floorBlocks.push(new TempSpike(this.ctx, (j + contador) * 50, i * 50));
+                    this.obstacles.push(new TempSpike(this.ctx, (j + counter) * 50, i * 50));
                 }
                 else if (cell === 5) {
-                    this.floorBlocks.push(new Spike(this.ctx, (j + contador) * 50, i * 50));
+                    this.obstacles.push(new Spike(this.ctx, (j + counter) * 50, i * 50));
                 }
                 else if (cell === 6) {
-                    this.floorBlocks.push(new BrokenPlatform(this.ctx, (j + contador) * 50, i * 50));
-                    contador += 1;
-                }
-                else if (cell === 7) {
-                    this.floorBlocks.push(new FloorBlock(this.ctx, (j + contador) * 50, i * 50));
+                    this.floorBlocks.push(new BrokenPlatform(this.ctx, (j + counter) * 50, i * 50));
+                    counter++;
                 }
             });
         });
-    },
-    filterFloorBlocks() {
-        this.doggysArray = this.floorBlocks.filter(elm => (elm instanceof Doggy));
-        this.obstaclesArray = this.floorBlocks.filter(elm => ((elm instanceof BubbleHole) || (elm instanceof Spike) || (elm instanceof TempSpike)));
     },
     createSpotlights() {
         this.spotlights.push(new Spotlight(this.ctx, 1300, 150, 900, 2100, 'left', this.cube, this.floorBlocks), new Spotlight(this.ctx, 3250, 100, 2500, 3900, 'right', this.cube, this.floorBlocks), new Spotlight(this.ctx, 5300, 100, 4900, 5700, 'left', this.cube, this.floorBlocks), new Spotlight(this.ctx, 7350, 70, 6800, 7900, 'right', this.cube, this.floorBlocks), new Spotlight(this.ctx, 9350, 30, 8800, 9900, 'left', this.cube, this.floorBlocks), new Spotlight(this.ctx, 11500, 150, 10700, 12300, 'right', this.cube, this.floorBlocks), new Spotlight(this.ctx, 12300, 100, 11900, 12700, 'left', this.cube, this.floorBlocks));
@@ -99,51 +86,65 @@ const squbeDarkness = {
             this.backgroundMusicAudio.play();
             this.framesCounter >= 600 ? this.framesCounter = 0 : this.framesCounter++;
             this.setEventHandlers();
+            this.scroll();
+            // Cube
             (_a = this.cube) === null || _a === void 0 ? void 0 : _a.draw();
             (_b = this.cube) === null || _b === void 0 ? void 0 : _b.spinRight(this.framesCounter);
             (_c = this.cube) === null || _c === void 0 ? void 0 : _c.spinLeft(this.framesCounter);
             if ((_d = this.cube) === null || _d === void 0 ? void 0 : _d.isDead)
                 (_e = this.cube) === null || _e === void 0 ? void 0 : _e.animate(this.framesCounter);
             (_f = this.cube) === null || _f === void 0 ? void 0 : _f.movement();
+            // Collisions
             if (!((_g = this.invisibleCubePowerUp) === null || _g === void 0 ? void 0 : _g.isActive)) {
                 this.checkLightCollision();
-                if (!this.cube.isDead)
-                    this.checkCollision();
                 this.checkBulletCollision();
+                if (!this.cube.isDead) {
+                    this.checkDoggyCollision();
+                    this.checkObstacleCollision;
+                }
             }
-            // SPOTLIGHTS
-            this.spotlights.forEach(elm => {
+            // Spotlights
+            this.spotlights.forEach(spotlight => {
                 var _a, _b, _c;
-                if ((_a = elm.light) === null || _a === void 0 ? void 0 : _a.isOn) {
-                    (_b = elm.light) === null || _b === void 0 ? void 0 : _b.draw();
-                    elm.imageInstance.src = './images/spotlight/spotlight.png';
+                if ((_a = spotlight.light) === null || _a === void 0 ? void 0 : _a.isOn) {
+                    (_b = spotlight.light) === null || _b === void 0 ? void 0 : _b.draw();
+                    spotlight.imageInstance.src = './images/spotlight/spotlight.png';
                 }
                 else {
-                    elm.imageInstance.src = './images/spotlight/spotlight-off.png';
+                    spotlight.imageInstance.src = './images/spotlight/spotlight-off.png';
                 }
-                (_c = elm.light) === null || _c === void 0 ? void 0 : _c.move();
-                elm.draw(this.framesCounter);
-                elm.move();
-                elm.bullets.forEach(bullet => {
+                (_c = spotlight.light) === null || _c === void 0 ? void 0 : _c.move();
+                spotlight.draw(this.framesCounter);
+                spotlight.move();
+                spotlight.bullets.forEach(bullet => {
                     bullet.draw();
                     bullet.move();
                 });
             });
-            this.floorBlocks.forEach((elm, i) => {
-                if (elm instanceof TempSpike) {
-                    elm.move();
-                }
+            // MapBlocks
+            this.floorBlocks.forEach(elm => {
                 if (elm instanceof BrokenPlatform) {
+                    elm.drawPlatform(this.framesCounter);
                     if (elm.isBroken) {
                         elm.break();
                     }
                 }
-                elm.drawBlock(this.framesCounter);
+                else {
+                    elm.draw();
+                }
             });
-            // DOGGIES
-            this.doggysArray.forEach((elm, i) => {
-                if (elm.initialPos.x < this.cube.cubePos.x + this.pixelDistance ||
-                    elm.initialPos.x - 350 > this.cube.cubePos.x + this.pixelDistance) {
+            // Obstacles
+            this.obstacles.forEach(elm => {
+                if (elm instanceof TempSpike) {
+                    elm.move();
+                }
+                elm.draw(this.framesCounter);
+            });
+            // Doggies
+            this.doggies.forEach((elm, i) => {
+                elm.draw(this.framesCounter);
+                if (elm.initialPos.x < this.cube.pos.x + this.pixelDistance ||
+                    elm.initialPos.x - 350 > this.cube.pos.x + this.pixelDistance) {
                     elm.isActive = false;
                 }
                 else {
@@ -152,10 +153,13 @@ const squbeDarkness = {
                 if (elm.isActive)
                     elm.canMove = true;
             });
+            // PowerUps
             (_h = this.invisibleCubePowerUp) === null || _h === void 0 ? void 0 : _h.draw();
             (_j = this.turnOffLightsPowerUp) === null || _j === void 0 ? void 0 : _j.draw();
+            // Distance
             this.updateDistance();
             this.printDistance();
+            // Win and Lose Scenario
             if (this.gameOver.status)
                 this.printGameOverScreen();
             this.checkWin();
@@ -163,46 +167,24 @@ const squbeDarkness = {
         }, 1000 / 60);
     },
     // --- COLLISIONS
-    checkCollision() {
-        this.doggysArray.forEach(elm => {
-            if (this.cube.cubePos.x < elm.floorPos.x + elm.width &&
-                this.cube.cubePos.x + this.cube.cubeSize.w - 20 > elm.floorPos.x &&
-                this.cube.cubePos.y < elm.floorPos.y + elm.height &&
-                this.cube.cubeSize.h + this.cube.cubePos.y > elm.floorPos.y) {
-                // this.setGameOver()
-            }
+    checkDoggyCollision() {
+        this.doggies.forEach(doggy => {
+            if (this.checkCollision(this.cube, doggy))
+                this.setGameOver();
         });
-        this.obstaclesArray.forEach(elm => {
-            if (elm instanceof (Spike || TempSpike)) {
-                if (this.cube.cubePos.x < elm.floorPos.x + elm.width &&
-                    this.cube.cubePos.x + this.cube.cubeSize.w - 30 > elm.floorPos.x &&
-                    this.cube.cubePos.y < elm.floorPos.y + elm.height &&
-                    this.cube.cubeSize.h + this.cube.cubePos.y - 22.5 > elm.floorPos.y) {
-                    // this.setGameOver()
-                }
-            }
-            else {
-                if (this.cube.cubePos.x < elm.floorPos.x + elm.width &&
-                    this.cube.cubePos.x + this.cube.cubeSize.w > elm.floorPos.x &&
-                    this.cube.cubePos.y < elm.floorPos.y + elm.height &&
-                    this.cube.cubeSize.h + this.cube.cubePos.y > elm.floorPos.y) {
-                    // this.setGameOver()
-                }
-            }
+    },
+    checkObstacleCollision() {
+        this.obstacles.forEach(obstacle => {
+            if (this.checkCollision(this.cube, obstacle))
+                this.setGameOver();
         });
     },
     checkLightCollision() {
         this.spotlights.forEach(spotlight => {
             if (spotlight.light.isOn && !this.cube.isHidding) {
-                if (this.cube.cubePos.x < spotlight.light.lightPos.x + spotlight.light.lightSize.w &&
-                    this.cube.cubePos.x + this.cube.cubeSize.w > spotlight.light.lightPos.x &&
-                    this.cube.cubePos.y < spotlight.light.lightPos.y + spotlight.light.lightSize.h &&
-                    this.cube.cubeSize.h + this.cube.cubePos.y > spotlight.light.lightPos.y) {
+                if (this.checkCollision(this.cube, spotlight.light)) {
                     this.cube.isFound = true;
-                    if (this.cube.isFound) {
-                        if (this.framesCounter % 70 === 0)
-                            spotlight.shoot();
-                    }
+                    spotlight.shoot(this.framesCounter);
                 }
                 else {
                     this.cube.isFound = false;
@@ -213,19 +195,13 @@ const squbeDarkness = {
     checkBulletCollision() {
         this.spotlights.forEach(spotlight => {
             spotlight.bullets.forEach(bullet => {
-                if (this.cube.cubePos.x < bullet.bulletPos.x + bullet.bulletSize.w &&
-                    this.cube.cubePos.x + this.cube.cubeSize.w > bullet.bulletPos.x &&
-                    this.cube.cubePos.y < bullet.bulletPos.y + bullet.bulletSize.h &&
-                    this.cube.cubeSize.h + this.cube.cubePos.y > bullet.bulletPos.y) {
+                if (this.checkCollision(this.cube, bullet)) {
                     this.shootAudio.currentTime = 0;
                     this.shootAudio.play();
                     this.setGameOver();
                 }
                 this.floorBlocks.forEach(block => {
-                    if (block.floorPos.x < bullet.bulletPos.x + bullet.bulletSize.w &&
-                        block.floorPos.x + block.width > bullet.bulletPos.x &&
-                        block.floorPos.y < bullet.bulletPos.y + bullet.bulletSize.h &&
-                        block.height + block.floorPos.y > bullet.bulletPos.y) {
+                    if (this.checkCollision(block, bullet)) {
                         this.shootAudio.currentTime = 0;
                         this.shootAudio.play();
                         const indexOfBulletToRemove = spotlight.bullets.indexOf(bullet);
@@ -234,6 +210,25 @@ const squbeDarkness = {
                 });
             });
         });
+    },
+    checkCollision(r1, r2) {
+        if (r2 instanceof (Spike || TempSpike)) {
+            if (r1.pos.x < r2.pos.x + r2.size.w &&
+                r1.pos.x + r1.size.w - 30 > r2.pos.x &&
+                r1.pos.y < r2.pos.y + r2.size.h &&
+                r1.size.h + r1.pos.y - 22.5 > r2.pos.y) {
+                return true;
+            }
+        }
+        else {
+            if (r1.pos.x < r2.pos.x + r2.size.w &&
+                r1.pos.x + r1.size.w > r2.pos.x &&
+                r1.pos.y < r2.pos.y + r2.size.h &&
+                r1.size.h + r1.pos.y > r2.pos.y) {
+                return true;
+            }
+        }
+        return false;
     },
     // --- POWERUPS
     activeInvisibleCube() {
@@ -263,9 +258,42 @@ const squbeDarkness = {
             }, 5000);
         }
     },
+    // --- SCROLL
+    scroll() {
+        if (this.cube.pos.x >= 400) {
+            this.floorBlocks.forEach(block => {
+                if (!this.cube.isDead)
+                    block.pos.x += -this.cube.vel.x;
+                block.pos.y += -this.cube.vel.y;
+            });
+            this.obstacles.forEach(obstacle => {
+                if (!this.cube.isDead)
+                    obstacle.pos.x += -this.cube.vel.x;
+                obstacle.pos.y += -this.cube.vel.y;
+            });
+            this.spotlights.forEach(spotlight => {
+                spotlight.pos.x += -this.cube.vel.x;
+                spotlight.pos.y += -this.cube.vel.y;
+                spotlight.light.pos.x += -this.cube.vel.x;
+                spotlight.light.pos.y += -this.cube.vel.y;
+                spotlight.bullets.forEach(bullet => {
+                    bullet.pos.x += -this.cube.vel.x;
+                    bullet.pos.y += -this.cube.vel.y;
+                });
+                // keep spotlight movement range
+                spotlight.maxPosX.l += -this.cube.vel.x;
+                spotlight.maxPosX.r += -this.cube.vel.x;
+            });
+            this.doggies.forEach(doggy => {
+                if (!this.cube.isDead)
+                    doggy.pos.x += -this.cube.vel.x;
+                doggy.pos.y += -this.cube.vel.y;
+            });
+        }
+    },
     // --- DISTANCE
     updateDistance() {
-        let platformPosReference = this.floorBlocks[0].floorPos.x;
+        let platformPosReference = this.floorBlocks[0].pos.x;
         this.pixelDistance = -platformPosReference;
         if (platformPosReference < this.maxPos) {
             this.distance += 1.5;
@@ -388,6 +416,16 @@ const squbeDarkness = {
         }
         if (this.win.opacity >= 1)
             clearInterval(this.intervalId);
+    },
+    setSounds() {
+        this.backgroundMusicAudio = new Audio('./sounds/background-music.mp3');
+        this.backgroundMusicAudio.volume = 0.2;
+        this.shootAudio = new Audio('./sounds/shoot.wav');
+        this.shootAudio.volume = 0.1;
+        this.lightAudio = new Audio('./sounds/light.wav');
+        this.lightAudio.volume = 0.1;
+        this.invisibilityAudio = new Audio('./sounds/invisibility.wav');
+        this.invisibilityAudio.volume = 0.1;
     },
     resetGame() {
         var _a;

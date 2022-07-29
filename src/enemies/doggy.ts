@@ -1,12 +1,10 @@
 class Doggy {
 
     public initialPos
-    public floorPos
-    private doggyVel: number
-    // private doggyPhysics
+    public pos
+    private vel: number
     public range
-    public width: number
-    public height: number
+    public size: { w: number, h: number }
     public isActive: boolean
     public canMove: boolean
     public movedDistance: number
@@ -22,12 +20,11 @@ class Doggy {
     ) {
         this.ctx = ctx
         this.initialPos = { x: posX, y: posY }
-        this.floorPos = { x: posX, y: posY }
-        this.doggyVel = 0
-        // this.doggyPhysics = { acceleration: 1, friction: 0.2 }
+        this.pos = { x: posX, y: posY }
+        this.vel = 0
         this.range = { minX: (posX - 350), maxX: posX }
-        this.width = 50
-        this.height = 50
+        this.size = { w: 50, h: 50 }
+
         this.isActive = true
         this.canMove = false
         this.movedDistance = 0
@@ -39,15 +36,9 @@ class Doggy {
         this.imageInstance.framesIndex = 0
         this.imageInstance.src = './images/doggy/doggy-sprite.png'
 
-        // this.initFloor()
     }
 
-    // initFloor(): void {
-    // console.log('POSICION INICIAL ----->', this.floorPos.x)
-    // this.drawBlock()
-    // }
-
-    drawBlock(framesCounter: number): void {
+    draw(framesCounter: number): void {
 
         this.ctx!.drawImage(
             this.imageInstance,
@@ -55,16 +46,13 @@ class Doggy {
             0,
             this.imageInstance.width / this.imageInstance.frames,
             this.imageInstance.height,
-            this.floorPos.x,
-            this.floorPos.y,
-            this.width,
-            this.height
+            this.pos.x,
+            this.pos.y,
+            this.size.w,
+            this.size.h
         )
 
         this.animate(framesCounter)
-
-        // this.isActive ? this.ctx!.fillStyle = '#75b835' : this.ctx!.fillStyle = '#253a0f'
-        // this.ctx?.fillRect(this.floorPos.x, this.floorPos.y, this.width, this.height)
 
         this.move()
     }
@@ -77,15 +65,6 @@ class Doggy {
             this.imageInstance.framesIndex = 0;
         }
     }
-
-    // move(direction: number): void {
-    //     if (this.doggyVel < 3) {
-    //         this.doggyVel += this.doggyPhysics.acceleration
-    //         this.floorPos.x -= direction * this.doggyVel
-    //     } else {
-    //         this.floorPos.x -= direction * 3
-    //     }
-    // }
 
     move(): void {
         if (this.canMove) {
@@ -104,18 +83,16 @@ class Doggy {
             }
 
             if (this.touchedRight) {
-                this.doggyVel = 7
-                this.floorPos.x -= this.doggyVel
-                this.movedDistance += this.doggyVel
+                this.vel = 7
+                this.pos.x -= this.vel
+                this.movedDistance += this.vel
             } else if (this.touchedLeft) {
-                this.doggyVel = -7
-                this.floorPos.x -= this.doggyVel
-                this.movedDistance += this.doggyVel
+                this.vel = -7
+                this.pos.x -= this.vel
+                this.movedDistance += this.vel
 
                 if (this.movedDistance <= 0) this.canMove = false
             }
         }
     }
 }
-
-// HASTA AQUÍ PUEDES BORRAR QUERIDO

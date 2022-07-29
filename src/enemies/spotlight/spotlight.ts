@@ -1,13 +1,13 @@
 class Spotlight {
 
-    public spotlightPos: { x: number, y: number }
+    public pos: { x: number, y: number }
     public maxPosX: { l: number, r: number }
-    public spotlightSize: { w: number, h: number }
-    public spotlightCenter: number
-    public spotlightVel: { x: number, y: number }
+    private size: { w: number, h: number }
+    private center: number
+    private vel: { x: number, y: number }
 
-    public isMovingLeft: boolean | undefined
-    public isMovingRight: boolean | undefined
+    private isMovingLeft: boolean | undefined
+    private isMovingRight: boolean | undefined
 
     public light: Light | undefined
     public bullets: Array<Bullet>
@@ -27,11 +27,11 @@ class Spotlight {
 
     ) {
 
-        this.spotlightPos = { x: this.posX, y: this.posY }
+        this.pos = { x: this.posX, y: this.posY }
         this.maxPosX = { l: this.maxPosXLeft, r: this.maxPosXRight }
-        this.spotlightSize = { w: 80, h: 80 }
-        this.spotlightCenter = this.spotlightSize.w / 2
-        this.spotlightVel = { x: 0, y: 0 }
+        this.size = { w: 80, h: 80 }
+        this.center = this.size.w / 2
+        this.vel = { x: 0, y: 0 }
 
         this.isMovingLeft = undefined
         this.isMovingRight = undefined
@@ -49,7 +49,6 @@ class Spotlight {
     }
 
     initSpotlight(): void {
-        // this.draw()
         this.setDirection()
         this.createLight()
     }
@@ -61,15 +60,14 @@ class Spotlight {
             0,
             this.imageInstance.width / this.imageInstance.frames,
             this.imageInstance.height,
-            this.spotlightPos.x,
-            this.spotlightPos.y,
-            this.spotlightSize.w,
-            this.spotlightSize.h
+            this.pos.x,
+            this.pos.y,
+            this.size.w,
+            this.size.h
         )
 
         this.animate(framesCounter)
-        // this.ctx!.fillStyle = 'white'
-        // this.ctx?.fillRect(this.spotlightPos.x, this.spotlightPos.y, this.spotlightSize.w, this.spotlightSize.h)
+
     }
 
     animate(framesCounter: number): void {
@@ -94,8 +92,8 @@ class Spotlight {
     move(): void {
         if (this.isMovingRight) {
 
-            if (this.spotlightPos.x < this.maxPosX.r) {
-                this.spotlightPos.x += 2
+            if (this.pos.x < this.maxPosX.r) {
+                this.pos.x += 2
             } else {
                 this.isMovingRight = false
                 this.isMovingLeft = true
@@ -103,8 +101,8 @@ class Spotlight {
 
         } else if (this.isMovingLeft) {
 
-            if (this.spotlightPos.x > this.maxPosX.l) {
-                this.spotlightPos.x -= 2
+            if (this.pos.x > this.maxPosX.l) {
+                this.pos.x -= 2
             } else {
                 this.isMovingRight = true
                 this.isMovingLeft = false
@@ -114,13 +112,17 @@ class Spotlight {
     }
 
     createLight(): void {
-        this.light = new Light(this.ctx, this.spotlightPos, this.maxPosX, this.spotlightSize, this.spotlightCenter, this.spotlightVel, this.initialDirection)
+        this.light = new Light(this.ctx, this.pos, this.maxPosX, this.size, this.center, this.vel, this.initialDirection)
     }
 
-    shoot(): void {
+    shoot(framesCounter: number): void {
+        if (this.cube.isFound) {
+            if (framesCounter % 70 === 0) this.createBullets()
+        }
+    }
 
-        this.bullets.push(new Bullet(this.ctx, { x: this.spotlightPos.x + this.spotlightCenter, y: this.spotlightPos.y + this.spotlightCenter }, this.spotlightPos, this.cube, this.floorBlocks))
-
+    createBullets(): void {
+        this.bullets.push(new Bullet(this.ctx, { x: this.pos.x + this.center, y: this.pos.y + this.center }, this.cube))
     }
 
     deleteCollisionedBullet(index: number): void {

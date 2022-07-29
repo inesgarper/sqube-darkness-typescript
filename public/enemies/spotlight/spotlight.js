@@ -9,11 +9,11 @@ class Spotlight {
         this.initialDirection = initialDirection;
         this.cube = cube;
         this.floorBlocks = floorBlocks;
-        this.spotlightPos = { x: this.posX, y: this.posY };
+        this.pos = { x: this.posX, y: this.posY };
         this.maxPosX = { l: this.maxPosXLeft, r: this.maxPosXRight };
-        this.spotlightSize = { w: 80, h: 80 };
-        this.spotlightCenter = this.spotlightSize.w / 2;
-        this.spotlightVel = { x: 0, y: 0 };
+        this.size = { w: 80, h: 80 };
+        this.center = this.size.w / 2;
+        this.vel = { x: 0, y: 0 };
         this.isMovingLeft = undefined;
         this.isMovingRight = undefined;
         this.light = undefined;
@@ -25,15 +25,12 @@ class Spotlight {
         this.initSpotlight();
     }
     initSpotlight() {
-        // this.draw()
         this.setDirection();
         this.createLight();
     }
     draw(framesCounter) {
-        this.ctx.drawImage(this.imageInstance, this.imageInstance.framesIndex * (this.imageInstance.width / this.imageInstance.frames), 0, this.imageInstance.width / this.imageInstance.frames, this.imageInstance.height, this.spotlightPos.x, this.spotlightPos.y, this.spotlightSize.w, this.spotlightSize.h);
+        this.ctx.drawImage(this.imageInstance, this.imageInstance.framesIndex * (this.imageInstance.width / this.imageInstance.frames), 0, this.imageInstance.width / this.imageInstance.frames, this.imageInstance.height, this.pos.x, this.pos.y, this.size.w, this.size.h);
         this.animate(framesCounter);
-        // this.ctx!.fillStyle = 'white'
-        // this.ctx?.fillRect(this.spotlightPos.x, this.spotlightPos.y, this.spotlightSize.w, this.spotlightSize.h)
     }
     animate(framesCounter) {
         if (framesCounter % 5 == 0) {
@@ -55,8 +52,8 @@ class Spotlight {
     }
     move() {
         if (this.isMovingRight) {
-            if (this.spotlightPos.x < this.maxPosX.r) {
-                this.spotlightPos.x += 2;
+            if (this.pos.x < this.maxPosX.r) {
+                this.pos.x += 2;
             }
             else {
                 this.isMovingRight = false;
@@ -64,8 +61,8 @@ class Spotlight {
             }
         }
         else if (this.isMovingLeft) {
-            if (this.spotlightPos.x > this.maxPosX.l) {
-                this.spotlightPos.x -= 2;
+            if (this.pos.x > this.maxPosX.l) {
+                this.pos.x -= 2;
             }
             else {
                 this.isMovingRight = true;
@@ -74,10 +71,16 @@ class Spotlight {
         }
     }
     createLight() {
-        this.light = new Light(this.ctx, this.spotlightPos, this.maxPosX, this.spotlightSize, this.spotlightCenter, this.spotlightVel, this.initialDirection);
+        this.light = new Light(this.ctx, this.pos, this.maxPosX, this.size, this.center, this.vel, this.initialDirection);
     }
-    shoot() {
-        this.bullets.push(new Bullet(this.ctx, { x: this.spotlightPos.x + this.spotlightCenter, y: this.spotlightPos.y + this.spotlightCenter }, this.spotlightPos, this.cube, this.floorBlocks));
+    shoot(framesCounter) {
+        if (this.cube.isFound) {
+            if (framesCounter % 70 === 0)
+                this.createBullets();
+        }
+    }
+    createBullets() {
+        this.bullets.push(new Bullet(this.ctx, { x: this.pos.x + this.center, y: this.pos.y + this.center }, this.cube));
     }
     deleteCollisionedBullet(index) {
         this.bullets.splice(index, 1);

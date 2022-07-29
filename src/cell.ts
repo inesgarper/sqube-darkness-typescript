@@ -1,8 +1,7 @@
 class Cell {
 
-    public floorPos
-    public width: number
-    public height: number
+    public pos: { x: number, y: number }
+    public size: { w: number, h: number }
 
     constructor(
         public ctx: CanvasRenderingContext2D | null,
@@ -10,26 +9,14 @@ class Cell {
         public posY: number,
     ) {
         this.ctx = ctx
-        this.floorPos = { x: posX, y: posY }
-        this.width = 50
-        this.height = 50
-
-        this.initFloor()
+        this.pos = { x: this.posX, y: this.posY }
+        this.size = { w: 50, h: 50 }
     }
 
-    initFloor(): void {
-        // this.drawBlock(framesCounter: number)
-    }
-
-    drawBlock(framesCounter: number): void {
-
-
-        this.ctx!.fillStyle = 'black'
-        this.ctx?.fillRect(this.floorPos.x, this.floorPos.y, this.width, this.height)
-    }
 }
 
-class FloorBlock extends Cell {
+class MapBlock extends Cell {
+
     constructor(
         public ctx: CanvasRenderingContext2D | null,
         public posX: number,
@@ -37,13 +24,20 @@ class FloorBlock extends Cell {
     ) {
         super(ctx, posX, posY)
     }
+
+    draw(): void {
+        this.ctx!.fillStyle = 'black'
+        this.ctx?.fillRect(this.pos.x, this.pos.y, this.size.w, this.size.h)
+    }
 }
 
 
 // Obstacles 
 
 class BubbleHole extends Cell {
+
     private imageInstance: any
+
     constructor(
         public ctx: CanvasRenderingContext2D | null,
         public posX: number,
@@ -56,9 +50,7 @@ class BubbleHole extends Cell {
         this.imageInstance.framesIndex = Math.floor(Math.random() * 12)
     }
 
-    drawBlock(framesCounter: number): void {
-        // this.ctx!.fillStyle = 'purple'
-        // this.ctx?.fillRect(this.floorPos.x, this.floorPos.y, this.width, this.height)
+    draw(framesCounter: number): void {
 
         this.ctx!.drawImage(
             this.imageInstance,
@@ -66,14 +58,15 @@ class BubbleHole extends Cell {
             0,
             this.imageInstance.width / this.imageInstance.frames,
             this.imageInstance.height,
-            this.floorPos.x,
-            this.floorPos.y,
-            this.width,
-            this.height
+            this.pos.x,
+            this.pos.y,
+            this.size.w,
+            this.size.h
         )
-        this.animate(framesCounter)
 
+        this.animate(framesCounter)
     }
+
     animate(framesCounter: number): void {
         if (framesCounter % 6 == 0) {
             this.imageInstance.framesIndex++;
@@ -87,26 +80,21 @@ class BubbleHole extends Cell {
 
 
 class Spike extends Cell {
+
     public imageInstance: any
+
     constructor(
         public ctx: CanvasRenderingContext2D | null,
         public posX: number,
         public posY: number,
-
-
     ) {
         super(ctx, posX, posY)
         this.imageInstance = new Image()
         this.imageInstance.src = './images/spikes/spikes.png'
-
     }
 
-    drawBlock(framesCounter: number): void {
-        // this.ctx!.fillStyle = '#334295'
-        // this.ctx?.fillRect(this.floorPos.x, this.floorPos.y, this.width, this.height)
-
-        this.ctx!.drawImage(this.imageInstance, this.floorPos.x, this.floorPos.y, this.width, this.height)
-
+    draw(): void {
+        this.ctx!.drawImage(this.imageInstance, this.pos.x, this.pos.y, this.size.w, this.size.h)
     }
 }
 
@@ -116,7 +104,6 @@ class TempSpike extends Spike {
     public movedDistance: number
     private onTop: boolean
     private onBottom: boolean
-
 
     constructor(
         public ctx: CanvasRenderingContext2D | null,
@@ -130,27 +117,24 @@ class TempSpike extends Spike {
         this.onBottom = false
     }
 
-    drawBlock(framesCounter: number): void {
-        // this.ctx!.fillStyle = '#8f9ed0'
-        // this.ctx?.fillRect(this.floorPos.x, this.floorPos.y, this.width, this.height)
-        this.ctx!.drawImage(this.imageInstance, this.floorPos.x, this.floorPos.y, this.width, this.height)
-
+    draw(): void {
+        this.ctx!.drawImage(this.imageInstance, this.pos.x, this.pos.y, this.size.w, this.size.h)
     }
 
     moveUp(): void {
         this.spikeVel = -8
-        this.floorPos.y += this.spikeVel
+        this.pos.y += this.spikeVel
         this.movedDistance += this.spikeVel
     }
 
     moveDown(): void {
         this.spikeVel = +8
-        this.floorPos.y += this.spikeVel
+        this.pos.y += this.spikeVel
         this.movedDistance += this.spikeVel
     }
 
     move(): void {
-        // console.log('la distancia --->', this.movedDistance)
+
         if (this.movedDistance >= 50) {
             this.onTop = false
             setTimeout(() => {
@@ -161,7 +145,6 @@ class TempSpike extends Spike {
             setTimeout(() => {
                 this.onTop = true
             }, 1000)
-
         }
 
         if (this.onTop) this.moveDown()
@@ -169,7 +152,7 @@ class TempSpike extends Spike {
     }
 }
 
-class BrokenPlatform extends FloorBlock {
+class BrokenPlatform extends MapBlock {
 
     public brokenPlatformVel
     public brokenPlatformPhysics
@@ -195,23 +178,23 @@ class BrokenPlatform extends FloorBlock {
     }
 
 
-    drawBlock(framesCounter: number): void {
-        // this.ctx!.fillStyle = '#f3e600'
-        // this.ctx?.fillRect(this.floorPos.x, this.floorPos.y, this.width + 50, this.height)
+    drawPlatform(framesCounter: number): void {
+
         this.ctx!.drawImage(
             this.imageInstance,
             this.imageInstance.framesIndex * (this.imageInstance.width / this.imageInstance.frames),
             0,
             this.imageInstance.width / this.imageInstance.frames,
             this.imageInstance.height,
-            this.floorPos.x,
-            this.floorPos.y,
-            this.width + 50,
-            this.height
+            this.pos.x,
+            this.pos.y,
+            this.size.w + 50,
+            this.size.h
         )
-        if (this.isDoneBreaking) this.animate(framesCounter)
 
+        if (this.isDoneBreaking) this.animate(framesCounter)
     }
+
     animate(framesCounter: number): void {
         if (this.isDoneBreaking) {
             if (framesCounter % 3 == 0) {
@@ -223,27 +206,8 @@ class BrokenPlatform extends FloorBlock {
     break(): void {
         setTimeout(() => {
             this.brokenPlatformVel.y += this.brokenPlatformPhysics.gravity
-            this.floorPos.y += this.brokenPlatformVel.y
+            this.pos.y += this.brokenPlatformVel.y
             this.isDoneBreaking = true
         }, 400)
     }
 }
-
-class DoggyPlatform extends Cell {
-    public isActive: boolean
-    constructor(
-        public ctx: CanvasRenderingContext2D | null,
-        public posX: number,
-        public posY: number,
-    ) {
-        super(ctx, posX, posY)
-        this.isActive = false
-    }
-
-    drawBlock(framesCounter: number): void {
-        this.isActive ? this.ctx!.fillStyle = '#ffffff' : this.ctx!.fillStyle = '#ff330b'
-        this.ctx?.fillRect(this.floorPos.x, this.floorPos.y, this.width, this.height)
-    }
-}
-
-// HASTA AQUÍ PUEDES BORRAR QUERIDO
