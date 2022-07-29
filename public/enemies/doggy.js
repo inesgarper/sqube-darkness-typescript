@@ -8,7 +8,7 @@ class Doggy {
         this.initialPos = { x: posX, y: posY };
         this.pos = { x: posX, y: posY };
         this.vel = 0;
-        this.range = { minX: (posX - 350), maxX: posX };
+        this.maxPosX = { l: (posX - 350), r: posX };
         this.size = { w: 50, h: 50 };
         this.isActive = true;
         this.canMove = false;

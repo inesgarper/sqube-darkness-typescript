@@ -1,10 +1,10 @@
 class Spotlight {
 
-    public pos: { x: number, y: number }
-    public maxPosX: { l: number, r: number }
-    private size: { w: number, h: number }
+    public pos: Vector
+    public maxPosX: MaxPosX
+    private size: Size
     private center: number
-    private vel: { x: number, y: number }
+    private vel: Vector
 
     private isMovingLeft: boolean | undefined
     private isMovingRight: boolean | undefined

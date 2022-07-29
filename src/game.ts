@@ -252,8 +252,8 @@ const squbeDarkness: gameTemplate = {
             // Doggies
             this.doggies.forEach((elm, i) => {
                 elm.draw(this.framesCounter)
-                if (elm.initialPos.x < this.cube!.pos.x + this.pixelDistance ||
-                    elm.initialPos.x - 350 > this.cube!.pos.x + this.pixelDistance) {
+                if (elm.maxPosX.r < this.cube!.pos.x + this.pixelDistance ||
+                    elm.maxPosX.l > this.cube!.pos.x + this.pixelDistance) {
                     elm.isActive = false
                 } else {
                     elm.isActive = true
