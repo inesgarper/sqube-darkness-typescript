@@ -7,8 +7,6 @@ interface gameTemplate {
     framesCounter: number
 
     cube: undefined | Cube
-    // map: Array<Array<Cell>>
-    // enemies: Array<Array<Spotlight | Doggy>>
     floorBlocks: Array<MapBlock>
     obstacles: Array<BubbleHole | Spike | TempSpike>
     doggies: Array<Doggy>
@@ -39,36 +37,49 @@ interface gameTemplate {
 
     init(): void
     setContext(): void
-    setSounds(): void
     scroll(): void
+    applyScroll(elm: any): void
+    setEventHandlers(): void
 
-    // Create elements
+    setSounds(): void
+    playAudio(sound: any): void
+    playBubbleAudio(): void
+
+    gameLoop(): void
+    clearAll(): void
+
+    // Create Elements
     createCube(): void
     createMap(): void
     createSpotlights(): void
     createPowerUps(): void
-    drawPowerUps(): void
-    setEventHandlers(): void
-    getImageInstance(): void
-    gameLoop(): void
-    clearAll(): void
-    updateDistance(): void
-    printDistance(): void
+
+    // Update Elements inside GameLoop
+    updateCube(): void
+    updateSpotlights(): void
+    updateDoggies(): void
+    updateMapBlocks(): void
+    updateObstacles(): void
+    updatePowerUps(): void
 
     // Collisions
     checkDoggyCollision(): void
     checkObstacleCollision(): void
-    // checkCollision(): void
-    playBubbleAudio(): void
     checkLightCollision(): void
     checkBulletCollision(): void
     checkCollision(r1: any, r2: any): boolean
+    checkAllCollisions(): void
 
     // Active PowerUps
     activeInvisibleCube(): void
     activeTurnLightsOff(): void
 
+    // Travelled Distance
+    updateDistance(): void
+    printDistance(): void
+
     // Win and Lose Scenario
+    getGameOverOrWinImageInstance(): void
     setGameOver(): void
     printGameOverScreen(): void
     checkWin(): void
@@ -86,8 +97,6 @@ const squbeDarkness: gameTemplate = {
     framesCounter: 0,
 
     cube: undefined,
-    // map: [],
-    // enemies: [],
     floorBlocks: [],
     obstacles: [],
     doggies: [],
@@ -124,7 +133,7 @@ const squbeDarkness: gameTemplate = {
         this.createSpotlights()
         this.createPowerUps()
         this.setEventHandlers()
-        this.getImageInstance()
+        this.getGameOverOrWinImageInstance()
         this.setSounds()
         this.resetGame()
     },
@@ -135,7 +144,7 @@ const squbeDarkness: gameTemplate = {
     },
 
     createCube() {
-        this.cube = new Cube(this.ctx, 400, 450, this.floorBlocks, this.obstacles, this.spotlights, this.doggies)
+        this.cube = new Cube(this.ctx, 400, 450, this.floorBlocks)
     },
 
     createMap() {
@@ -177,101 +186,99 @@ const squbeDarkness: gameTemplate = {
         this.turnOffLightsPowerUp = new TurnOffLights(this.ctx, 1650, 170)
     },
 
-    drawPowerUps() {
-        this.invisibleCubePowerUp?.draw()
-        this.turnOffLightsPowerUp?.draw()
-
-        this.ctx!.fillText('Press Z', 1652, 150)
-        this.ctx!.fillText('Press X', 1652, 270)
-    },
 
     // --- INTERVAL
     gameLoop() {
         this.intervalId = setInterval(() => {
+
             this.clearAll()
+
+            // Set Up
             this.backgroundMusicAudio.play()
             this.framesCounter >= 600 ? this.framesCounter = 0 : this.framesCounter++
-            this.setEventHandlers()
             this.scroll()
 
-            // Cube
-            this.cube?.draw()
-            this.cube?.spinRight(this.framesCounter)
-            this.cube?.spinLeft(this.framesCounter)
-            if (this.cube?.isDead) this.cube?.animate(this.framesCounter)
-            this.cube?.movement()
+            // Update Elements
+            this.updateCube()
+            this.updateSpotlights()
+            this.updateMapBlocks()
+            this.updateObstacles()
+            this.updateDoggies()
+            this.updatePowerUps()
+            this.updateDistance()
 
             // Collisions
-            if (!this.invisibleCubePowerUp?.isActive) {
-                this.checkLightCollision()
-                this.checkBulletCollision()
-                if (!this.cube!.isDead) {
-                    this.checkDoggyCollision()
-                    this.checkObstacleCollision
-                }
-            }
-
-            // Spotlights
-            this.spotlights.forEach(spotlight => {
-                if (spotlight.light?.isOn) {
-                    spotlight.light?.draw()
-                    spotlight.imageInstance.src = './images/spotlight/spotlight.png'
-                } else {
-                    spotlight.imageInstance.src = './images/spotlight/spotlight-off.png'
-                }
-                spotlight.light?.move()
-                spotlight.draw(this.framesCounter)
-                spotlight.move()
-                spotlight.bullets.forEach(bullet => {
-                    bullet.draw()
-                    bullet.move()
-                });
-            })
-
-            // MapBlocks
-            this.floorBlocks.forEach(elm => {
-                if (elm instanceof BrokenPlatform) {
-                    elm.drawPlatform(this.framesCounter)
-                    if (elm.isBroken) {
-                        elm.break()
-                    }
-                } else {
-                    elm.draw()
-                }
-            })
-
-            // Obstacles
-            this.obstacles.forEach(elm => {
-                if (elm instanceof TempSpike) {
-                    elm.move()
-                }
-                elm.draw(this.framesCounter)
-            })
-            this.playBubbleAudio()
-
-            // Doggies
-            this.doggies.forEach((elm, i) => {
-                elm.draw(this.framesCounter)
-                if (elm.maxPosX.r < this.cube!.pos.x + this.pixelDistance ||
-                    elm.maxPosX.l > this.cube!.pos.x + this.pixelDistance) {
-                    elm.isActive = false
-                } else {
-                    elm.isActive = true
-                }
-                if (elm.isActive) elm.canMove = true
-            })
-
-            // PowerUps
-            this.drawPowerUps()
-
-            // Distance
-            this.updateDistance()
-            this.printDistance()
+            this.checkAllCollisions()
 
             // Win and Lose Scenario
             if (this.gameOver.status) this.printGameOverScreen()
             this.checkWin()
         }, 1000 / 60)
+    },
+
+    // --- UPDATE FUNCTIONS
+    updateCube() {
+        this.cube?.draw()
+        this.cube?.spinRight(this.framesCounter)
+        this.cube?.spinLeft(this.framesCounter)
+        if (this.cube?.isDead) this.cube?.animate(this.framesCounter)
+        this.cube?.movement()
+    },
+
+    updateMapBlocks() {
+        this.floorBlocks.forEach(elm => {
+            if (elm instanceof BrokenPlatform) {
+                elm.drawPlatform(this.framesCounter)
+                if (elm.isBroken) elm.break()
+            } else {
+                elm.draw()
+            }
+        })
+    },
+
+    updateObstacles() {
+        this.obstacles.forEach(elm => {
+            if (elm instanceof TempSpike) {
+                elm.move()
+            }
+            elm.draw(this.framesCounter)
+        })
+        this.playBubbleAudio()
+    },
+
+    updateSpotlights() {
+        this.spotlights.forEach(spotlight => {
+            if (spotlight.light?.isOn) spotlight.light?.draw()
+            spotlight.setImageSrc()
+            spotlight.draw(this.framesCounter)
+            spotlight.move()
+            spotlight.light?.move()
+            spotlight.bullets.forEach(bullet => {
+                bullet.draw()
+                bullet.move()
+            });
+        })
+    },
+
+    updateDoggies() {
+        this.doggies.forEach((elm, i) => {
+            elm.draw(this.framesCounter)
+            if (elm.maxPosX.r < this.cube!.pos.x + this.pixelDistance ||
+                elm.maxPosX.l > this.cube!.pos.x + this.pixelDistance) {
+                elm.isActive = false
+            } else {
+                elm.isActive = true
+            }
+            if (elm.isActive) elm.canMove = true
+        })
+    },
+
+    updatePowerUps() {
+        this.invisibleCubePowerUp?.draw()
+        this.turnOffLightsPowerUp?.draw()
+
+        this.ctx!.fillText('Press Z', 1652, 150)
+        this.ctx!.fillText('Press X', 1652, 270)
     },
 
     // --- COLLISIONS
@@ -287,31 +294,7 @@ const squbeDarkness: gameTemplate = {
         })
     },
 
-    playBubbleAudio(): void {
-        this.obstacles.forEach((elm, i) => {
-            if (elm instanceof BubbleHole) {
-                // if ((this.cube!.cubePos.x > elm.floorPos.x) || (this.cube!.cubePos.x < elm.floorPos.x)) {
-                //     console.log('estas cerca')
-                //     this.bubblesAudio.play()
-                // } else {
-                //     this.bubblesAudio.stop()
-                // }
-
-                if (elm.initialPos.x + 100 > this.cube!.pos.x + this.pixelDistance ||
-                    elm.initialPos.x - 100 < this.cube!.pos.x + this.pixelDistance) {
-                    if (i === 17) {
-                        // console.log('el pozo -->', elm.initialPos.x)
-                        // console.log('el cubo -->', this.cube!.cubePos.x)
-                    }
-                    this.bubblesAudio.play()
-                } else {
-                    this.bubblesAudio.stop()
-                }
-            }
-        })
-    },
-
-    checkLightCollision(): void {
+    checkLightCollision() {
         this.spotlights.forEach(spotlight => {
             if (spotlight.light!.isOn && !this.cube!.isHidding) {
 
@@ -327,30 +310,25 @@ const squbeDarkness: gameTemplate = {
         })
     },
 
-    checkBulletCollision(): void {
+    checkBulletCollision() {
 
         this.spotlights.forEach(spotlight => {
-
             spotlight.bullets.forEach(bullet => {
+
                 if (this.checkCollision(this.cube, bullet)) {
-                    this.shootAudio.currentTime = 0
-                    this.shootAudio.play()
+                    this.playAudio(this.shootAudio)
                     this.setGameOver()
                 }
 
                 this.floorBlocks.forEach(block => {
                     if (this.checkCollision(block, bullet)) {
-                        this.shootAudio.currentTime = 0
-                        this.shootAudio.play()
-
+                        this.playAudio(this.shootAudio)
                         const indexOfBulletToRemove: number = spotlight.bullets.indexOf(bullet)
                         spotlight.deleteCollisionedBullet(indexOfBulletToRemove)
                     }
                 })
             })
-
         })
-
     },
 
     checkCollision(r1, r2) {
@@ -374,6 +352,17 @@ const squbeDarkness: gameTemplate = {
         }
 
         return false
+    },
+
+    checkAllCollisions() {
+        if (!this.invisibleCubePowerUp?.isActive) {
+            this.checkLightCollision()
+            this.checkBulletCollision()
+            if (!this.cube!.isDead) {
+                this.checkDoggyCollision()
+                this.checkObstacleCollision()
+            }
+        }
     },
 
     // --- POWERUPS
@@ -413,38 +402,32 @@ const squbeDarkness: gameTemplate = {
     // --- SCROLL
     scroll() {
         if (this.cube!.pos.x >= 400) {
-            this.floorBlocks.forEach(block => {
-                if (!this.cube!.isDead) block.pos.x += -this.cube!.vel.x
-                block.pos.y += -this.cube!.vel.y
-            })
 
-            this.obstacles.forEach(obstacle => {
-                if (!this.cube!.isDead) obstacle.pos.x += -this.cube!.vel.x
-                obstacle.pos.y += -this.cube!.vel.y
-            })
+            this.floorBlocks.forEach(block => this.applyScroll(block))
+            this.obstacles.forEach(obstacle => this.applyScroll(obstacle))
+            this.doggies.forEach(doggy => this.applyScroll(doggy))
 
             this.spotlights.forEach(spotlight => {
-                spotlight.pos.x += -this.cube!.vel.x
-                spotlight.pos.y += -this.cube!.vel.y
-                spotlight.light!.pos.x += -this.cube!.vel.x
-                spotlight.light!.pos.y += -this.cube!.vel.y
-                spotlight.bullets.forEach(bullet => {
-                    bullet.pos.x += -this.cube!.vel.x
-                    bullet.pos.y += -this.cube!.vel.y
-                })
+                this.applyScroll(spotlight)
+                this.applyScroll(spotlight.light!)
+                spotlight.bullets.forEach(bullet => this.applyScroll(bullet))
 
                 // keep spotlight movement range
                 spotlight.maxPosX.l += -this.cube!.vel.x
                 spotlight.maxPosX.r += -this.cube!.vel.x
             })
-
-            this.doggies.forEach(doggy => {
-                if (!this.cube!.isDead) doggy.pos.x += -this.cube!.vel.x
-                doggy.pos.y += -this.cube!.vel.y
-            })
         }
     },
 
+    applyScroll(elm) {
+        if (elm instanceof Spotlight || elm instanceof Light || elm instanceof Bullet) {
+            elm.pos.x += -this.cube!.vel.x
+            elm.pos.y += -this.cube!.vel.y
+        } else {
+            if (!this.cube!.isDead) elm.pos.x += -this.cube!.vel.x
+            elm.pos.y += -this.cube!.vel.y
+        }
+    },
 
     // --- DISTANCE
     updateDistance() {
@@ -456,6 +439,8 @@ const squbeDarkness: gameTemplate = {
             this.distance += 1.5
             this.maxPos = platformPosReference
         }
+
+        this.printDistance()
     },
 
     printDistance() {
@@ -472,7 +457,6 @@ const squbeDarkness: gameTemplate = {
 
         this.ctx!.font = '20px Sans-serif'
         this.ctx!.fillText('m', 1715, 320)
-
     },
 
     // --- CLEAR SCREEN
@@ -519,7 +503,8 @@ const squbeDarkness: gameTemplate = {
         })
     },
 
-    getImageInstance(): void {
+    // --- WIN AND LOSE SCENARIO
+    getGameOverOrWinImageInstance() {
         this.imageInstanceGameOver.src = './images/gameover.png'
         this.imageInstanceWinner.src = './images/winner.png'
     },
@@ -599,6 +584,35 @@ const squbeDarkness: gameTemplate = {
         this.deathAudio.volume = 0.1
         this.bubblesAudio = new Audio('./sounds/bubbles.mp3')
         this.bubblesAudio.volume = 0.6
+    },
+
+    playAudio(sound) {
+        sound.currentTime = 0
+        sound.play()
+    },
+
+    playBubbleAudio() {
+        this.obstacles.forEach((elm, i) => {
+            if (elm instanceof BubbleHole) {
+                // if ((this.cube!.cubePos.x > elm.floorPos.x) || (this.cube!.cubePos.x < elm.floorPos.x)) {
+                //     console.log('estas cerca')
+                //     this.bubblesAudio.play()
+                // } else {
+                //     this.bubblesAudio.stop()
+                // }
+
+                if (elm.initialPos.x + 100 > this.cube!.pos.x + this.pixelDistance ||
+                    elm.initialPos.x - 100 < this.cube!.pos.x + this.pixelDistance) {
+                    if (i === 17) {
+                        // console.log('el pozo -->', elm.initialPos.x)
+                        // console.log('el cubo -->', this.cube!.cubePos.x)
+                    }
+                    this.bubblesAudio.play()
+                } else {
+                    this.bubblesAudio.stop()
+                }
+            }
+        })
     },
 
     resetGame() {

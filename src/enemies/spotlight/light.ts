@@ -1,7 +1,7 @@
 class Light {
 
-    public pos: { x: number, y: number }
-    public size: { w: number, h: number }
+    public pos: Vector
+    public size: Size
     public rotation: number
 
     public isOn: boolean
@@ -11,11 +11,10 @@ class Light {
 
     constructor(
         public ctx: CanvasRenderingContext2D | null,
-        public spotlightPos: { x: number, y: number },
-        public maxPosX: { l: number, r: number },
-        public spotlightSize: { w: number, h: number },
+        public spotlightPos: Vector,
+        public maxPosX: MaxPosX,
+        public spotlightSize: Size,
         public spotlightCenter: number,
-        public spotlightVel: { x: number, y: number },
         public initialDirection: string
     ) {
 

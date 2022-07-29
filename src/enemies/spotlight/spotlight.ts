@@ -4,7 +4,6 @@ class Spotlight {
     public maxPosX: MaxPosX
     private size: Size
     private center: number
-    private vel: Vector
 
     private isMovingLeft: boolean | undefined
     private isMovingRight: boolean | undefined
@@ -31,7 +30,6 @@ class Spotlight {
         this.maxPosX = { l: this.maxPosXLeft, r: this.maxPosXRight }
         this.size = { w: 80, h: 80 }
         this.center = this.size.w / 2
-        this.vel = { x: 0, y: 0 }
 
         this.isMovingLeft = undefined
         this.isMovingRight = undefined
@@ -79,6 +77,14 @@ class Spotlight {
         }
     }
 
+    setImageSrc(): void {
+        if (this.light?.isOn) {
+            this.imageInstance.src = './images/spotlight/spotlight.png'
+        } else {
+            this.imageInstance.src = './images/spotlight/spotlight-off.png'
+        }
+    }
+
     setDirection(): void {
         if (this.initialDirection === 'left') {
             this.isMovingLeft = true
@@ -112,7 +118,7 @@ class Spotlight {
     }
 
     createLight(): void {
-        this.light = new Light(this.ctx, this.pos, this.maxPosX, this.size, this.center, this.vel, this.initialDirection)
+        this.light = new Light(this.ctx, this.pos, this.maxPosX, this.size, this.center, this.initialDirection)
     }
 
     shoot(framesCounter: number): void {

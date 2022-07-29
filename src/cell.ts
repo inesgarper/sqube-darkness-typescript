@@ -1,7 +1,7 @@
 class Cell {
 
-    public pos: { x: number, y: number }
-    public size: { w: number, h: number }
+    public pos: Vector
+    public size: Size
 
     constructor(
         public ctx: CanvasRenderingContext2D | null,
@@ -37,7 +37,7 @@ class MapBlock extends Cell {
 class BubbleHole extends Cell {
 
     private imageInstance: any
-    public initialPos: { x: number, y: number }
+    public initialPos: Vector
     constructor(
         public ctx: CanvasRenderingContext2D | null,
         public posX: number,
@@ -155,7 +155,7 @@ class TempSpike extends Spike {
 
 class BrokenPlatform extends MapBlock {
 
-    public brokenPlatformVel
+    public brokenPlatformVel: Vector
     public brokenPlatformPhysics
     public isBroken: boolean
     private isDoneBreaking: boolean

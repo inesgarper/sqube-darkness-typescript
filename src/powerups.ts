@@ -1,7 +1,7 @@
 class PowerUp {
 
-    public powerUpPos: { x: number, y: number }
-    public powerUpSize: { w: number, h: number }
+    public powerUpPos: Vector
+    public powerUpSize: Size
     public isAvailable: boolean
     public isActive: boolean
 

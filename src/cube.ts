@@ -1,7 +1,7 @@
 class Cube {
 
-    public pos: { x: number, y: number }
-    public size: { w: number, h: number }
+    public pos: Vector
+    public size: Size
     public center: number
     public vel: { x: number, y: number, maxVelX: number, maxVelY: number }
     public physics: { gravity: number, friction: number }
@@ -34,9 +34,6 @@ class Cube {
         private posX: number,
         private posY: number,
         private floorBlocks: Array<MapBlock>,
-        private obstacles: Array<BubbleHole | Spike | TempSpike>,
-        private spotlights: Array<Spotlight>,
-        private doggies: Array<Doggy>
 
     ) {
 
@@ -314,18 +311,6 @@ class Cube {
     }
 
     checkRectCollision(r1: any, r2: any): boolean {
-        // if (r1.x >= r2.x + r2.width) {
-        //     return false
-        // } else if (r1.x + r1.width <= r2.x) {
-        //     return false
-        // } else if (r1.y >= r2.y + r2.height) {
-        //     return false
-        // } else if (r1.y + r1.height <= r2.y) {
-        //     return false
-        // } else {
-        //     return true
-        // }
-
         if (r1.x < r2.x + r2.width &&
             r1.x + r1.width > r2.x &&
             r1.y < r2.y + r2.height &&

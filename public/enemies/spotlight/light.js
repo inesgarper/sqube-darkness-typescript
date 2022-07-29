@@ -1,12 +1,11 @@
 "use strict";
 class Light {
-    constructor(ctx, spotlightPos, maxPosX, spotlightSize, spotlightCenter, spotlightVel, initialDirection) {
+    constructor(ctx, spotlightPos, maxPosX, spotlightSize, spotlightCenter, initialDirection) {
         this.ctx = ctx;
         this.spotlightPos = spotlightPos;
         this.maxPosX = maxPosX;
         this.spotlightSize = spotlightSize;
         this.spotlightCenter = spotlightCenter;
-        this.spotlightVel = spotlightVel;
         this.initialDirection = initialDirection;
         this.pos = { x: this.spotlightPos.x - 300, y: this.spotlightPos.y + 180 };
         this.size = { w: this.spotlightSize.w + 600, h: this.spotlightSize.h + 600 };

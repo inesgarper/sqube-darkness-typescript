@@ -1,11 +1,11 @@
 class Bullet {
 
-    public size: { w: number, h: number }
-    private vel: { x: number, y: number }
+    public size: Size
+    private vel: Vector
 
     constructor(
         private ctx: CanvasRenderingContext2D | null,
-        public pos: { x: number, y: number },
+        public pos: Vector,
         private cube: Cube,
     ) {
 

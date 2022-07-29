@@ -13,7 +13,6 @@ class Spotlight {
         this.maxPosX = { l: this.maxPosXLeft, r: this.maxPosXRight };
         this.size = { w: 80, h: 80 };
         this.center = this.size.w / 2;
-        this.vel = { x: 0, y: 0 };
         this.isMovingLeft = undefined;
         this.isMovingRight = undefined;
         this.light = undefined;
@@ -38,6 +37,15 @@ class Spotlight {
         }
         if (this.imageInstance.framesIndex >= this.imageInstance.frames) {
             this.imageInstance.framesIndex = 0;
+        }
+    }
+    setImageSrc() {
+        var _a;
+        if ((_a = this.light) === null || _a === void 0 ? void 0 : _a.isOn) {
+            this.imageInstance.src = './images/spotlight/spotlight.png';
+        }
+        else {
+            this.imageInstance.src = './images/spotlight/spotlight-off.png';
         }
     }
     setDirection() {
@@ -71,7 +79,7 @@ class Spotlight {
         }
     }
     createLight() {
-        this.light = new Light(this.ctx, this.pos, this.maxPosX, this.size, this.center, this.vel, this.initialDirection);
+        this.light = new Light(this.ctx, this.pos, this.maxPosX, this.size, this.center, this.initialDirection);
     }
     shoot(framesCounter) {
         if (this.cube.isFound) {
