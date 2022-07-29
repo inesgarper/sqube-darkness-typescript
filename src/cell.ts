@@ -37,13 +37,14 @@ class MapBlock extends Cell {
 class BubbleHole extends Cell {
 
     private imageInstance: any
-
+    public initialPos: { x: number, y: number }
     constructor(
         public ctx: CanvasRenderingContext2D | null,
         public posX: number,
         public posY: number,
     ) {
         super(ctx, posX, posY)
+        this.initialPos = { x: posX, y: posY }
         this.imageInstance = new Image()
         this.imageInstance.src = './images/bubble-hole/bubblehole.png'
         this.imageInstance.frames = 13

@@ -25,9 +25,12 @@ interface gameTemplate {
     imageInstanceWinner: any
 
     shootAudio: any
+    jumpAudio: any
+    deathAudio: any
     backgroundMusicAudio: any
     lightAudio: any
     invisibilityAudio: any
+    bubblesAudio: any
 
     startButton: null | HTMLButtonElement
 
@@ -44,7 +47,7 @@ interface gameTemplate {
     createMap(): void
     createSpotlights(): void
     createPowerUps(): void
-
+    drawPowerUps(): void
     setEventHandlers(): void
     getImageInstance(): void
     gameLoop(): void
@@ -55,6 +58,8 @@ interface gameTemplate {
     // Collisions
     checkDoggyCollision(): void
     checkObstacleCollision(): void
+    // checkCollision(): void
+    playBubbleAudio(): void
     checkLightCollision(): void
     checkBulletCollision(): void
     checkCollision(r1: any, r2: any): boolean
@@ -97,9 +102,12 @@ const squbeDarkness: gameTemplate = {
     win: { status: false, opacity: 0 },
 
     shootAudio: undefined,
+    jumpAudio: undefined,
+    deathAudio: undefined,
     backgroundMusicAudio: undefined,
     lightAudio: undefined,
     invisibilityAudio: undefined,
+    bubblesAudio: undefined,
 
     imageInstanceGameOver: new Image(),
     imageInstanceWinner: new Image(),
@@ -118,6 +126,7 @@ const squbeDarkness: gameTemplate = {
         this.setEventHandlers()
         this.getImageInstance()
         this.setSounds()
+        this.resetGame()
     },
 
     // --- SET UP
@@ -165,7 +174,15 @@ const squbeDarkness: gameTemplate = {
 
     createPowerUps() {
         this.invisibleCubePowerUp = new InvisibleCube(this.ctx, 1650, 50)
-        this.turnOffLightsPowerUp = new TurnOffLights(this.ctx, 1650, 150)
+        this.turnOffLightsPowerUp = new TurnOffLights(this.ctx, 1650, 170)
+    },
+
+    drawPowerUps() {
+        this.invisibleCubePowerUp?.draw()
+        this.turnOffLightsPowerUp?.draw()
+
+        this.ctx!.fillText('Press Z', 1652, 150)
+        this.ctx!.fillText('Press X', 1652, 270)
     },
 
     // --- INTERVAL
@@ -230,6 +247,7 @@ const squbeDarkness: gameTemplate = {
                 }
                 elm.draw(this.framesCounter)
             })
+            this.playBubbleAudio()
 
             // Doggies
             this.doggies.forEach((elm, i) => {
@@ -244,8 +262,7 @@ const squbeDarkness: gameTemplate = {
             })
 
             // PowerUps
-            this.invisibleCubePowerUp?.draw()
-            this.turnOffLightsPowerUp?.draw()
+            this.drawPowerUps()
 
             // Distance
             this.updateDistance()
@@ -254,8 +271,6 @@ const squbeDarkness: gameTemplate = {
             // Win and Lose Scenario
             if (this.gameOver.status) this.printGameOverScreen()
             this.checkWin()
-            this.resetGame()
-
         }, 1000 / 60)
     },
 
@@ -269,6 +284,30 @@ const squbeDarkness: gameTemplate = {
     checkObstacleCollision() {
         this.obstacles.forEach(obstacle => {
             if (this.checkCollision(this.cube, obstacle)) this.setGameOver()
+        })
+    },
+
+    playBubbleAudio(): void {
+        this.obstacles.forEach((elm, i) => {
+            if (elm instanceof BubbleHole) {
+                // if ((this.cube!.cubePos.x > elm.floorPos.x) || (this.cube!.cubePos.x < elm.floorPos.x)) {
+                //     console.log('estas cerca')
+                //     this.bubblesAudio.play()
+                // } else {
+                //     this.bubblesAudio.stop()
+                // }
+
+                if (elm.initialPos.x + 100 > this.cube!.pos.x + this.pixelDistance ||
+                    elm.initialPos.x - 100 < this.cube!.pos.x + this.pixelDistance) {
+                    if (i === 17) {
+                        // console.log('el pozo -->', elm.initialPos.x)
+                        // console.log('el cubo -->', this.cube!.cubePos.x)
+                    }
+                    this.bubblesAudio.play()
+                } else {
+                    this.bubblesAudio.stop()
+                }
+            }
         })
     },
 
@@ -423,16 +462,16 @@ const squbeDarkness: gameTemplate = {
         this.ctx!.font = '30px Sans-serif'
         this.ctx!.fillStyle = 'white'
         if (this.distance * 0.026458 < 10) {
-            this.ctx!.fillText(`${(this.distance * 0.026458).toFixed(2)}`, 1652, 300)
+            this.ctx!.fillText(`${(this.distance * 0.026458).toFixed(2)}`, 1652, 320)
         } else if ((this.distance * 0.026458 > 10)
             && (this.distance * 0.026458 < 100)) {
-            this.ctx!.fillText(`${(this.distance * 0.026458).toFixed(2)}`, 1636, 300)
+            this.ctx!.fillText(`${(this.distance * 0.026458).toFixed(2)}`, 1636, 320)
         } else {
-            this.ctx!.fillText(`${(this.distance * 0.026458).toFixed(2)}`, 1620, 300)
+            this.ctx!.fillText(`${(this.distance * 0.026458).toFixed(2)}`, 1620, 320)
         }
 
         this.ctx!.font = '20px Sans-serif'
-        this.ctx!.fillText('m', 1715, 300)
+        this.ctx!.fillText('m', 1715, 320)
 
     },
 
@@ -446,7 +485,11 @@ const squbeDarkness: gameTemplate = {
         document.addEventListener('keydown', event => {
             const { key } = event
             if (!this.cube!.isDead) {
-                if (key === 'ArrowUp') this.cube!.jump()
+                if (key === 'ArrowUp') {
+                    this.cube!.jump()
+                    this.jumpAudio.currentTime = 0
+                    this.jumpAudio.play()
+                }
                 if (key === 'ArrowLeft') {
                     if (!this.cube!.isDead) {
                         this.cube!.leftKey = true
@@ -485,6 +528,8 @@ const squbeDarkness: gameTemplate = {
         this.cube!.canMove = false
         this.gameOver.status = true
         this.cube!.isDead = true
+        this.deathAudio.play()
+
     },
 
     printGameOverScreen() {
@@ -517,14 +562,6 @@ const squbeDarkness: gameTemplate = {
 
         }
 
-        // linea roja centro del canvas
-        this.ctx!.beginPath();
-        this.ctx!.moveTo(900, 0);
-        this.ctx!.lineTo(900, 800);
-        this.ctx!.stroke();
-        this.ctx!.strokeStyle = '#ff0000'
-
-        // borrar intervalo
         if (this.gameOver.opacity >= 1) clearInterval(this.intervalId)
 
     },
@@ -541,8 +578,7 @@ const squbeDarkness: gameTemplate = {
         this.win.opacity += 0.01
 
         if (this.win.opacity >= 0.40) {
-            this.ctx!.drawImage(this.imageInstanceWinner, 900 - (200 * this.gameOver.opacity / 2), 300, 275 * this.gameOver.opacity, 50 * this.gameOver.opacity)
-
+            this.ctx!.drawImage(this.imageInstanceWinner, 900 - (200 * this.win.opacity / 2), 300, 200 * this.win.opacity, 50 * this.win.opacity)
         }
 
         if (this.win.opacity >= 1) clearInterval(this.intervalId)
@@ -557,6 +593,12 @@ const squbeDarkness: gameTemplate = {
         this.lightAudio.volume = 0.1
         this.invisibilityAudio = new Audio('./sounds/invisibility.wav')
         this.invisibilityAudio.volume = 0.1
+        this.jumpAudio = new Audio('./sounds/jump.wav')
+        this.jumpAudio.volume = 0.05
+        this.deathAudio = new Audio('./sounds/death.wav')
+        this.deathAudio.volume = 0.1
+        this.bubblesAudio = new Audio('./sounds/bubbles.mp3')
+        this.bubblesAudio.volume = 0.6
     },
 
     resetGame() {

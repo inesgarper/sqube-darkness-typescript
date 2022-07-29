@@ -121,8 +121,6 @@ class Cube {
     animate(framesCounter: number): void {
         this.size.w = 120.79
 
-        console.log(this.imageSrc.framesIndex)
-
         if (framesCounter % 2 == 0) {
             this.imageSrc.framesIndex++;
         }

@@ -20,9 +20,12 @@ const squbeDarkness = {
     gameOver: { status: false, opacity: 0 },
     win: { status: false, opacity: 0 },
     shootAudio: undefined,
+    jumpAudio: undefined,
+    deathAudio: undefined,
     backgroundMusicAudio: undefined,
     lightAudio: undefined,
     invisibilityAudio: undefined,
+    bubblesAudio: undefined,
     imageInstanceGameOver: new Image(),
     imageInstanceWinner: new Image(),
     intervalId: undefined,
@@ -37,6 +40,7 @@ const squbeDarkness = {
         this.setEventHandlers();
         this.getImageInstance();
         this.setSounds();
+        this.resetGame();
     },
     // --- SET UP
     setContext() {
@@ -76,12 +80,19 @@ const squbeDarkness = {
     },
     createPowerUps() {
         this.invisibleCubePowerUp = new InvisibleCube(this.ctx, 1650, 50);
-        this.turnOffLightsPowerUp = new TurnOffLights(this.ctx, 1650, 150);
+        this.turnOffLightsPowerUp = new TurnOffLights(this.ctx, 1650, 170);
+    },
+    drawPowerUps() {
+        var _a, _b;
+        (_a = this.invisibleCubePowerUp) === null || _a === void 0 ? void 0 : _a.draw();
+        (_b = this.turnOffLightsPowerUp) === null || _b === void 0 ? void 0 : _b.draw();
+        this.ctx.fillText('Press Z', 1652, 150);
+        this.ctx.fillText('Press X', 1652, 270);
     },
     // --- INTERVAL
     gameLoop() {
         this.intervalId = setInterval(() => {
-            var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+            var _a, _b, _c, _d, _e, _f, _g;
             this.clearAll();
             this.backgroundMusicAudio.play();
             this.framesCounter >= 600 ? this.framesCounter = 0 : this.framesCounter++;
@@ -140,6 +151,7 @@ const squbeDarkness = {
                 }
                 elm.draw(this.framesCounter);
             });
+            this.playBubbleAudio();
             // Doggies
             this.doggies.forEach((elm, i) => {
                 elm.draw(this.framesCounter);
@@ -154,8 +166,7 @@ const squbeDarkness = {
                     elm.canMove = true;
             });
             // PowerUps
-            (_h = this.invisibleCubePowerUp) === null || _h === void 0 ? void 0 : _h.draw();
-            (_j = this.turnOffLightsPowerUp) === null || _j === void 0 ? void 0 : _j.draw();
+            this.drawPowerUps();
             // Distance
             this.updateDistance();
             this.printDistance();
@@ -163,7 +174,6 @@ const squbeDarkness = {
             if (this.gameOver.status)
                 this.printGameOverScreen();
             this.checkWin();
-            this.resetGame();
         }, 1000 / 60);
     },
     // --- COLLISIONS
@@ -177,6 +187,29 @@ const squbeDarkness = {
         this.obstacles.forEach(obstacle => {
             if (this.checkCollision(this.cube, obstacle))
                 this.setGameOver();
+        });
+    },
+    playBubbleAudio() {
+        this.obstacles.forEach((elm, i) => {
+            if (elm instanceof BubbleHole) {
+                // if ((this.cube!.cubePos.x > elm.floorPos.x) || (this.cube!.cubePos.x < elm.floorPos.x)) {
+                //     console.log('estas cerca')
+                //     this.bubblesAudio.play()
+                // } else {
+                //     this.bubblesAudio.stop()
+                // }
+                if (elm.initialPos.x + 100 > this.cube.pos.x + this.pixelDistance ||
+                    elm.initialPos.x - 100 < this.cube.pos.x + this.pixelDistance) {
+                    if (i === 17) {
+                        // console.log('el pozo -->', elm.initialPos.x)
+                        // console.log('el cubo -->', this.cube!.cubePos.x)
+                    }
+                    this.bubblesAudio.play();
+                }
+                else {
+                    this.bubblesAudio.stop();
+                }
+            }
         });
     },
     checkLightCollision() {
@@ -304,17 +337,17 @@ const squbeDarkness = {
         this.ctx.font = '30px Sans-serif';
         this.ctx.fillStyle = 'white';
         if (this.distance * 0.026458 < 10) {
-            this.ctx.fillText(`${(this.distance * 0.026458).toFixed(2)}`, 1652, 300);
+            this.ctx.fillText(`${(this.distance * 0.026458).toFixed(2)}`, 1652, 320);
         }
         else if ((this.distance * 0.026458 > 10)
             && (this.distance * 0.026458 < 100)) {
-            this.ctx.fillText(`${(this.distance * 0.026458).toFixed(2)}`, 1636, 300);
+            this.ctx.fillText(`${(this.distance * 0.026458).toFixed(2)}`, 1636, 320);
         }
         else {
-            this.ctx.fillText(`${(this.distance * 0.026458).toFixed(2)}`, 1620, 300);
+            this.ctx.fillText(`${(this.distance * 0.026458).toFixed(2)}`, 1620, 320);
         }
         this.ctx.font = '20px Sans-serif';
-        this.ctx.fillText('m', 1715, 300);
+        this.ctx.fillText('m', 1715, 320);
     },
     // --- CLEAR SCREEN
     clearAll() {
@@ -326,8 +359,11 @@ const squbeDarkness = {
         document.addEventListener('keydown', event => {
             const { key } = event;
             if (!this.cube.isDead) {
-                if (key === 'ArrowUp')
+                if (key === 'ArrowUp') {
                     this.cube.jump();
+                    this.jumpAudio.currentTime = 0;
+                    this.jumpAudio.play();
+                }
                 if (key === 'ArrowLeft') {
                     if (!this.cube.isDead) {
                         this.cube.leftKey = true;
@@ -364,6 +400,7 @@ const squbeDarkness = {
         this.cube.canMove = false;
         this.gameOver.status = true;
         this.cube.isDead = true;
+        this.deathAudio.play();
     },
     printGameOverScreen() {
         this.ctx.globalAlpha = this.gameOver.opacity;
@@ -391,13 +428,6 @@ const squbeDarkness = {
                 }
             }
         }
-        // linea roja centro del canvas
-        this.ctx.beginPath();
-        this.ctx.moveTo(900, 0);
-        this.ctx.lineTo(900, 800);
-        this.ctx.stroke();
-        this.ctx.strokeStyle = '#ff0000';
-        // borrar intervalo
         if (this.gameOver.opacity >= 1)
             clearInterval(this.intervalId);
     },
@@ -412,7 +442,7 @@ const squbeDarkness = {
         this.ctx.globalAlpha = 1;
         this.win.opacity += 0.01;
         if (this.win.opacity >= 0.40) {
-            this.ctx.drawImage(this.imageInstanceWinner, 900 - (200 * this.gameOver.opacity / 2), 300, 275 * this.gameOver.opacity, 50 * this.gameOver.opacity);
+            this.ctx.drawImage(this.imageInstanceWinner, 900 - (200 * this.win.opacity / 2), 300, 200 * this.win.opacity, 50 * this.win.opacity);
         }
         if (this.win.opacity >= 1)
             clearInterval(this.intervalId);
@@ -426,6 +456,12 @@ const squbeDarkness = {
         this.lightAudio.volume = 0.1;
         this.invisibilityAudio = new Audio('./sounds/invisibility.wav');
         this.invisibilityAudio.volume = 0.1;
+        this.jumpAudio = new Audio('./sounds/jump.wav');
+        this.jumpAudio.volume = 0.05;
+        this.deathAudio = new Audio('./sounds/death.wav');
+        this.deathAudio.volume = 0.1;
+        this.bubblesAudio = new Audio('./sounds/bubbles.mp3');
+        this.bubblesAudio.volume = 0.6;
     },
     resetGame() {
         var _a;
