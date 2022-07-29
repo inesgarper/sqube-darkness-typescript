@@ -12,6 +12,7 @@ class Cube {
     public isJumping: boolean
     public isInvisible: boolean
     public isDead: boolean
+    private hasDeathPos: boolean
     private isFacingRight: boolean
     private isFacingLeft: boolean
     private canSpinRight: boolean
@@ -50,6 +51,7 @@ class Cube {
         this.isJumping = false
         this.isInvisible = false
         this.isDead = false
+        this.hasDeathPos = false
 
         this.isFacingRight = true
         this.isFacingLeft = false
@@ -117,6 +119,11 @@ class Cube {
 
     animate(framesCounter: number): void {
         this.size.w = 120.79
+        if (!this.hasDeathPos) {
+            this.pos.x -= 25
+            this.hasDeathPos = true
+        }
+
 
         if (framesCounter % 2 == 0) {
             this.imageSrc.framesIndex++;
