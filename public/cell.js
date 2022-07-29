@@ -118,6 +118,8 @@ class BrokenPlatform extends MapBlock {
         this.imageInstance.src = './images/broken-platform/broken-platform.png';
         this.imageInstance.frames = 10;
         this.imageInstance.framesIndex = 0;
+        this.breakAudio = new Audio('./sounds/break.wav');
+        this.breakAudio.volume = 0.6;
     }
     drawPlatform(framesCounter) {
         this.ctx.drawImage(this.imageInstance, this.imageInstance.framesIndex * (this.imageInstance.width / this.imageInstance.frames), 0, this.imageInstance.width / this.imageInstance.frames, this.imageInstance.height, this.pos.x, this.pos.y, this.size.w + 50, this.size.h);
@@ -132,10 +134,13 @@ class BrokenPlatform extends MapBlock {
         }
     }
     break() {
-        setTimeout(() => {
-            this.brokenPlatformVel.y += this.brokenPlatformPhysics.gravity;
-            this.pos.y += this.brokenPlatformVel.y;
-            this.isDoneBreaking = true;
-        }, 400);
+        if (!this.isDoneBreaking) {
+            setTimeout(() => {
+                this.brokenPlatformVel.y += this.brokenPlatformPhysics.gravity;
+                this.pos.y += this.brokenPlatformVel.y;
+                this.isDoneBreaking = true;
+                this.breakAudio.play();
+            }, 400);
+        }
     }
 }

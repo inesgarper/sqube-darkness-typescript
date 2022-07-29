@@ -19,6 +19,7 @@ class Cube {
         this.isJumping = false;
         this.isInvisible = false;
         this.isDead = false;
+        this.hasDeathPos = false;
         this.isFacingRight = true;
         this.isFacingLeft = false;
         this.canSpinRight = false;
@@ -65,6 +66,10 @@ class Cube {
     }
     animate(framesCounter) {
         this.size.w = 120.79;
+        if (!this.hasDeathPos) {
+            this.pos.x -= 25;
+            this.hasDeathPos = true;
+        }
         if (framesCounter % 2 == 0) {
             this.imageSrc.framesIndex++;
         }

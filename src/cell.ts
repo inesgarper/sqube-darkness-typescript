@@ -160,6 +160,7 @@ class BrokenPlatform extends MapBlock {
     public isBroken: boolean
     private isDoneBreaking: boolean
     private imageInstance: any
+    private breakAudio: any
 
     constructor(
         public ctx: CanvasRenderingContext2D | null,
@@ -176,6 +177,9 @@ class BrokenPlatform extends MapBlock {
         this.imageInstance.src = './images/broken-platform/broken-platform.png'
         this.imageInstance.frames = 10
         this.imageInstance.framesIndex = 0
+
+        this.breakAudio = new Audio('./sounds/break.wav')
+        this.breakAudio.volume = 0.6
     }
 
 
@@ -205,10 +209,13 @@ class BrokenPlatform extends MapBlock {
     }
 
     break(): void {
-        setTimeout(() => {
-            this.brokenPlatformVel.y += this.brokenPlatformPhysics.gravity
-            this.pos.y += this.brokenPlatformVel.y
-            this.isDoneBreaking = true
-        }, 400)
+        if (!this.isDoneBreaking) {
+            setTimeout(() => {
+                this.brokenPlatformVel.y += this.brokenPlatformPhysics.gravity
+                this.pos.y += this.brokenPlatformVel.y
+                this.isDoneBreaking = true
+                this.breakAudio.play()
+            }, 400)
+        }
     }
 }

@@ -37,8 +37,8 @@ class Bullet {
     }
 
     move(): void {
-        this.pos.x += this.vel.x * 10
-        this.pos.y += this.vel.y * 10
+        this.pos.x += this.vel.x * 15
+        this.pos.y += this.vel.y * 15
     }
 
 }

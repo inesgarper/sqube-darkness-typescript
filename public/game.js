@@ -111,7 +111,7 @@ const squbeDarkness = {
                 this.checkBulletCollision();
                 if (!this.cube.isDead) {
                     this.checkDoggyCollision();
-                    this.checkObstacleCollision;
+                    this.checkObstacleCollision();
                 }
             }
             // Spotlights
@@ -192,22 +192,9 @@ const squbeDarkness = {
     playBubbleAudio() {
         this.obstacles.forEach((elm, i) => {
             if (elm instanceof BubbleHole) {
-                // if ((this.cube!.cubePos.x > elm.floorPos.x) || (this.cube!.cubePos.x < elm.floorPos.x)) {
-                //     console.log('estas cerca')
-                //     this.bubblesAudio.play()
-                // } else {
-                //     this.bubblesAudio.stop()
-                // }
-                if (elm.initialPos.x + 100 > this.cube.pos.x + this.pixelDistance ||
+                if (elm.initialPos.x + 100 > this.cube.pos.x + this.pixelDistance &&
                     elm.initialPos.x - 100 < this.cube.pos.x + this.pixelDistance) {
-                    if (i === 17) {
-                        // console.log('el pozo -->', elm.initialPos.x)
-                        // console.log('el cubo -->', this.cube!.cubePos.x)
-                    }
                     this.bubblesAudio.play();
-                }
-                else {
-                    this.bubblesAudio.stop();
                 }
             }
         });
@@ -229,8 +216,6 @@ const squbeDarkness = {
         this.spotlights.forEach(spotlight => {
             spotlight.bullets.forEach(bullet => {
                 if (this.checkCollision(this.cube, bullet)) {
-                    this.shootAudio.currentTime = 0;
-                    this.shootAudio.play();
                     this.setGameOver();
                 }
                 this.floorBlocks.forEach(block => {
@@ -250,14 +235,15 @@ const squbeDarkness = {
                 r1.pos.x + r1.size.w - 30 > r2.pos.x &&
                 r1.pos.y < r2.pos.y + r2.size.h &&
                 r1.size.h + r1.pos.y - 22.5 > r2.pos.y) {
+                console.log('metocan');
                 return true;
             }
         }
         else {
             if (r1.pos.x < r2.pos.x + r2.size.w &&
-                r1.pos.x + r1.size.w > r2.pos.x &&
-                r1.pos.y < r2.pos.y + r2.size.h &&
-                r1.size.h + r1.pos.y > r2.pos.y) {
+                r1.pos.x + r1.size.w - 21 > r2.pos.x &&
+                r1.pos.y + 11 < r2.pos.y + r2.size.h &&
+                r1.size.h + r1.pos.y - 11 > r2.pos.y) {
                 return true;
             }
         }
@@ -361,7 +347,7 @@ const squbeDarkness = {
             if (!this.cube.isDead) {
                 if (key === 'ArrowUp') {
                     this.cube.jump();
-                    this.jumpAudio.currentTime = 0;
+                    this.jumpAudio.currentTime = 5;
                     this.jumpAudio.play();
                 }
                 if (key === 'ArrowLeft') {
@@ -456,12 +442,12 @@ const squbeDarkness = {
         this.lightAudio.volume = 0.1;
         this.invisibilityAudio = new Audio('./sounds/invisibility.wav');
         this.invisibilityAudio.volume = 0.1;
-        this.jumpAudio = new Audio('./sounds/jump.wav');
+        this.jumpAudio = new Audio('./sounds/jump2.mp3');
         this.jumpAudio.volume = 0.05;
         this.deathAudio = new Audio('./sounds/death.wav');
         this.deathAudio.volume = 0.1;
-        this.bubblesAudio = new Audio('./sounds/bubbles.mp3');
-        this.bubblesAudio.volume = 0.6;
+        this.bubblesAudio = new Audio('./sounds/oceanbubbles.wav');
+        this.bubblesAudio.volume = 0.1;
     },
     resetGame() {
         var _a;

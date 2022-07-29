@@ -5,4 +5,3 @@
 4 = Temporary Spikes
 5 = Spikes
 6 = Broken Platform
-7 = Doggy Platform
