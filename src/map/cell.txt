@@ -1,7 +1,0 @@
-0 = Air
-1 = Floor Block
-2 = Bubble Hole
-3 = Doggy
-4 = Temporary Spikes
-5 = Spikes
-6 = Broken Platform
