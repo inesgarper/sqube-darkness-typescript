@@ -15,7 +15,7 @@ Good luck!
 
 We used TypeScript to create this game.
 
-![Game Screenshot](https://br.atsit.in/es/wp-content/uploads/2022/01/nunca-te-detengas-en-el-juego-de-plataformas-de-accion-sqube-darkness.jpg)
+![Game Screenshot](https://user-images.githubusercontent.com/69345715/188866866-1e70aeec-8002-49c3-9376-facdabc48eb2.png)
 
 
 ## Authors
