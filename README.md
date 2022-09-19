@@ -20,8 +20,8 @@ We used TypeScript to create this game.
 
 ## Authors
 
-- Inés García Periáñez - [@inesgarper](https://www.github.com/octokatherine)
-- Guillermo Ávila Ayllón - [@guilleavila](https://www.github.com/octokatherine)
+- Inés García Periáñez - [@inesgarper](https://www.github.com/inesgarper)
+- Guillermo Ávila Ayllón - [@guilleavila](https://www.github.com/guilleavila)
 
 
 ## Demo
